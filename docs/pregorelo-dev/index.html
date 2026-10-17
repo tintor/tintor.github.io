@@ -287,7 +287,7 @@ Object.assign(ING,{
   ba:{n:'Бао лепиња'}, kk:{n:'Кикирики'}, lj:{n:'Љута папричица',chop:1}, kg:{n:'Кунг Пао'}, rl:{n:'Ролнице'}, zl:{n:'Листићи злата'}
 });
 Object.assign(RECIPES,{
-  pasulj:{n:'Корбаст пасуљ', cook:'kazan', in:['psR','luC','apR'], out:'pz', parts:['pzK'], price:120, por:4},
+  pasulj:{n:'Корбаст пасуљ', cook:'kazan', in:['psR'], out:'pz', parts:['pzK'], price:120, por:4},
   prase:{n:'Прасе на ражњу', parts:['pgG','luC'], price:950},
   jagnjetina:{n:'Јагњетина испод сача', cook:'sac', in:['jgR','kmC'], out:'jt', parts:['jtK'], price:900},
   kulen:{n:'Сремски кулен с пршутом и кајмаком', parts:['klC','ptR','kaR'], price:800},
@@ -351,7 +351,7 @@ const LEVELS=[
     time:210, recipes:['pasulj','prase','jagnjetina','kulen'], rw:{pasulj:3,prase:1,jagnjetina:1,kulen:1}, dup:{pasulj:5}, interval:13, maxOrders:6, patience:95, plates:4, trays:0, dirty:false,
     stars:[1500,3200,5000], crates:{b:'ps',v:'vo',g:'pg',n:'jg',k:'kl',o:'pt'}, smotra:true, split:8,
     band:[0,1,2].map(k=>({kind:'squad',path:[[1.5+k*.9,4.5],[14.5,4.5],[14.5,5.5],[1.5,5.5],[1.5,4.5]],speed:1.3,wp:1})),
-    map:['#ba#l#WW#ok#jQQ#','Z.......#......X','Z.......#......X','#...##..#..##..J','#..............S','X..............S','#...##..#..##..#','R...@...#......R','#v####D##gDn#tl#']},
+    map:['#b####WW#ok#jQQ#','Z.......#......X','Z.......#......X','#...##..#..##..J','#..............S','#..............S','#...##..#..##..#','R...@...#......R','#v####D##gDn#tl#']},
   { name:'„Змај и Шљива“ на Београду на води', theme:'fusion', tune:'zmaj',
     desc:'Кинеско-српски фјужн за богаташе: ћевап-бао, кунг пао пљескавица и ајвар ролнице. Гости су тек брат, крипто инвеститор, тајкун и понеки тајни инспектор.',
     novo:'Ново: вок. Убаци састојке, па кад се појави ↻ протреси вок (E) — ако закасниш, загори! Листићи злата на тањиру дуплирају цену. Крипто инвеститор плаћа како курс падне, стартап у акцијама, а тајкун само ако је брзо. Склањај се роботу за доставу!',
@@ -615,7 +615,7 @@ const EN={
   'Прасе на ражњу':'Spit-roasted pig (Prase na ražnju)','Сремски кулен с пршутом и кајмаком':'Kulen with prosciutto and kajmak (Sremski kulen)','Ћевап-бао':'Ćevap bao',
   'Кунг Пао пљескавица':'Kung pao pljeskavica','Ајвар пролећне ролнице':'Ajvar spring rolls',
   'исеци':'slice','на ражањ':'on the spit','под сач':'under the sač','у вок, протреси!':'into the wok, toss!',
-  'ВОЈСКА':'ARMY','ДОСТАВА':'DELIVERY','ЈЕЛОВНИК':'MENU','ПОН ПАСУЉ • УТО ПАСУЉ • СРЕ ПАСУЉ':'MON BEANS • TUE BEANS • WED BEANS','ЧЕТ ПАСУЉ* • ПЕТ ПАСУЉ • ВИКЕНД ПАСУЉ':'THU BEANS* • FRI BEANS • WEEKEND BEANS',
+  'ВОЈСКА':'ARMY','ДОСТАВА':'DELIVERY','ЈЕЛОВНИК':'MENU','ПОН':'MON','УТО':'TUE','СРЕ':'WED','ЧЕТ':'THU','ПЕТ':'FRI','ВИКЕНД':'WEEKEND','ПАСУЉ':'BEANS',
   '*са кобасицом, ако стигне':'*with sausage, if it arrives','ОФИЦИРСКИ КЛУБ':'OFFICERS’ CLUB','ЗМАЈ И ШЉИВА':'Dragon & Plum','САМО ЗА ОФИЦИРЕ':'OFFICERS ONLY',
   'Касарна „Војвода Пасуљић“':'Barracks “Duke Beanovich”',
   'Лево војници, десно официри. Војска сваки дан добија корбаст пасуљ, а штаб прасе на ражњу, јагњетину испод сача и сремски кулен.':'Soldiers on the left, officers on the right. The troops get runny bean stew every single day, while the top brass get spit-roasted pig, lamb under the sač and Srem kulen.',
@@ -2613,8 +2613,13 @@ function drawWall(b,theme,x,y,w,h){
     const mw=Math.min((sx-x)*.62,ts*5.2), mx=x+(sx-x)*.42-mw/2, my=y+h*.1, mh=h*.68;
     rr(b,mx-3,my-3,mw+6,mh+6,3); b.fillStyle='#6a4a2a'; b.fill(); rr(b,mx,my,mw,mh,2); b.fillStyle='#24302a'; b.fill();
     b.textAlign='center'; b.textBaseline='middle'; b.fillStyle='#ffe066'; fitFont(b,tr('ЈЕЛОВНИК'),900,mh*.22,mw*.9); b.fillText(tr('ЈЕЛОВНИК'),mx+mw/2,my+mh*.16);
-    b.fillStyle='#f4f1e8'; const l1=tr('ПОН ПАСУЉ • УТО ПАСУЉ • СРЕ ПАСУЉ'), l2=tr('ЧЕТ ПАСУЉ* • ПЕТ ПАСУЉ • ВИКЕНД ПАСУЉ');
-    fitFont(b,l1,700,mh*.17,mw*.92); b.fillText(l1,mx+mw/2,my+mh*.42); fitFont(b,l2,700,mh*.17,mw*.92); b.fillText(l2,mx+mw/2,my+mh*.63);
+    const days=['ПОН','УТО','СРЕ','ЧЕТ','ПЕТ','ВИКЕНД'].map(d=>tr(d)), cw=[1,1,1,1,1,1.7], cs=cw.reduce((a,c)=>a+c,0);
+    const tx=mx+mw*.04, tw=mw*.92, ty=my+mh*.3, rh=mh*.21; let tf=mh*.15;
+    b.font=`700 ${tf}px Rubik, sans-serif`; for(let i=0;i<6;i++) for(const t of [days[i],tr('ПАСУЉ')+(i===3?'*':'')]){ const m=b.measureText(t).width, lim=tw*cw[i]/cs*.88; if(m>lim) tf*=lim/m, b.font=`700 ${tf}px Rubik, sans-serif`; }
+    b.strokeStyle='rgba(244,241,232,.55)'; b.lineWidth=1; b.strokeRect(tx,ty,tw,rh*2); b.beginPath(); b.moveTo(tx,ty+rh); b.lineTo(tx+tw,ty+rh);
+    let cx=tx; for(let i=0;i<6;i++){ const w2=tw*cw[i]/cs; if(i) b.moveTo(cx,ty), b.lineTo(cx,ty+rh*2);
+      b.fillStyle='#ffe066'; b.fillText(days[i],cx+w2/2,ty+rh*.52); b.fillStyle='#f4f1e8'; b.fillText(tr('ПАСУЉ')+(i===3?'*':''),cx+w2/2,ty+rh*1.52); cx+=w2; }
+    b.stroke();
     b.fillStyle='rgba(244,241,232,.65)'; const l3=tr('*са кобасицом, ако стигне'); fitFont(b,l3,700,mh*.12,mw*.8); b.fillText(l3,mx+mw/2,my+mh*.84);
     clock(b,x+(sx-x)*.85,y+h*.36,h*.2,6,0);
     b.fillStyle=lg(b,sx,y,sx,y+h,'#7a1e2a','#561018'); b.fillRect(sx,y,x+w-sx,h); b.fillStyle='rgba(217,162,27,.35)'; for(let xx=sx+ts*.2;xx<x+w;xx+=ts*.32) b.fillRect(xx,y,1.5,h*.86);
