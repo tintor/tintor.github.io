@@ -94,6 +94,8 @@ kbd{display:inline-block; min-width:1.9em; padding:2px 7px; border-radius:6px; b
   border-bottom-width:3px; color:var(--ink); font-family:var(--font); font-weight:700; font-size:12px; text-align:center}
 .touch-note{display:none; margin-top:10px; font-size:14px; color:var(--muted)}
 body.touch .touch-note{display:block}
+.touch-tip{margin:12px auto 0; max-width:46ch; padding:8px 12px; border-radius:8px; background:var(--chip); border:1px solid var(--chip-edge); font-size:14px; line-height:1.4; text-align:center}
+body.padnav #ov :focus{outline:3px solid var(--brass); outline-offset:2px}
 .toggles{margin-top:16px}
 .chip{font:inherit; font-size:14px; font-weight:700; padding:7px 12px; border-radius:999px; border:1px solid var(--chip-edge); background:var(--chip); color:var(--ink); cursor:pointer}
 .chip[aria-pressed="false"]{opacity:.55; text-decoration:line-through}
@@ -535,6 +537,8 @@ const EN={
   'Твој кувар':'Your cook','Изабери кувара':'Choose your cook','заузет':'taken','Играј':'Play','Закључано. Освоји бар једну звездицу на претходном нивоу.':'Locked. Earn at least one star on the previous level.',
   'или стрелице: кретање':'or arrow keys: move','Размак':'Space','узми или спусти':'pick up or put down','сецкај или пери':'chop or wash','трк':'dash','мени игре':'game menu',
   'На телефону: превуци палцем по левој страни екрана за кретање, дугмад су десно. Најбоље игра у положеном положају.':'On a phone: drag your thumb on the left side of the screen to move; the buttons are on the right. Best played in landscape.',
+  '🎮 Најбоље се игра на уређају са тастатуром или уз гејмпад.':'🎮 Plays best on a device with a keyboard or a game controller.',
+  'Гејмпад:':'Controller:','узми':'grab','ради':'work','мени':'menu',
   'Звук':'Sound','Музика':'Music','Све откључано':'All unlocked','Откључај све':'Unlock all',
   'Игра са друштвом':'Play with friends','Мрежни део игре није успео да се учита у овом прегледачу.':'Online play failed to load in this browser.',
   'Учитавам мрежни део…':'Loading online play…','Нова игра':'New game','Направи игру':'Create game','Имаш позивницу?':'Got an invite?',
@@ -2008,7 +2012,7 @@ const UP=['KeyW','ArrowUp'], DOWN=['KeyS','ArrowDown'], LEFT=['KeyA','ArrowLeft'
 const MOVE=new Set([...UP,...DOWN,...LEFT,...RIGHT]);
 const anyKey=a=>a.some(k=>keys.has(k));
 const inPlay=()=>['countdown','play','ending'].includes(Game.phase)&&!Game.localMenu&&!Game.notice&&!(Game.role==='client'&&Game.mySlot<0);
-function readInput(){ if(!inPlay()) return {x:0,y:0}; let x=0,y=0; if(anyKey(UP)) y-=1; if(anyKey(DOWN)) y+=1; if(anyKey(LEFT)) x-=1; if(anyKey(RIGHT)) x+=1; if(stick.active){ x+=stick.x; y+=stick.y; } return {x,y}; }
+function readInput(){ if(!inPlay()) return {x:0,y:0}; let x=0,y=0; if(anyKey(UP)) y-=1; if(anyKey(DOWN)) y+=1; if(anyKey(LEFT)) x-=1; if(anyKey(RIGHT)) x+=1; if(stick.active){ x+=stick.x; y+=stick.y; } x+=pad.x; y+=pad.y; return {x,y}; }
 const localActor=()=>S?S.players.find(p=>p.slot===Game.mySlot):null;
 function doAction(kind){
   if(Game.phase!=='play'||!inPlay()) return;
@@ -2046,6 +2050,33 @@ document.querySelectorAll('.tb').forEach(b=>{
   const up=()=>b.classList.remove('down'); b.addEventListener('pointerup',up); b.addEventListener('pointercancel',up); b.addEventListener('pointerleave',up);
 });
 const TOUCH=(window.matchMedia&&matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window);
+const NOKB=!!(window.matchMedia&&matchMedia('(hover: none) and (pointer: coarse)').matches); // телефон или таблет, без тастатуре
+/* гејмпад: лева палица или крстић за кретање, A узми, X ради, B или RB трк, Start мени; у менијима крстић бира дугме, A га притиска */
+const pad={x:0,y:0,on:false,prev:[],held:false,navT:0};
+function padFocusables(){ return [...ov.querySelectorAll('button:not([disabled]),input:not([readonly])')].filter(e=>e.offsetParent!==null); }
+function padNav(d){ const l=padFocusables(); if(!l.length) return; const i=l.indexOf(document.activeElement); const f=l[i<0?0:(i+d+l.length)%l.length]; try{ f.focus(); f.scrollIntoView({block:'nearest'}); }catch(e){} }
+function padPress(){ const f=document.activeElement, b=f&&ov.contains(f)&&f.tagName==='BUTTON'&&!f.disabled?f:ov.querySelector('[data-primary]:not([disabled])'); if(b) b.click(); }
+function pollPad(dt){
+  const ps=navigator.getGamepads?[...navigator.getGamepads()].filter(g=>g&&g.connected!==false):[];
+  const down=[]; let x=0,y=0;
+  for(const g of ps){ const b=i=>!!(g.buttons[i]&&g.buttons[i].pressed), ax=g.axes[0]||0, ay=g.axes[1]||0;
+    if(Math.hypot(ax,ay)>.25){ x+=ax; y+=ay; }
+    if(b(12)) y-=1; if(b(13)) y+=1; if(b(14)) x-=1; if(b(15)) x+=1;
+    for(const i of [0,1,2,5,9]) down[i]=down[i]||b(i); }
+  x=clamp(x,-1,1); y=clamp(y,-1,1);
+  const prev=pad.prev, hit=i=>down[i]&&!prev[i]; pad.prev=down;
+  if(!pad.on&&(down.some(Boolean)||x||y)){ pad.on=true; document.body.classList.add('padnav'); uiDirty(); }
+  const playing=inPlay(); pad.x=playing?x:0; pad.y=playing?y:0;
+  if(!down.some(Boolean)&&!x&&!y){ pad.held=false; return; }
+  audioInit();
+  if(hit(9)&&['countdown','play','ending','pause'].includes(Game.phase)&&!Game.notice){ menuKey(); return; }
+  if(playing){ if(hit(0)) doAction('grab'); if(hit(2)) doAction('work'); if(hit(1)||hit(5)) doAction('dash'); return; }
+  if(ov.hidden) return;
+  if(hit(0)||hit(9)){ padPress(); return; }
+  const d=Math.abs(y)>.5?Math.sign(y):Math.abs(x)>.5?Math.sign(x):0;
+  if(!d){ pad.held=false; return; }
+  if(!pad.held){ pad.held=true; pad.navT=.4; padNav(d); } else if((pad.navT-=dt)<=0){ pad.navT=.15; padNav(d); }
+}
 if(TOUCH) document.body.classList.add('touch');
 $('#pauseBtn').addEventListener('click',e=>{ e.currentTarget.blur(); menuKey(); });
 
@@ -4106,7 +4137,7 @@ function nPlayers(){ return Game.role==='solo'?1:Math.max(1,Net.slots.length); }
 function scaledStars(L){ const n=nPlayers(); return L.stars.map(v=>Math.round(v*(1+.35*(n-1))/50)*50); }
 function sigFor(k){
   switch(k){
-    case 'menu': return [Game.mode,Net.avail,Net.standalone,JSON.stringify(Net.adverts.map(a=>[a.code,a.n,a.ph,Net.names[a.by]||''])),save.stars.join(),save.best.join(),save.sound,save.music,chefSig()].join('|');
+    case 'menu': return [pad.on,Game.mode,Net.avail,Net.standalone,JSON.stringify(Net.adverts.map(a=>[a.code,a.n,a.ph,Net.names[a.by]||''])),save.stars.join(),save.best.join(),save.sound,save.music,chefSig()].join('|');
     case 'lobby': return [chefSig(),Game.role,Net.code,Game.li,JSON.stringify(Net.slots.map(s=>[s.slot,s.ch,s.peer===Net.myPeer||s.peer==='me',slotName(s.slot),Game.role==='host'&&s.peer!=='me'?!!(Net.conns.get(s.peer)||{}).dcOpen:''])),Net.rtcState,save.stars.join(),JSON.stringify(Net.routes),TURN.state].join('|');
     case 'intro': return [Game.role,Game.li,nPlayers(),chefSig()].join('|');
     case 'pause': return Game.role+'|'+save.sound+save.music;
@@ -4117,7 +4148,7 @@ function sigFor(k){
 }
 function ui(){
   const k=overlayKind(), playing=['countdown','play','ending'].includes(Game.phase)&&(!k||k==='cmenu');
-  $('#pauseBtn').hidden=!(playing&&!k); $('#touch').hidden=!(playing&&!k&&TOUCH);
+  $('#pauseBtn').hidden=!(playing&&!k); $('#touch').hidden=!(playing&&!k&&TOUCH&&!pad.on);
   if(!uiForce) return; uiForce=false;
   const sig=k+'#'+LANG+'#'+sigFor(k); if(sig===uiSig) return; uiSig=sig;
   if(!k){ ov.hidden=true; ov.innerHTML=''; try{ cv.focus({preventScroll:true}); }catch(e){} return; }
@@ -4147,7 +4178,7 @@ function levelList(){
       ${save.best[i]?`<span class="best">Рекорд: ${fmt(save.best[i])} дин.</span>`:''}</li>`; }).join('')}</ol>`;
 }
 const howto=()=>`<div class="howto"><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> или стрелице: кретање</div><div><kbd>Размак</kbd> узми или спусти</div>
-  <div><kbd>E</kbd> сецкај или пери</div><div><kbd>Shift</kbd> трк</div><div><kbd>Esc</kbd> мени игре</div></div>
+  <div><kbd>E</kbd> сецкај или пери</div><div><kbd>Shift</kbd> трк</div><div><kbd>Esc</kbd> мени игре</div><div>Гејмпад: <kbd>A</kbd> узми <kbd>X</kbd> ради <kbd>B</kbd> трк <kbd>Start</kbd> мени</div></div>
   <p class="touch-note">На телефону: превуци палцем по левој страни екрана за кретање, дугмад су десно. Најбоље игра у положеном положају.</p>`;
 const toggles=(withUnlock)=>`<div class="row toggles"><button class="chip" data-act="toggle" data-k="sound" aria-pressed="${save.sound}">Звук</button><button class="chip" data-act="toggle" data-k="music" aria-pressed="${save.music}">Музика</button>${withUnlock?`<button class="ghost-unlock" data-act="unlockall" ${save.allOpen?'disabled':''}>${save.allOpen?'Све откључано':'Откључај све'}</button>`:''}</div>`;
 function mpPanel(){
@@ -4183,7 +4214,7 @@ function rewardCard(){
 const chefSig=()=>[myCh(),save.ch|0,save.stars.join(''),save.allOpen?1:0,JSON.stringify(Net.slots.map(s=>[s.slot,s.ch])),Game.reward?Game.reward.ch:''].join(';');
 const BUILD={
   menu:()=>{ const solo=Game.mode!=='mp';
-    return `<div class="sheet"><div class="cloth"></div><div class="sheet-body"><div class="langsel"><div class="seg" role="group" aria-label="Језик / Language"><button data-act="lang" data-l="sr" lang="sr" aria-pressed="${LANG==='sr'}">Српски</button><button data-act="lang" data-l="en" lang="en" aria-pressed="${LANG==='en'}">English</button></div></div><h1 class="logo">Прегорело</h1><p class="tagline">Кафанска кухиња, гладни гости и до четири кувара.</p><div class="kilim"></div>
+    return `<div class="sheet"><div class="cloth"></div><div class="sheet-body"><div class="langsel"><div class="seg" role="group" aria-label="Језик / Language"><button data-act="lang" data-l="sr" lang="sr" aria-pressed="${LANG==='sr'}">Српски</button><button data-act="lang" data-l="en" lang="en" aria-pressed="${LANG==='en'}">English</button></div></div><h1 class="logo">Прегорело</h1><p class="tagline">Кафанска кухиња, гладни гости и до четири кувара.</p>${NOKB&&!pad.on?'<p class="touch-tip" role="note">🎮 Најбоље се игра на уређају са тастатуром или уз гејмпад.</p>':''}<div class="kilim"></div>
     <div class="seg" role="group" aria-label="Начин игре"><button data-act="mode" data-m="solo" aria-pressed="${solo}">Сам</button><button data-act="mode" data-m="mp" aria-pressed="${!solo}">Са друштвом</button></div>
     ${chefPicker()}${solo?levelList():mpPanel()}${howto()}${toggles(true)}</div></div>`; },
   lobby:()=>{ const host=Game.role==='host', link=inviteLink();
@@ -4278,7 +4309,7 @@ let last=performance.now();
 function frame(t){
   const dt=Math.min(.05,Math.max(0,(t-last)/1000)); last=t;
   try{
-    updateFx(dt);
+    pollPad(dt); updateFx(dt);
     if(Game.role==='client') clientUpdate(dt); else hostUpdate(dt);
     buildDisplay(dt); sceneUpdate(dt); ambient(dt); render(dt);
     if(Net.chan) netTick(dt);

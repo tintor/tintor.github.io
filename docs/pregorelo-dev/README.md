@@ -110,6 +110,7 @@ That key is visible to anyone who opens the page, so restrict it in your Metered
 ## Playing
 
 - **Solo:** open the page and pick a level.
+- **Controls:** keyboard, touch, or a gamepad. On a gamepad, the left stick or d-pad moves, **A** grabs, **X** works (chop, wash, stir, flip), **B** or **RB** dashes, and **Start** opens the game menu. In menus, the d-pad moves between buttons and **A** presses one. Phones and tablets show a note that the game plays best with a keyboard or controller.
 - **Multiplayer:** the host creates a game and shares the invite link, which looks like `…/pregorelo/#igra=abc123`. Friends open the link, or paste it into the join field. Up to 4 players. The host's browser runs the game, so if the host leaves, the game ends for everyone.
 - **Language:** Serbian by default. The **Српски / English** switch at the top of the main menu changes it, and the browser remembers the choice. In English, Serbian dish names stay in parentheses after the English name, e.g. *Cabbage rolls (Sarma)*. In multiplayer, each player sees the game in their own language.
 
