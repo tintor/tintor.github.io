@@ -339,7 +339,7 @@ const CHARS=[
   {name:'Евро Тетка', full:'Тетка из Беча', tag:'#c8944a', skin:'#f0c29a', shirt:'#f4e4d0', vest:'#c8944a', sleeve:'#c8944a', trim:'#d9a21b', apron:null, hat:'perm', hatC:'#e8c070', hair:'#e8c070', blush:true, leopard:true, chain:true, earrings:true, shadesUp:true, lips:true, noBelt:true},
   {name:'Пандур', full:'Интервентни пандур', tag:'#2c4a6e', skin:'#e6b088', shirt:'#2c3c52', vest:'#1e2a3a', sleeve:'#2c3c52', trim:'#141c28', apron:'#e8ecf0', hat:'riot', hatC:'#1e2a3a', hair:'#2b1a10', stache:true},
   {name:'Трубач', full:'Трубач', tag:'#b3122e', skin:'#efc19a', shirt:'#f5f0e6', vest:'#a3121c', trim:'#e0b23a', apron:'#f5efe2', hat:'sajkaca', hatC:'#24211f', hair:'#1f1a17', stache:true, money:3, trumpetBack:true},
-  {name:'Председник', full:'Председник кућног савета', tag:'#6f6a58', skin:'#efc19a', shirt:'#f2eee2', vest:'#7a7563', sleeve:'#7a7563', trim:'#8a2a2a', apron:'#f2ece0', hat:'bald', hatC:'#9a9a9a', hair:'#a8a8a8', stache:true, glasses:true, tie:'#8a2a2a'},
+  {name:'Председник Станара', full:'Председник кућног савета', tag:'#6f6a58', skin:'#efc19a', shirt:'#f2eee2', vest:'#7a7563', sleeve:'#7a7563', trim:'#8a2a2a', apron:'#f2ece0', hat:'bald', hatC:'#9a9a9a', hair:'#a8a8a8', stache:true, glasses:true, tie:'#8a2a2a'},
   {name:'Спасилац', full:'Спасилац са Аде', tag:'#e8202b', skin:'#dc9a66', shirt:'#dc9a66', vest:'#dc9a66', sleeve:'#dc9a66', trim:'#dc9a66', apron:null, hat:'swoop', hatC:'#e8b850', hair:'#e8b850', shorts:'#e8202b', muscles:true, noBelt:true, bulk:1.12},
   {name:'Деда Мраз', full:'Деда Мраз', tag:'#c8102e', skin:'#f0c29a', shirt:'#c8102e', vest:'#c8102e', sleeve:'#c8102e', trim:'#ffffff', apron:'#ffffff', hat:'santa', hatC:'#c8102e', hair:'#f4f4f4', stache:true, beard:true, longBeard:true, redNose:true}
 ];
@@ -396,7 +396,7 @@ const EN={
   'Ново: пића се хладе! Кувано вино и чај послужи док се пуше — хладно пиће кошта упола. Кестене прво зарежи на дасци, па их испеци у тигању. Пази да вино не прокува!':'New: drinks get cold! Serve the mulled wine and toddy while they’re steaming — a cold drink pays half. Score the chestnuts on the board first, then roast them in the pan. Don’t let the wine boil over!',
   // кувари
   'Мића':'Mića','Стана':'Stana','Бата':'Bata','Мара':'Mara','Евро Тетка':'Euro Auntie','Тетка из Беча':'Auntie from Vienna','Пандур':'Cop',
-  'Интервентни пандур':'Riot cop','Трубач':'Trumpeter','Председник':'Chairman','Председник кућног савета':'Residents’ council chairman',
+  'Интервентни пандур':'Riot cop','Трубач':'Trumpeter','Председник Станара':'Residents’ Chairman','Председник кућног савета':'Residents’ council chairman',
   'Спасилац':'Lifeguard','Спасилац са Аде':'Ada lifeguard','Деда Мраз':'Deda Mraz',
   '★★★ у кафани':'★★★ in the kafana','★★★ у пекари':'★★★ in the bakery','★★★ на свадби':'★★★ at the wedding','★★★ на зимници':'★★★ at the preserves',
   '★★★ на Ади':'★★★ on Ada','★★★ на дочеку':'★★★ on New Year’s Eve',
@@ -1227,7 +1227,7 @@ function simGrab(p){
         p.hold=it; t.item=null; if(t.kind==='roaster'&&it.s==='G') it.h=1; sndA(p,'pick'); return; }
       if(h&&h.k==='i'&&!it){ if(C.ok(h)){ t.item=h; p.hold=null; ev('s','sizzle',-1); return; } deny(p,t,C.no(h)); return; }
       if(h&&h.k==='p'&&it){ if(it.s!=='G'&&it.s!=='B'){ say(p,t,it.s==='F'?'Окрени је (E)!':'Још се пече…'); return; } if(addToPlate(p,h,it,t)) t.item=null; return; }
-      if(h&&it){ deny(p,t,C.busy); return; }
+      if(h&&it){ deny(p,t,it.s==='B'?'Загорело! Баци у канту.':C.busy); return; }
       if(h) deny(p,t,C.no(h));
       return;
     }
@@ -1994,6 +1994,7 @@ function ambient(dt){
   for(const row of V.grid) for(const t of row){
     if(t.kind==='grill'&&t.item&&t.item.k==='i'&&t.item.t==='me'){ const it=t.item, warn=it.s==='G'&&GRILL_BURN-it.b<3.5;
       if(warn) warnTick(t.x+','+t.y,dt); if(Math.random()<dt*(it.s==='B'?7:warn?5:2.5)) smoke(t,warn||it.s==='B'); }
+    if((t.kind==='roaster'||t.kind==='pan'||t.kind==='griddle')&&t.item&&t.item.k==='i'&&t.item.s==='B'&&Math.random()<dt*6) smoke(t,true);
     const v=t.v||(t.kind==='oven'&&t.item&&t.item.k==='t'?t.item:null);
     if(v&&(t.kind!=='oven'||true)&&v.ph!=='i'){ const warn=v.ph==='d'&&BURN_T[v.kind]-v.burn<4;
       if(warn) warnTick(t.x+','+t.y,dt); if(Math.random()<dt*(v.ph==='b'?6:3)) smoke(t,warn||v.ph==='b'); }
@@ -2594,7 +2595,13 @@ function drawTileDyn(t){
     case 'pan': { const it=t.item, gl=.4+.2*Math.sin(G_anim*5+t.x); const g=ctx.createRadialGradient(cx,cy,s*.04,cx,cy,s*.42); g.addColorStop(0,`rgba(255,120,30,${gl})`); g.addColorStop(1,'rgba(255,60,0,0)'); ctx.fillStyle=g; ctx.fillRect(x,y,s,h);
       circ(ctx,cx,cy,s*.32); ctx.fillStyle='#2a2a2c'; ctx.fill(); ctx.strokeStyle='#55585c'; ctx.lineWidth=lw; ctx.stroke(); ctx.fillStyle='#111'; for(let i=0;i<9;i++){ const a=i/9*Math.PI*2; circ(ctx,cx+Math.cos(a)*s*.18,cy+Math.sin(a)*s*.18,s*.02); ctx.fill(); }
       rr(ctx,cx+s*.28,cy-s*.04,s*.24,s*.08,s*.03); ctx.fillStyle='#4a3020'; ctx.fill(); if(it) drawItemAt(ctx,it,cx,cy,s*.56); break; }
-    case 'griddle': { const it=t.item; if(it&&it.t==='te'){ const col=it.s==='R'?`rgba(250,236,200,${.6+.4*it.n})`:it.s==='F'?'#f6e2b0':it.s==='H'?'#ecc078':it.s==='G'?'#e0a24a':'#2a1a10';
+    case 'griddle': { const it=t.item;
+      if(it&&it.t==='te'&&it.s==='B'){ const gl=.45+.25*Math.sin(G_anim*6+t.x), g=ctx.createRadialGradient(cx,cy,s*.1,cx,cy,s*.48); g.addColorStop(0,`rgba(255,70,20,${gl})`); g.addColorStop(1,'rgba(255,40,0,0)'); ctx.fillStyle=g; ctx.fillRect(x,y,s,h);
+        circ(ctx,cx,cy,s*.32); ctx.fillStyle=rg(ctx,cx,cy,s*.32,'#5a3a24','#1a0e06'); ctx.fill(); ctx.strokeStyle='#d8cbb4'; ctx.lineWidth=Math.max(1.5,s*.035); ctx.stroke();
+        ctx.strokeStyle='rgba(216,203,180,.55)'; ctx.lineWidth=Math.max(1,s*.018); ctx.beginPath(); for(let k=0;k<4;k++){ const a=k*1.6+.4; ctx.moveTo(cx+Math.cos(a)*s*.05,cy+Math.sin(a)*s*.05); ctx.lineTo(cx+Math.cos(a+.3)*s*.24,cy+Math.sin(a+.3)*s*.24); } ctx.stroke();
+        ctx.fillStyle=`rgba(255,${120+60*Math.sin(G_anim*9)|0},30,.95)`; for(let k=0;k<5;k++){ circ(ctx,cx+(hash(k,t.x+7)-.5)*s*.4,cy+(hash(t.y+3,k)-.5)*s*.4,s*.03); ctx.fill(); }
+        break; }
+      if(it&&it.t==='te'){ const col=it.s==='R'?`rgba(250,236,200,${.6+.4*it.n})`:it.s==='F'?'#f6e2b0':it.s==='H'?'#ecc078':it.s==='G'?'#e0a24a':'#2a1a10';
         circ(ctx,cx,cy,s*.3); ctx.fillStyle=col; ctx.fill(); ctx.strokeStyle='rgba(120,70,20,.35)'; ctx.lineWidth=1; ctx.stroke();
         if(it.s==='F'||it.s==='R'){ ctx.fillStyle='rgba(200,170,110,.6)'; for(let k=0;k<7;k++){ circ(ctx,cx+(hash(k,t.x)-.5)*s*.4,cy+(hash(t.y,k)-.5)*s*.4,s*.018*(it.s==='F'?1.4:.8)); ctx.fill(); } }
         if(it.s==='G'||it.s==='H'){ ctx.strokeStyle='rgba(150,80,20,.35)'; ctx.lineWidth=1.2; for(let k=0;k<3;k++){ ctx.beginPath(); ctx.arc(cx,cy,s*(.08+k*.07),0,Math.PI*2); ctx.stroke(); } } } break; }
@@ -2618,6 +2625,9 @@ function badge(x,y,n){ const r=Math.max(7,ts*.13); circ(ctx,x,y,r); fs(ctx,'#b51
 function bar(x,y,w,h,f,col){ rr(ctx,x,y,w,h,h/2); ctx.fillStyle='rgba(20,12,6,.8)'; ctx.fill(); if(f>0){ rr(ctx,x+1.5,y+1.5,Math.max(h-3,(w-3)*Math.min(1,f)),h-3,(h-3)/2); ctx.fillStyle=col; ctx.fill(); } }
 function warnIcon(cx,y){ const a=.55+.45*Math.sin(G_anim*14), r=Math.max(8,ts*.17); ctx.globalAlpha=a; circ(ctx,cx,y,r); fs(ctx,'#e0261f','#fff',Math.max(1.5,r*.18));
   ctx.fillStyle='#fff'; ctx.font=`900 ${Math.round(r*1.4)}px Rubik, system-ui, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('!',cx,y+r*.08); ctx.globalAlpha=1; }
+function trashIcon(cx,y){ const r=Math.max(9,ts*.19)*(1+.1*Math.sin(G_anim*10)); circ(ctx,cx,y,r); fs(ctx,'#e0261f','#fff',Math.max(1.5,r*.16));
+  ctx.fillStyle='#fff'; rr(ctx,cx-r*.36,y-r*.22,r*.72,r*.68,r*.08); ctx.fill(); rr(ctx,cx-r*.48,y-r*.42,r*.96,r*.14,r*.05); ctx.fill(); rr(ctx,cx-r*.14,y-r*.54,r*.28,r*.14,r*.05); ctx.fill();
+  ctx.fillStyle='#e0261f'; for(let k=-1;k<=1;k++) ctx.fillRect(cx+k*r*.2-r*.04,y-r*.12,r*.08,r*.48); }
 function checkIcon(cx,y){ const r=Math.max(7,ts*.14); circ(ctx,cx,y,r); fs(ctx,'#2e9b4f','#fff',Math.max(1.5,r*.18));
   ctx.strokeStyle='#fff'; ctx.lineWidth=Math.max(1.6,r*.28); ctx.beginPath(); ctx.moveTo(cx-r*.45,y); ctx.lineTo(cx-r*.1,y+r*.35); ctx.lineTo(cx+r*.45,y-r*.35); ctx.stroke(); }
 function vesselStatus(v,cx,y,bx,by,bw,bh){
@@ -2636,6 +2646,7 @@ function drawStatus(){
     if((t.kind==='counter'||t.kind==='board')&&it&&it.k==='t'&&it.ph==='i'&&it.c.length&&vesselDish('tray',it.c,V.L)) checkIcon(x+s*.85,y+s*.12);
     if(t.kind==='sink'&&t.prog>0) bar(bx,by,bw,bh,t.prog,'#5fb0e8');
     if((t.kind==='roaster'||t.kind==='pan')&&it&&it.k==='i'){ const C=COOKERS[t.kind]; if(it.s===C.from) bar(bx,by,bw,bh,it.n,'#f2a93b'); else if(it.s==='G'){ if(C.burn-it.b<3.5) warnIcon(cx,y-s*.12); else if(it.b<2.5) checkIcon(cx,y-s*.1); } }
+    if((t.kind==='grill'||t.kind==='roaster'||t.kind==='pan'||t.kind==='griddle')&&it&&it.k==='i'&&it.s==='B'){ trashIcon(cx,y-s*.14); continue; }
     if(t.kind==='griddle'&&it&&it.t==='te'){ if(it.s==='R') bar(bx,by,bw,bh,it.n,'#f2d13b'); else if(it.s==='F') flipIcon(cx,y-s*.14,1-(it.fw||0)/GRID_FLIP); else if(it.s==='H') bar(bx,by,bw,bh,it.n,'#f2a93b'); else if(it.s==='G'){ if(GRID_BURN-it.b<3) warnIcon(cx,y-s*.12); else if(it.b<2) checkIcon(cx,y-s*.1); } }
     if(t.kind==='kazan'){ vesselStatus(t.v,cx,y,bx,by,bw,bh); if(t.v.ph==='c'){ const st=t.v.stir===undefined?1:t.v.stir; bar(bx,by+bh+2,bw,bh*.75,st,st<.3?'#e85050':'#5fb0e8'); if(st<.3) warnIcon(x+s*.9,y+s*.05); } }
     if(t.kind==='board'&&it&&it.k==='i'&&it.s==='G'&&it.n>0&&ING[it.t].peel) bar(bx,by,bw,bh,it.n,it.h>0?'#e8604a':'#8aa0b8');
