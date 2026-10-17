@@ -318,7 +318,7 @@ const LEVELS=[
     cars:[{path:[[11.5,7.5],[7.5,7.5],[7.5,9.9]],at:.42,speed:1.3}],
     map:['#WW##p#p#o#g##','#............X','D............X','B...###..###.#','B............Z','#............Z','#...###..###.#','R..@.........#','##u#k#v.#X####']},
   { name:'Палачинке на Ади', theme:'ada', tune:'kolo2',
-    desc:'Летњи дан на Ади. Купачи, деца, скијаши на води и ролери — сви хоће палачинке.',
+    desc:'Летњи дан на Ади. Купачи, деца, скијаши на води, вејкбордери, бициклисти и ролери — сви хоће палачинке.',
     novo:'Ново: палачинкара. Сипај тесто, па кад се појави ↻ окрени палачинку (E) — ако закасниш, загори! Пази на галебове: краду палачинке оставене на пулту.',
     time:180, recipes:['palkrem','paldzem','palslana'], interval:15, maxOrders:5, patience:75, plates:4, trays:0, dirty:false, plate:'paper',
     stars:[800,2000,3300], crates:{c:'ck',d:'dz',o:'or',s:'su',k:'kc',t:'te'}, gulls:true, storm:true,
@@ -334,8 +334,8 @@ const LEVELS=[
 const CHARS=[
   {name:'Мића', tag:'#c8202b', skin:'#f0c29a', shirt:'#f8f4ea', vest:'#2a2522', trim:'#c8202b', apron:'#efe7d6', hat:'sajkaca', hatC:'#5d5844', hair:'#2b1a10', stache:true},
   {name:'Стана', tag:'#2f6fb5', skin:'#f3c8a4', shirt:'#fbf7ef', vest:'#2f5f9e', trim:'#f0c040', apron:'#ffffff', hat:'marama', hatC:'#c8202b', hair:'#cfc6b8', blush:true},
-  {name:'Бата', tag:'#2e8b4a', skin:'#e6b088', shirt:'#f3ece0', vest:'#6b4226', trim:'#d9a21b', apron:'#f2ece0', hat:'subara', hatC:'#221c18', hair:'#221c18', stache:true, beard:true},
-  {name:'Мара', tag:'#d9a21b', skin:'#f4cfae', shirt:'#fffaf2', vest:'#7a1630', trim:'#f0c040', apron:'#ffffff', hat:'venac', hatC:'#e85a7a', hair:'#7a4a22', blush:true, braids:true},
+  {name:'Бошко', tag:'#2e8b4a', skin:'#e6b088', shirt:'#f3ece0', vest:'#6b4226', trim:'#d9a21b', apron:'#f2ece0', hat:'subara', hatC:'#221c18', hair:'#221c18', stache:true, beard:true},
+  {name:'Марија', tag:'#d9a21b', skin:'#f4cfae', shirt:'#fffaf2', vest:'#7a1630', trim:'#f0c040', apron:'#ffffff', hat:'venac', hatC:'#e85a7a', hair:'#7a4a22', blush:true, braids:true},
   {name:'Евро Тетка', full:'Тетка из Беча', tag:'#c8944a', skin:'#f0c29a', shirt:'#f4e4d0', vest:'#c8944a', sleeve:'#c8944a', trim:'#d9a21b', apron:null, hat:'perm', hatC:'#e8c070', hair:'#e8c070', blush:true, leopard:true, chain:true, earrings:true, shadesUp:true, lips:true, noBelt:true},
   {name:'Пандур', full:'Интервентни пандур', tag:'#2c4a6e', skin:'#e6b088', shirt:'#2c3c52', vest:'#1e2a3a', sleeve:'#2c3c52', trim:'#141c28', apron:'#e8ecf0', hat:'riot', hatC:'#1e2a3a', hair:'#2b1a10', stache:true},
   {name:'Трубач', full:'Трубач', tag:'#b3122e', skin:'#efc19a', shirt:'#f5f0e6', vest:'#a3121c', trim:'#e0b23a', apron:'#f5efe2', hat:'sajkaca', hatC:'#24211f', hair:'#1f1a17', stache:true, money:3, trumpetBack:true},
@@ -389,13 +389,13 @@ const EN={
   'Цела зграда прави ајвар на паркингу. Паприке се пеку у бубњу, љуште док су вреле, а казан мора стално да се меша.':'The whole building is making ajvar in the parking lot. Peppers roast in the drum and get peeled while hot, and the kettle must be stirred all the time.',
   'Ново: бубањ за паприке, љуштење и казан. Испечене паприке ољушти на дасци (E) док су вруће — кад се охладе, иде споро. Казан мешај (E) док се кува, иначе загори! Јела се служе у теглама.':'New: the pepper drum, peeling and the kettle. Peel roasted peppers on the board (E) while they’re hot — once they cool, it’s slow going. Stir the kettle (E) while it cooks, or it burns! Dishes are served in jars.',
   'Палачинке на Ади':'Crêpes on Ada',
-  'Летњи дан на Ади. Купачи, деца, скијаши на води и ролери — сви хоће палачинке.':'A summer day on Ada, Belgrade’s river island. Swimmers, kids, water skiers and rollerbladers — everyone wants crêpes.',
+  'Летњи дан на Ади. Купачи, деца, скијаши на води, вејкбордери, бициклисти и ролери — сви хоће палачинке.':'A summer day on Ada, Belgrade’s river island. Swimmers, kids, water skiers, wakeboarders, cyclists and rollerbladers — everyone wants crêpes.',
   'Ново: палачинкара. Сипај тесто, па кад се појави ↻ окрени палачинку (E) — ако закасниш, загори! Пази на галебове: краду палачинке оставене на пулту.':'New: the crêpe griddle. Pour the batter, and when ↻ appears, flip the crêpe (E) — too late and it burns! Watch out for seagulls: they steal crêpes left on the counter.',
   'Дочек на тргу':'New Year’s Eve on the Square',
   'Новогодишња ноћ на тргу. Кувано вино, шумадијски чај и печени кестени — све до поноћи!':'New Year’s Eve on the town square. Mulled wine, hot brandy toddy and roasted chestnuts — all the way to midnight!',
   'Ново: пића се хладе! Кувано вино и чај послужи док се пуше — хладно пиће кошта упола. Кестене прво зарежи на дасци, па их испеци у тигању. Пази да вино не прокува!':'New: drinks get cold! Serve the mulled wine and toddy while they’re steaming — a cold drink pays half. Score the chestnuts on the board first, then roast them in the pan. Don’t let the wine boil over!',
   // кувари
-  'Мића':'Mića','Стана':'Stana','Бата':'Bata','Мара':'Mara','Евро Тетка':'Euro Auntie','Тетка из Беча':'Auntie from Vienna','Пандур':'Cop',
+  'Мића':'Mića','Стана':'Stana','Бошко':'Boshko','Марија':'Marija','Евро Тетка':'Euro Auntie','Тетка из Беча':'Auntie from Vienna','Пандур':'Cop',
   'Интервентни пандур':'Riot cop','Трубач':'Trumpeter','Председник Станара':'Residents’ Chairman','Председник кућног савета':'Residents’ council chairman',
   'Спасилац':'Lifeguard','Спасилац са Аде':'Ada lifeguard','Деда Мраз':'Deda Mraz',
   '★★★ у кафани':'★★★ in the kafana','★★★ у пекари':'★★★ in the bakery','★★★ на свадби':'★★★ at the wedding','★★★ на зимници':'★★★ at the preserves',
@@ -520,6 +520,8 @@ const EN={
   'Ово иде у сторије!':'This is going in my stories!','Идем кући по јакну!':'Going home for a jacket!','Хо… хо… ништа.':'Ho… ho… nothing.',
   'Идем на други штанд!':'I’m going to another stand!','Хо-хо-хо! Једно кувано!':'Ho-ho-ho! One mulled wine!','Хо-хо… хик! Још једно!':'Ho-ho… hic! Another one!',
   'Где су ми јелени?!':'Where are my reindeer?!','Вејкборд ме сасвим уморио!':'Wakeboarding wore me out!','Скочио сам преко рампе!':'I jumped the ramp!',
+  'Цин-цин! Једну палачинку!':'Ring-ring! One crêpe!','Обишао сам целу Аду!':'I rode all the way around Ada!','Цин-цин!':'Ring-ring!',
+  'Нисам дошао бициклом да чекам!':'I didn’t bike here to wait!','Брже, имам још један круг!':'Hurry, I’ve got another lap to ride!','Хвала! Педалирам даље!':'Thanks! Pedaling on!','Возим до Макиша!':'I’m riding off to Makiš!',
   'Колега! Шта ти радиш ту?':'Colleague! What are you doing here?','У Бечу је ватромет бољи!':'The fireworks are better in Vienna!','Ово је хладно!':'This is cold!',
   'Дим ми улази у веш!':'The smoke is getting into my laundry!','Опет ми смрди веш на паприку!':'My laundry smells of peppers again!','Затворите тај бубањ!':'Shut that drum!',
   'Један!':'One!','Два!':'Two!','Три!':'Three!','Четири!':'Four!','Пет!':'Five!','Шест!':'Six!','Седам!':'Seven!','Осам!':'Eight!','Девет!':'Nine!','Десет!':'Ten!',
@@ -1358,7 +1360,7 @@ function bakeryScript(){
 }
 function pickCt(){ const th=S.L.theme;
   if(th==='zimnica'){ if(!S.orders.some(o=>o.ct==='kss')&&(S.seq+1===2||Math.random()<.12)) return 'kss'; return pick(['kom','kom','kom','pen','bab','stu']); }
-  if(th==='ada'){ if(!S.orders.some(o=>o.ct==='mil')&&(S.seq+1===3||Math.random()<.1)) return 'mil'; return pick(['pl','pl','dete','dete','sk','rol','spa','sk']); }
+  if(th==='ada'){ const intro={1:'sk',2:'bic',4:'wb',5:'rol'}[S.seq+1]; if(intro) return intro; if(!S.orders.some(o=>o.ct==='mil')&&(S.seq+1===3||Math.random()<.1)) return 'mil'; return pick(['pl','pl','dete','dete','sk','wb','rol','bic','spa']); }
   if(th==='docek'){ if(S.seq+1===3&&!S.orders.some(o=>o.ct==='drh')) return 'drh'; if(S.seq+1===2||Math.random()<.14) return 'dm'; if(S.seq+1===4||(!S.orders.some(o=>o.ct==='bec')&&Math.random()<.08)) return 'bec'; return pick(['irv','dsp','sne','nao','sel','drh','irv','sne','nao','sel','drh','pen']); } if(th==='kafana'){ if(S.orders.some(o=>o.ct==='bec')) return 'g'; if(S.seq+1===3) return 'bec'; return Math.random()<.13?'bec':'g'; } if(th==='salas') return 'w';
   if(!S.bake) S.bake=bakeryScript();
   const B=S.bake, idx=S.seq+1;
@@ -2665,7 +2667,11 @@ function drawChar(c,px,py,s,fx,fy,walk,st,o){
   const lw=Math.max(1,s*.028), line='rgba(40,20,8,.62)', sw=Math.sin(walk), back=fy<-.35, nx=-fy, ny=fx;
   let bob=o.sit?0:Math.abs(sw)*s*.035; if(o.duck) py+=s*.13*o.duck;
   c.fillStyle='rgba(0,0,0,.22)'; ell(c,px,py+s*.25,s*.31,s*.11); c.fill();
+  if(o.under) o.under(c,{px,py,s,fx,fy});
   if(!o.sit) for(const sg of [-1,1]){ const step=sw*sg*s*.08, fxp=px+nx*sg*s*.11+fx*step, fyp=py+s*.2+ny*sg*s*.03+fy*step*.5;
+    if(st.blades){ rr(c,fxp-s*.1,fyp+s*.05,s*.2,s*.035,s*.014); c.fillStyle='#3a3a3a'; c.fill();
+      for(let k=-1;k<=1;k++){ circ(c,fxp+k*s*.068,fyp+s*.1,s*.037); fs(c,'#ffd34d','#3a3a3a',Math.max(1,s*.014)); circ(c,fxp+k*s*.068,fyp+s*.1,s*.012); c.fillStyle='#3a3a3a'; c.fill(); }
+      rr(c,fxp-s*.075,fyp-s*.07,s*.15,s*.14,s*.04); fs(c,st.blades,line,lw); c.fillStyle='rgba(0,0,0,.35)'; c.fillRect(fxp-s*.07,fyp-s*.035,s*.14,s*.02); continue; }
     ell(c,fxp,fyp,s*.075,s*.052); fs(c,'#6b4426',line,lw);
     if(!back){ c.strokeStyle='#3a2414'; c.lineWidth=Math.max(1,s*.015); c.beginPath(); c.moveTo(fxp-s*.035,fyp-s*.01); c.lineTo(fxp+s*.035,fyp-s*.01); c.stroke(); } }
   const by=py-s*.05-bob+(o.sit?s*.05:0), hx0=px+fx*s*.36, hy0=by-s*.05+fy*s*.2;
@@ -2874,6 +2880,11 @@ function hatDraw(c,st,px,hy,s,back,fx,fy,lw,o){
     ell(c,px,hy-s*.02,s*.25,s*.07); fs(c,'#d9a417',line,lw);
     ell(c,px,hy-s*.09,s*.21,s*.15); fs(c,rg(c,px,hy-s*.09,s*.21,'#ffe680',st.hatC),line,lw);
     c.strokeStyle='rgba(120,80,0,.5)'; c.lineWidth=lw; c.beginPath(); c.moveTo(px,hy-s*.23); c.lineTo(px,hy+s*.04); c.stroke();
+  } else if(st.hat==='bike'){
+    if(!back){ c.strokeStyle='#202020'; c.lineWidth=Math.max(1,s*.014); c.beginPath(); c.moveTo(px-s*.17,hy-s*.06); c.lineTo(px-s*.1,hy+s*.15); c.lineTo(px+s*.1,hy+s*.15); c.lineTo(px+s*.17,hy-s*.06); c.stroke(); }
+    ell(c,px,hy-s*.11,s*.215,s*.14); fs(c,rg(c,px,hy-s*.14,s*.215,'#ffffff',st.hatC),line,lw);
+    c.fillStyle='#202020'; for(const k of [-1,0,1]){ rr(c,px+k*s*.085-s*.022,hy-s*.21+Math.abs(k)*s*.025,s*.044,s*.11,s*.02); c.fill(); }
+    if(!back){ ell(c,px+fx*s*.05,hy-s*.02,s*.15,s*.035); c.fill(); }
   } else if(st.hat==='riot'){
     ell(c,px,hy-s*.03,s*.24,s*.21); fs(c,rg(c,px,hy-s*.05,s*.24,'#4a5a76',st.hatC),'#0e1420',lw);
     if(!back){
@@ -2887,7 +2898,7 @@ function hatDraw(c,st,px,hy,s,back,fx,fy,lw,o){
 function portrait(c,size,ch,dim){ const st=CHARS[ch]; c.save(); if(dim) c.globalAlpha=.3; drawChar(c,size/2,size*.7,size*.98,0,1,0,st,{}); c.restore(); }
 
 /* ======================= СЦЕНА ВАН КУХИЊЕ ======================= */
-const CTS=['g','pen','rad','stu','bab','tax','fa','fb','pro','pol','w','diz','pop','bec','kom','kss','pl','dete','sk','rol','mil','spa','dm','irv','dsp','sne','nao','sel','drh'];
+const CTS=['g','pen','rad','stu','bab','tax','fa','fb','pro','pol','w','diz','pop','bec','kom','kss','pl','dete','sk','rol','mil','spa','dm','irv','dsp','sne','nao','sel','drh','wb','bic'];
 const PRO_SIGNS=['ХОЋУ БУРЕК СА СИРОМ','ДОЛЕ ХЛАДНА ПРОЈА','ЈОГУРТ ЗА СВЕ!'];
 const SING=['♪ Ај, ја-ја-ја! ♪','♪ Ој, ој, ој! ♪','♪ Ла-ла-ла-ла! ♪','♪ Ајде, ајде! ♪'];
 const SCOLD=['Јеси ли нормалан?!','Ма немој, бре!','Спусти то одмах!'];
@@ -3696,7 +3707,7 @@ function drawScene(){
 }
 /* ---- свадбена кухиња: кобасице и сланина висе са плафона; високи ударају главом ---- */
 const HANG={key:'',list:[],prev:new Map(),bonk:new Map(),t:0};
-const TALL=new Set([0,2,5,6]); // Мића (шајкача), Бата (шубара), Пандур (шлем), Трубач (шајкача)
+const TALL=new Set([0,2,5,6]); // Мића (шајкача), Бошко (шубара), Пандур (шлем), Трубач (шајкача)
 function hangSpots(){
   if(!V||!V.grid||!V.L||V.L.theme!=='salas') return [];
   const key=V.li+'|'+V.grid.length+'|'+V.grid[0].length; if(HANG.key===key) return HANG.list;
@@ -3751,7 +3762,7 @@ const KFX=[];
 (function(){
   const _look=lookFor;
   lookFor=function(id,ct){
-    const NEW=['kom','kss','pl','dete','sk','rol','mil','spa','dm','irv','dsp','sne','nao','sel','drh'];
+    const NEW=['kom','kss','pl','dete','sk','wb','bic','rol','mil','spa','dm','irv','dsp','sne','nao','sel','drh'];
     if(!NEW.includes(ct)){ const st=_look(id,ct); if(ct==='bec'&&V&&V.L&&V.L.theme==='docek') st.fur=true; return st; }
     const st=_look(id,'g'), r=k=>hash(id*7+k,31+k), fem=r(8)<.45;
     switch(ct){
@@ -3759,8 +3770,9 @@ const KFX=[];
       case 'kss': Object.assign(st,{shirt:'#f2eee2',vest:'#6f6a58',sleeve:'#6f6a58',trim:'#8a2a2a',hat:'bald',hair:'#a8a8a8',stache:true,beard:false,glasses:true,tie:'#8a2a2a',blush:false}); break;
       case 'pl': Object.assign(st,{shirt:st.skin,vest:st.skin,sleeve:st.skin,trim:st.skin,noBelt:true,towel:pick(['#2f8fd8','#e85a7a','#f2c230','#3aa655'],r(1)),hair:pick(['#2b1a10','#3a2a1a','#7a4a22'],r(2)),hat:fem?'bun':'hair',stache:false,beard:false}); break;
       case 'dete': Object.assign(st,{shirt:pick(['#ffd34d','#7fc4e8','#f28aa0','#9be36e'],r(1)),vest:pick(['#2f5f9e','#c8202b','#3a7a3a','#e87a1a'],r(2)),trim:'#ffffff',hat:r(3)<.5?'hair':'bun',stache:false,beard:false,blush:true,ring:r(4)<.6?pick(['#ff8a1a','#ff4a6a','#2ad0a0'],r(5)):null}); break;
-      case 'sk': Object.assign(st,{shirt:'#15181f',vest:'#15181f',sleeve:'#15181f',trim:pick(['#28d0ff','#b6ff2a','#ff4ab0'],r(1)),noBelt:true,hair:'#2b1a10',hat:fem?'bun':'hair',stache:false,gear:r(2)<.5?'skis':'board',gearC:pick(['#ff6a1a','#2ad0ff','#f2c230','#e8202b'],r(3))}); break;
-      case 'rol': Object.assign(st,{shirt:pick(['#b6ff2a','#ff4ab0','#28d0ff'],r(1)),vest:'#202020',trim:'#ffffff',hat:'helmet',hatC:pick(['#ff4ab0','#28d0ff','#f2c230'],r(2)),shades:true,stache:false}); break;
+      case 'sk': case 'wb': Object.assign(st,{shirt:'#15181f',vest:'#15181f',sleeve:'#15181f',trim:pick(['#28d0ff','#b6ff2a','#ff4ab0'],r(1)),noBelt:true,hair:'#2b1a10',hat:fem?'bun':'hair',stache:false,gear:ct==='sk'?'skis':'board',gearC:pick(['#ff6a1a','#2ad0ff','#f2c230','#e8202b'],r(3))}); break;
+      case 'rol': Object.assign(st,{shirt:pick(['#b6ff2a','#ff4ab0','#28d0ff'],r(1)),vest:'#202020',trim:'#ffffff',hat:'helmet',hatC:pick(['#ff4ab0','#28d0ff','#f2c230'],r(2)),shades:true,stache:false,blades:pick(['#f4f4f4','#28d0ff','#ff4ab0','#b6ff2a'],r(3))}); break;
+      case 'bic': { const j=pick(['#f2c230','#e8202b','#2f8fd8','#3aa655','#ff7a1a'],r(1)); Object.assign(st,{shirt:j,vest:j,sleeve:j,trim:'#ffffff',noBelt:true,hat:'bike',hatC:pick(['#ffffff','#e8202b','#28d0ff','#b6ff2a'],r(2)),gearC:pick(['#c8202b','#2a7fd0','#2e9a4a','#f2f2f2','#202020'],r(3))}); break; }
       case 'mil': Object.assign(st,{shirt:'#3a5288',vest:'#1e2f5a',sleeve:'#3a5288',trim:'#c9a227',hat:'cap',hatC:'#1e2f5a',stache:true,beard:false,blush:false}); break;
       case 'spa': { const tan=pick(['#dc9a66','#c88a58','#e6a878'],r(1)); Object.assign(st,{skin:tan,shirt:tan,vest:tan,sleeve:tan,trim:tan,hat:'swoop',hair:pick(['#e8b850','#c88a3a','#3a2a1a'],r(2)),shorts:'#e8202b',muscles:true,noBelt:true,bulk:1.12,stache:false,beard:false,blush:false}); break; }
       case 'sne': Object.assign(st,{skin:'#f6f8fb',shirt:'#ffffff',vest:'#f2f5fa',sleeve:'#ffffff',trim:'#f2f5fa',hat:'tophat',carrot:true,coal:true,scarf:['#c8202b','#ffffff'],stache:false,beard:false,blush:false,noBelt:true,bulk:1.12}); break;
@@ -3775,21 +3787,20 @@ const KFX=[];
   };
   const LINES={
     arrive:{kom:['Комшо, има ли ајвара?','Ја сам донео тегле!','Само да не загори као лане!'],kss:['Једну теглу за кућни савет!'],pl:['Једну палачинку, мокар сам!','Брзо, вода је хладна!'],
-      dete:['Ја хоћу палачинку!','Мама је рекла да могу!'],sk:['После скијања — палачинка!','Пет кругова на жичари!'],rol:['Брзо, у пролазу сам!'],mil:['Добар дан. Палачинку, молим.'],
+      dete:['Ја хоћу палачинку!','Мама је рекла да могу!'],sk:['После скијања — палачинка!','Пет кругова на жичари!'],wb:['Вејкборд ме сасвим уморио!','Скочио сам преко рампе!'],rol:['Брзо, у пролазу сам!'],bic:['Цин-цин! Једну палачинку!','Обишао сам целу Аду!'],mil:['Добар дан. Палачинку, молим.'],
       spa:['Прво мишићи, па палачинка!','Ко ће да спасава без палачинке?'],sne:['Једно кувано, да се мало отопим!','Није ми хладно, ја сам Снешко!'],nao:['Срећна двадесет седма!','ТУУУУ!'],sel:['Селфи са јелком!','Слика за Инстаграм!'],drh:['Брррр! Требало је да понесем јакну!','Хаљина је лепа, ал’ хладно!'],irv:['Једно кувано за јелена!','Срећна Нова!'],dsp:['Види моју прскалицу!']},
     imp:{kom:['Комшо, ајде!','Смрзох се овде!','Идем по своје тегле!'],kss:['Ово ћу изнети на састанку станара!','Записујем!','Кућни савет ће о овоме одлучити!'],
-      pl:['Цури ми вода из ушију…','Сунце пече!','Идем у воду па се враћам!'],dete:['Мамааа!','Кад ће палачинка?!','Ја ћу да плачем!'],sk:['Жичара ме чека!','Брже, бре!','Ово је спорије од жичаре!'],
+      pl:['Цури ми вода из ушију…','Сунце пече!','Идем у воду па се враћам!'],dete:['Мамааа!','Кад ће палачинка?!','Ја ћу да плачем!'],sk:['Жичара ме чека!','Брже, бре!','Ово је спорије од жичаре!'],wb:['Жичара ме чека!','Брже, бре!','Ово је спорије од жичаре!'],bic:['Цин-цин!','Нисам дошао бициклом да чекам!','Брже, имам још један круг!'],
       rol:['Ај, ај, ај!','Кочим, кочим!','Не могу да стојим у месту!'],mil:['Ово ћу записати.','Где је то, колега?','Морам у патролу!'],spa:['Тииии!','Неко се дави, а ја чекам!','Хитно!'],
       dm:['Хо… хо… кад?!','Деда Мраз нема цело вече!','Јелени ми се смрзавају!'],sne:['Почињем да се топим…','Шаргарепа ми се смрзла!','Брже, бре, у Снешка!'],nao:['Хоћу у 2027. сит!','Туу… туу…','Још мало па Нова!'],sel:['Батерија ми је на три посто!','Само још један селфи…','Лајкујте ово!'],drh:['Не осећам прсте!','Брррр…','Цвокоћем!'],irv:['Рогови ми се леде!','Мууу… то јест, брже!','Поноћ се ближи!'],dsp:['Прскалица ми се гаси!','Хоћу кестене!','Мамааа!']},
-    served:{kom:['Е, свака част, комшо!','Ко код моје баке!'],kss:['Ово иде у записник.'],pl:['Мљац! Идем у воду!'],dete:['Јееее!'],sk:['Право на жичару!'],rol:['Хвала, летим!'],
+    served:{kom:['Е, свака част, комшо!','Ко код моје баке!'],kss:['Ово иде у записник.'],pl:['Мљац! Идем у воду!'],dete:['Јееее!'],sk:['Право на жичару!'],wb:['Право на жичару!'],rol:['Хвала, летим!'],bic:['Хвала! Педалирам даље!'],
       mil:['Хвала, колега.'],spa:['Хвала, лепотице!'],sne:['Ааах, топлије!'],nao:['ТУУУУУ!'],sel:['Сликам кувано вино!'],drh:['Ох, топло!'],dm:['Хо-хо-хо!'],irv:['Срећна Нова!'],dsp:['Јееее!']},
-    expired:{kom:'Идем ја код комшинице.',kss:'Видећемо се на састанку станара!',pl:'Идем у воду гладан.',dete:'Ааааа!',sk:'Жичара не чека!',rol:'Ћао!',mil:'Ово ће ићи у записник.',
+    expired:{kom:'Идем ја код комшинице.',kss:'Видећемо се на састанку станара!',pl:'Идем у воду гладан.',dete:'Ааааа!',sk:'Жичара не чека!',wb:'Жичара не чека!',rol:'Ћао!',bic:'Возим до Макиша!',mil:'Ово ће ићи у записник.',
       spa:'Идем да спасавам гладан.',sne:'Отопићу се од муке.',nao:'Дочекаћу је гладан!',sel:'Ово иде у сторије!',drh:'Идем кући по јакну!',dm:'Хо… хо… ништа.',irv:'Идем на други штанд!',dsp:'Мамааа!'}
   };
   Object.assign(IMPATIENT,LINES.imp);
   const _arrive=arrive; arrive=function(g){ _arrive(g); const th=V&&V.L&&V.L.theme;
     if(g.ct==='dm'){ STAND.dmVisits=(STAND.dmVisits||0)+1; const v=STAND.dmVisits; bubble(g,v===1?'Хо-хо-хо! Једно кувано!':v===2?'Хо-хо… хик! Још једно!':'Где су ми јелени?!',2.4); g.drunk=Math.min(3,v); return; }
-    if(g.ct==='sk'){ bubble(g,pick(g.look.gear==='skis'?['После скијања — палачинка!','Пет кругова на жичари!']:['Вејкборд ме сасвим уморио!','Скочио сам преко рампе!']),2.2); return; }
     if(g.ct==='mil'&&(V.players||[]).some(p=>(p.ch|0)===5)){ bubble(g,'Колега! Шта ти радиш ту?',2.4); return; }
     if(g.ct==='bec'&&th==='docek'){ bubble(g,'У Бечу је ватромет бољи!',2.4); return; }
     const L=LINES.arrive[g.ct]; if(L) bubble(g,pick(L),2.2); };
@@ -3966,6 +3977,14 @@ function propSkis(c,i,L){ const s=i.s, sd=(i.fx||0)>=-.2?1:-1; c.save(); c.trans
     fs(c,lg(c,-s*.032,0,s*.032,0,L.gearC,'#1a1a1a'),'#0a0a0a',1); c.fillStyle='#ffffff'; c.fillRect(-s*.008,-s*.4,s*.016,s*.82);
     rr(c,-s*.045,-s*.02,s*.09,s*.12,s*.02); c.fillStyle='#222'; c.fill(); c.restore(); }
   c.restore(); }
+function propBike(c,i,L){ const s=i.s, sd=(i.fx||0)>=-.2?1:-1, R=s*.17, rx=-s*.36, fx=s*.36; c.save(); c.translate(i.px,i.py+s*.08); c.scale(sd,1); c.lineCap='round'; c.lineJoin='round';
+  for(const x of [rx,fx]){ c.strokeStyle='rgba(200,204,208,.85)'; c.lineWidth=Math.max(.8,s*.008); c.beginPath(); for(let k=0;k<6;k++){ const a=k*Math.PI/6, dx=Math.cos(a)*R*.8, dy=Math.sin(a)*R*.8; c.moveTo(x+dx,dy); c.lineTo(x-dx,-dy); } c.stroke();
+    circ(c,x,0,R); c.strokeStyle='#1e1e1e'; c.lineWidth=s*.045; c.stroke(); circ(c,x,0,R*.8); c.strokeStyle='#c8ccd0'; c.lineWidth=Math.max(1,s*.014); c.stroke(); circ(c,x,0,s*.022); c.fillStyle='#777'; c.fill(); }
+  const bx=-s*.03, byy=s*.02, sx=-s*.14, sy=-s*.27, hx=s*.27, hy=-s*.29;
+  c.strokeStyle=L.gearC; c.lineWidth=s*.045; c.beginPath(); c.moveTo(rx,0); c.lineTo(bx,byy); c.lineTo(hx,hy); c.lineTo(sx,sy); c.lineTo(rx,0); c.moveTo(bx,byy); c.lineTo(sx,sy); c.moveTo(hx,hy); c.lineTo(fx,0); c.stroke();
+  c.strokeStyle='rgba(0,0,0,.35)'; c.lineWidth=Math.max(1,s*.012); c.stroke();
+  c.strokeStyle='#3a3a3a'; c.lineWidth=s*.03; c.beginPath(); c.moveTo(sx,sy); c.lineTo(sx-s*.02,sy-s*.07); c.moveTo(hx,hy); c.lineTo(hx-s*.01,hy-s*.1); c.lineTo(hx-s*.09,hy-s*.12); c.stroke();
+  ell(c,sx-s*.03,sy-s*.08,s*.08,s*.025); c.fillStyle='#1e1e1e'; c.fill(); circ(c,bx,byy,s*.045); fs(c,'#9a9ea2','#3a3a3a',1); c.restore(); }
 function standProps(g,o){
   if(g.ct==='dete'||g.ct==='dsp') o.scale=.72;
   if(g.state==='wait'&&(g.ct==='drh'||g.danceT>0)){ const dancing=g.ct==='drh'?(g.jacket||((g.pc||0)%7)<4):true;
@@ -3979,7 +3998,9 @@ function standProps(g,o){
       else { ell(c,mx+sd*L,my-s*.02,s*.03,s*.045); c.fillStyle='#2f8fd8'; c.fill(); } }; }
   if(g.ct==='sel'&&g.state==='wait'&&!o.prop){ o.pose='up'; o.prop=(c,i)=>{ const [hx,hy]=i.hands[1], s=i.s; rr(c,hx-s*.045,hy-s*.16,s*.09,s*.15,s*.02); fs(c,'#1a1a1a','#555',1); c.fillStyle='#5a8ac8'; c.fillRect(hx-s*.035,hy-s*.15,s*.07,s*.12);
       if(g.flashT>0){ const k=g.flashT; c.fillStyle=`rgba(255,255,240,${Math.min(1,k*2)})`; circ(c,hx,hy-s*.1,s*(.12+.2*(1-k))); c.fill(); } }; }
-  if(g.ct==='sk'&&!o.prop){ const L=g.look; o.prop=(c,i)=>L.gear==='skis'?propSkis(c,i,L):propWakeboard(c,i,L); }
+  if((g.ct==='sk'||g.ct==='wb')&&!o.prop){ const L=g.look; o.prop=(c,i)=>L.gear==='skis'?propSkis(c,i,L):propWakeboard(c,i,L); }
+  if(g.ct==='bic') o.under=(c,i)=>propBike(c,i,g.look);
+  if(g.ct==='rol'&&g.state==='wait') o.jx=(o.jx||0)+Math.sin(G_anim*2.4+g.id)*SCN.sc*.07;
   if(g.state==='out') return;
   if(g.ct==='kss'&&!o.prop){ o.prop=(c,i)=>{ const [hx,hy]=i.hands[1], s=i.s; rr(c,hx-s*.08,hy-s*.12,s*.16,s*.2,2); fs(c,'#c89a58','#6a4520',1); c.fillStyle='#fff'; c.fillRect(hx-s*.06,hy-s*.09,s*.12,s*.15); c.fillStyle='#888'; c.fillRect(hx-s*.03,hy-s*.13,s*.06,s*.03); c.fillStyle='rgba(40,40,40,.5)'; for(let k=0;k<3;k++) c.fillRect(hx-s*.045,hy-s*.06+k*s*.035,s*.09,s*.012); }; }
   else if(g.ct==='dsp'&&!o.prop){ o.pose='up'; o.prop=(c,i)=>{ const [hx,hy]=i.hands[1], s=i.s; c.strokeStyle='#888'; c.lineWidth=Math.max(1,s*.02); c.beginPath(); c.moveTo(hx,hy); c.lineTo(hx+s*.08,hy-s*.3); c.stroke();
