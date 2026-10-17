@@ -373,9 +373,12 @@ const CHARS=[
   {name:'Спасилац', full:'Спасилац са Аде', tag:'#e8202b', skin:'#dc9a66', shirt:'#dc9a66', vest:'#dc9a66', sleeve:'#dc9a66', trim:'#dc9a66', apron:null, hat:'swoop', hatC:'#e8b850', hair:'#e8b850', shorts:'#e8202b', muscles:true, noBelt:true, bulk:1.12},
   {name:'Деда Мраз', full:'Деда Мраз', tag:'#c8102e', skin:'#f0c29a', shirt:'#c8102e', vest:'#c8102e', sleeve:'#c8102e', trim:'#ffffff', apron:'#ffffff', hat:'santa', hatC:'#c8102e', hair:'#f4f4f4', stache:true, beard:true, longBeard:true, redNose:true},
   {name:'Регрут', full:'Регрут на одслужењу', tag:'#5a6a3a', skin:'#efc19a', shirt:'#6a7a4a', vest:'#56643a', sleeve:'#6a7a4a', trim:'#3a4a2a', apron:'#e8e4d0', hat:'army', hatC:'#56643a', hair:'#3a2a1a', blush:true, bigHelmet:true},
-  {name:'Тек брат', full:'Тек брат из стартапа', tag:'#4a6aa8', skin:'#f0c8a4', shirt:'#2a2a30', vest:'#8a9098', sleeve:'#2a2a30', trim:'#6a7078', apron:null, hat:'hair', hatC:'#222', hair:'#5a3a22', airpods:true, vr:true, noBelt:true}
+  {name:'Тек брат', full:'Тек брат из стартапа', tag:'#4a6aa8', skin:'#f0c8a4', shirt:'#2a2a30', vest:'#8a9098', sleeve:'#2a2a30', trim:'#6a7078', apron:null, hat:'hair', hatC:'#222', hair:'#5a3a22', airpods:true, vr:true, noBelt:true},
+  {name:'Ник Слотер', full:'Ник Слотер, приватни детектив', tag:'#1f6fc8', skin:'#e2a070', shirt:'#e2a070', vest:'#1f6fc8', sleeve:'#1f6fc8', trim:'#8ccaf5', apron:null, hat:'ponytail', hatC:'#16121a', hair:'#16121a', noBelt:true, hawaii:true, chestHair:true, stubble:true}
 ];
 const CHEF_REQ={4:{li:0,how:'★★★ у кафани'},5:{li:1,how:'★★★ у пекари'},6:{li:2,how:'★★★ на свадби'},7:{li:3,how:'★★★ на зимници'},8:{li:4,how:'★★★ на Ади'},9:{li:5,how:'★★★ на дочеку'},10:{li:6,how:'★★★ у касарни'},11:{li:7,how:'★★★ у „Змају“'}};
+CHEF_REQ[CHARS.length-1]={secret:'nick',how:'тајна'};
+const ADA_POSTER_COL=10; // Ada wall column the Nick Slaughter poster hangs over; Work on the empty counter below it unlocks him
 const CHEF_FOR_LEVEL={0:4,1:5,2:6,3:7,4:8,5:9,6:10,7:11};
 const SQUAD={tag:'#56643a',skin:'#efc19a',shirt:'#6a7a4a',vest:'#56643a',sleeve:'#6a7a4a',trim:'#3a4a2a',apron:null,hat:'army',hatC:'#56643a',hair:'#3a2a1a'};
 const BAND={tag:'#b3122e', skin:'#efc19a', shirt:'#f5f0e6', vest:'#a3121c', trim:'#e0b23a', hat:'sajkaca', hatC:'#24211f', hair:'#1f1a17', stache:true, band:true};
@@ -554,7 +557,7 @@ const EN={
   'Идем на други штанд!':'I’m going to another stand!','Хо-хо-хо! Једно кувано!':'Ho-ho-ho! One mulled wine!','Хо-хо… хик! Још једно!':'Ho-ho… hic! Another one!',
   'Где су ми јелени?!':'Where are my reindeer?!','Вејкборд ме сасвим уморио!':'Wakeboarding wore me out!','Скочио сам преко рампе!':'I jumped the ramp!',
   'Цин-цин! Једну палачинку!':'Ring-ring! One crêpe!','Обишао сам целу Аду!':'I rode all the way around Ada!','Цин-цин!':'Ring-ring!',
-  'Нисам дошао бициклом да чекам!':'I didn’t bike here to wait!','Брже, имам још један круг!':'Hurry, I’ve got another lap to ride!','ТРОПСКА ВРУЋИНА':'TROPICAL HEAT','НИК СЛОТЕР':'NICK SLAUGHTER','Хвала! Педалирам даље!':'Thanks! Pedaling on!','Возим до Макиша!':'I’m riding off to Makiš!',
+  'Нисам дошао бициклом да чекам!':'I didn’t bike here to wait!','Брже, имам још један круг!':'Hurry, I’ve got another lap to ride!','ТРОПСКА ВРУЋИНА':'TROPICAL HEAT','НИК СЛОТЕР':'NICK SLAUGHTER','Ник Слотер':'Nick Slaughter','Ник Слотер, приватни детектив':'Nick Slaughter, private investigator','тајна':'secret','Тајни кувар откључан: Ник Слотер!':'Secret chef unlocked: Nick Slaughter!','Ник Слотер већ кува са вама.':'Nick Slaughter is already in your kitchen.','Хвала! Педалирам даље!':'Thanks! Pedaling on!','Возим до Макиша!':'I’m riding off to Makiš!',
   'Колега! Шта ти радиш ту?':'Colleague! What are you doing here?','У Бечу је ватромет бољи!':'The fireworks are better in Vienna!','Ово је хладно!':'This is cold!',
   'Дим ми улази у веш!':'The smoke is getting into my laundry!','Опет ми смрди веш на паприку!':'My laundry smells of peppers again!','Затворите тај бубањ!':'Shut that drum!',
   'Један!':'One!','Два!':'Two!','Три!':'Three!','Четири!':'Four!','Пет!':'Five!','Шест!':'Six!','Седам!':'Seven!','Осам!':'Eight!','Девет!':'Nine!','Десет!':'Ten!',
@@ -720,7 +723,9 @@ function applyLang(){
 }
 function setLang(l){ LANG=l==='en'?'en':'sr'; save.lang=LANG; persist(); applyLang(); }
 const QTHEMES=new Set(['pekara','zimnica','ada','docek']), isQ=th=>QTHEMES.has(th);
-const chefOpen=i=>i>=0&&i<CHARS.length&&(!CHEF_REQ[i]||!!save.allOpen||(save.stars[CHEF_REQ[i].li]|0)>=3);
+const chefOpen=i=>i>=0&&i<CHARS.length&&(!CHEF_REQ[i]||!!save.allOpen||(CHEF_REQ[i].secret?!!(save.secret&&save.secret[CHEF_REQ[i].secret]):(save.stars[CHEF_REQ[i].li]|0)>=3));
+function unlockSecret(k){ const i=CHARS.findIndex((c,j)=>CHEF_REQ[j]&&CHEF_REQ[j].secret===k); if(i<0) return; const had=chefOpen(i); save.secret=Object.assign({},save.secret,{[k]:1}); persist();
+  if(had){ FX.toast={text:tr('Ник Слотер већ кува са вама.'),t:2.4}; return; } FX.toast={text:tr('Тајни кувар откључан: Ник Слотер!'),t:3.6}; sfx('unlock'); uiDirty(); }
 const levelOpen=i=>UNLOCK_ALL||!!save.allOpen||i===0||(save.stars[i-1]|0)>=1;
 const myPrefCh=()=>{ const i=save.ch|0; return chefOpen(i)?i:0; };
 function persist(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }catch(e){} }
@@ -1546,6 +1551,7 @@ function simWork(p){
     say(p,t,it?(it.s==='G'?'Готово је — узми тањир!':'Нема шта да се окреће.'):'Стави прасе на ражањ.'); return; }
   if(t.kind==='wok'){ const v=t.v; if(v.ph==='c'&&v.need){ v.need=0; v.fw=0; v.toss=(v.toss|0)+1; ev('s','flip',-1); ev('b','flame',t.x+.5,t.y+.35); return; }
     say(p,t,v.ph==='c'?'Још није време за протресање.':v.ph==='d'?'Готово је — узми тањир!':'Нема шта да се протресе.'); return; }
+  if(S.L.theme==='ada'&&t.kind==='counter'&&t.y===0&&t.x===ADA_POSTER_COL&&!t.item&&!p.hold){ ev('u','nick',p.slot); ev('b','sparkle',t.x+.5,t.y+.4); return; }
   if(t.kind==='kazan'){ const v=t.v; if(v.ph!=='c'){ say(p,t,v.ph==='d'?(S.L.plate==='jar'?'Готово је — узми теглу!':'Готово је — узми порцију!'):'Нема шта да се меша.'); return; }
     if(p.hold){ deny(p,t,'Прво спусти то што држиш!'); return; } p.work={tile:t,kind:'stir'}; return; }
   simGrab(p);
@@ -2258,6 +2264,7 @@ function playEvent(e){
   else if(ty==='o') FX.toast={text:tr(String(e[2])),t:2.4};
   else if(ty==='p') FX.scorePulse=1;
   else if(ty==='g') sceneEvent(e);
+  else if(ty==='u'){ if(e[3]===Game.mySlot) unlockSecret(e[2]); }
 }
 const BITS={pa:'#e2392d',kr:'#5fb04f',si:'#fbf8ef',lu:'#f1e2d0',ri:'#f3d2c4',km:'#f6dd96'};
 function burst(kind,x,y){
@@ -2588,7 +2595,7 @@ function drawWall(b,theme,x,y,w,h){
     b.fillStyle='#f4f1e8'; b.font=`700 ${Math.max(5,Math.round(h*.11))}px Rubik, sans-serif`; ['крем • ораси','пекмез од кајсије','кулен • сир'].forEach((tx,k)=>b.fillText(tr(tx),mx+mw/2,y+h*(.42+k*.14)));
     const sbx=x+w*.82; b.save(); b.translate(sbx,y+h*.48); b.rotate(.25); ell(b,0,0,ts*.22,h*.4); fs(b,lg(b,-ts*.2,0,ts*.2,0,'#28d0ff','#1f6fb5'),'#14406a',1.2); b.fillStyle='#ffd34d'; b.fillRect(-ts*.02,-h*.36,ts*.04,h*.72); b.restore();
     // постер: Ник Слотер из „Тропске врућине“
-    const pw=Math.min(ts*1.05,w*.13), ph=h*.82, pcx=x+w*.68; b.save(); b.translate(pcx,y+h*.06+ph/2); b.rotate(-.04);
+    const pw=Math.min(ts*1.05,w*.13), ph=h*.82, pcx=x+(ADA_POSTER_COL+.5)*ts; b.save(); b.translate(pcx,y+h*.06+ph/2); b.rotate(-.04);
     b.fillStyle='rgba(0,0,0,.25)'; b.fillRect(-pw/2+2,-ph/2+3,pw,ph); rr(b,-pw/2,-ph/2,pw,ph,1); b.fillStyle='#fffaf0'; b.fill();
     const ix=-pw/2+pw*.06, iy=-ph/2+pw*.06, iw=pw*.88, ih=ph-pw*.12; b.save(); b.beginPath(); b.rect(ix,iy,iw,ih); b.clip();
     const sky=b.createLinearGradient(0,iy,0,iy+ih); sky.addColorStop(0,'#ffb347'); sky.addColorStop(.5,'#f2607a'); sky.addColorStop(1,'#4a2a7a'); b.fillStyle=sky; b.fillRect(ix,iy,iw,ih);
@@ -3128,6 +3135,8 @@ function drawChar(c,px,py,s,fx,fy,walk,st,o){
       c.moveTo(mx,by-s*.11); c.lineTo(mx,by+s*.09); for(const yy of [-.02,.035,.085]){ c.moveTo(mx-s*.07,by+yy*s); c.lineTo(mx+s*.07,by+yy*s); } }
     else { c.moveTo(px,by-s*.2); c.lineTo(px,by+s*.08); c.moveTo(px-s*.17,by-s*.16); c.quadraticCurveTo(px-s*.08,by-s*.04,px-s*.03,by-s*.14); c.moveTo(px+s*.17,by-s*.16); c.quadraticCurveTo(px+s*.08,by-s*.04,px+s*.03,by-s*.14); }
     c.stroke(); c.fillStyle='rgba(255,230,200,.18)'; ell(c,px-s*.1,by-s*.14,s*.06,s*.03); c.fill(); ell(c,px+s*.1,by-s*.14,s*.06,s*.03); c.fill(); }
+  if(st.hawaii){ for(let k=0;k<9;k++){ const hx=px+(hash(k,71)-.5)*s*.56, hy2=by+(hash(73,k)-.5)*s*.54; if(!back&&Math.abs(hx-px-fx*s*.03)<s*.13) continue; c.fillStyle='rgba(220,240,255,.85)'; for(let q=0;q<5;q++){ const a=q*1.2566+k; circ(c,hx+Math.cos(a)*s*.022,hy2+Math.sin(a)*s*.022,s*.017); c.fill(); } c.fillStyle='#f2c230'; circ(c,hx,hy2,s*.01); c.fill(); } }
+  if(st.chestHair&&!back){ c.strokeStyle='rgba(40,22,12,.6)'; c.lineWidth=Math.max(.7,s*.009); c.beginPath(); for(let k=0;k<16;k++){ const hx=px+fx*s*.03+(hash(k,81)-.5)*s*.18, hy2=by-s*.13+(hash(83,k)-.5)*s*.1+(k>11?s*.12:0); c.moveTo(hx,hy2); c.lineTo(hx+s*.012,hy2+s*.025); } c.stroke(); }
   if(st.coal&&!back){ c.fillStyle='#1a1a1a'; for(const yy of [-.12,-.02,.08]){ circ(c,px+fx*s*.06,by+yy*s,s*.028); c.fill(); } }
   if(st.sequins){ for(let k=0;k<16;k++){ const sx=px+(hash(k,91)-.5)*s*.52, sy=by+(hash(93,k)-.5)*s*.5, tw=.5+.5*Math.sin(G_anim*6+k*1.7); c.fillStyle=`rgba(255,250,210,${.35+.6*tw})`; circ(c,sx,sy,s*(.012+.012*tw)); c.fill(); } }
   if(st.leopard){ for(let k=0;k<13;k++){ const lx=px+(hash(k,41)-.5)*s*.52, ly=by+(hash(43,k)-.5)*s*.52; ell(c,lx,ly,s*.036,s*.027); c.fillStyle='#4a2a10'; c.fill(); ell(c,lx+s*.004,ly,s*.017,s*.012); c.fillStyle='#e6b464'; c.fill(); } }
@@ -3173,6 +3182,7 @@ function drawChar(c,px,py,s,fx,fy,walk,st,o){
   if(back&&!['marama','riot','helmet','bald','veil','buzz','beanie','army'].includes(st.hat)){ c.save(); circ(c,px,hy,s*.19); c.clip(); c.fillStyle=st.hair; c.fillRect(px-s*.2,hy-s*.2,s*.4,s*.32); c.restore(); }
   if(!back){
     const ex=fx*s*.075, ey=fy*s*.03+s*.025;
+    if(st.stubble){ c.save(); circ(c,px,hy,s*.19); c.clip(); ell(c,px+ex,hy+s*.14,s*.16,s*.09); c.fillStyle='rgba(50,44,56,.28)'; c.fill(); c.restore(); }
     if(st.beard){ c.save(); circ(c,px,hy,s*.19); c.clip(); ell(c,px+ex,hy+s*.13,s*.15,s*.1); c.fillStyle=st.hair; c.fill(); c.restore(); }
     if(st.longBeard){ c.save(); if(o.beardDrop) c.translate(0,s*.13); c.beginPath(); c.moveTo(px+ex-s*.13,hy+s*.08); c.quadraticCurveTo(px+ex-s*.12,hy+s*.36,px+ex,hy+s*.42); c.quadraticCurveTo(px+ex+s*.12,hy+s*.36,px+ex+s*.13,hy+s*.08); c.closePath(); fs(c,st.hair,'rgba(0,0,0,.3)',1);
       c.strokeStyle='rgba(255,255,255,.18)'; c.lineWidth=1; c.beginPath(); for(let k=-1;k<=1;k++){ c.moveTo(px+ex+k*s*.05,hy+s*.16); c.lineTo(px+ex+k*s*.04,hy+s*.36); } c.stroke();  c.restore(); }
@@ -3286,6 +3296,11 @@ function hatDraw(c,st,px,hy,s,back,fx,fy,lw,o){
   } else if(st.hat==='buzz'){
     c.save(); circ(c,px,hy,s*.195); c.clip(); ell(c,px,hy-s*.1+(back?s*.06:0),s*.23,back?s*.2:s*.12); c.globalAlpha=.42; c.fillStyle=st.hair; c.fill(); c.globalAlpha=1;
     c.fillStyle='rgba(0,0,0,.28)'; for(let k=0;k<18;k++){ circ(c,px+(hash(k,3)-.5)*s*.32,hy-s*.16+hash(5,k)*s*.1+(back?s*.08:0),s*.007); c.fill(); } c.restore();
+  } else if(st.hat==='ponytail'){
+    c.save(); circ(c,px,hy,s*.195); c.clip(); ell(c,px,hy-s*.1+(back?s*.06:0),s*.235,back?s*.21:s*.135); c.fillStyle=st.hair; c.fill(); c.restore();
+    c.strokeStyle='rgba(150,165,195,.55)'; c.lineWidth=Math.max(1,s*.014); c.lineCap='round'; c.beginPath(); for(const k of [-1,0,1]){ c.moveTo(px+k*s*.07-fx*s*.04,hy-s*.15-Math.abs(k)*s*.01); c.quadraticCurveTo(px+k*s*.05,hy-s*.21,px+k*s*.03-fx*s*.12,hy-s*.19+(back?s*.06:0)); } c.stroke();
+    const tx=back?px:Math.abs(fx)>.3?px-fx*s*.215:px+s*.215, ty=hy+(back?s*.1:s*.1), tl=back?s*.3:s*.2; c.strokeStyle=st.hair; c.lineWidth=s*.07; c.beginPath(); c.moveTo(tx,ty); c.quadraticCurveTo(tx-fx*s*.05,ty+tl*.6,tx-fx*s*.03,ty+tl); c.stroke();
+    c.lineWidth=s*.035; c.strokeStyle='#3a3a3a'; c.beginPath(); c.moveTo(tx-s*.03,ty+s*.02); c.lineTo(tx+s*.03,ty+s*.02); c.stroke();
   } else if(st.hat==='hair'||st.hat==='bun'){
     c.save(); circ(c,px,hy,s*.195); c.clip(); ell(c,px,hy-s*.1+(back?s*.06:0),s*.23,back?s*.2:s*.13); c.fillStyle=st.hair; c.fill(); c.restore();
     if(st.hat==='bun'){ circ(c,px-fx*s*.1,hy-s*.16-(back?0:fy*s*.03),s*.075); fs(c,st.hair,line,lw); }
@@ -5067,7 +5082,7 @@ function rewardCard(){
     <div class="rw-title">Нови кувар откључан!</div><canvas class="rw-pic" data-icon="char:${r.ch}" data-size="96"></canvas><div class="rw-name">${esc(c.full||c.name)}</div>
     ${picked?'<div class="rw-note">Сад куваш ти!</div>':`<button class="btn small" data-act="chef" data-ch="${r.ch}">Изабери</button>`}</div></div>`;
 }
-const chefSig=()=>[myCh(),save.ch|0,save.stars.join(''),save.allOpen?1:0,JSON.stringify(Net.slots.map(s=>[s.slot,s.ch])),Game.reward?Game.reward.ch:''].join(';');
+const chefSig=()=>[myCh(),save.ch|0,save.stars.join(''),save.allOpen?1:0,JSON.stringify(save.secret||{}),JSON.stringify(Net.slots.map(s=>[s.slot,s.ch])),Game.reward?Game.reward.ch:''].join(';');
 const BUILD={
   menu:()=>{ const solo=Game.mode!=='mp';
     return `<div class="sheet"><div class="cloth"></div><div class="sheet-body"><div class="langsel"><div class="seg" role="group" aria-label="Језик / Language"><button data-act="lang" data-l="sr" lang="sr" aria-pressed="${LANG==='sr'}">Српски</button><button data-act="lang" data-l="en" lang="en" aria-pressed="${LANG==='en'}">English</button></div></div><h1 class="logo">Прегорело</h1><p class="tagline">Кафанска кухиња, гладни гости и до четири кувара.</p>${NOKB&&!pad.on?'<p class="touch-tip" role="note">🎮 Најбоље се игра на уређају са тастатуром или уз гејмпад.</p>':''}<div class="kilim"></div>
