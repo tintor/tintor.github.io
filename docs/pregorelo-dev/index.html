@@ -521,7 +521,7 @@ const EN={
   'Идем на други штанд!':'I’m going to another stand!','Хо-хо-хо! Једно кувано!':'Ho-ho-ho! One mulled wine!','Хо-хо… хик! Још једно!':'Ho-ho… hic! Another one!',
   'Где су ми јелени?!':'Where are my reindeer?!','Вејкборд ме сасвим уморио!':'Wakeboarding wore me out!','Скочио сам преко рампе!':'I jumped the ramp!',
   'Цин-цин! Једну палачинку!':'Ring-ring! One crêpe!','Обишао сам целу Аду!':'I rode all the way around Ada!','Цин-цин!':'Ring-ring!',
-  'Нисам дошао бициклом да чекам!':'I didn’t bike here to wait!','Брже, имам још један круг!':'Hurry, I’ve got another lap to ride!','Хвала! Педалирам даље!':'Thanks! Pedaling on!','Возим до Макиша!':'I’m riding off to Makiš!',
+  'Нисам дошао бициклом да чекам!':'I didn’t bike here to wait!','Брже, имам још један круг!':'Hurry, I’ve got another lap to ride!','ТРОПСКА ВРУЋИНА':'TROPICAL HEAT','НИК СЛОТЕР':'NICK SLOTTER','Хвала! Педалирам даље!':'Thanks! Pedaling on!','Возим до Макиша!':'I’m riding off to Makiš!',
   'Колега! Шта ти радиш ту?':'Colleague! What are you doing here?','У Бечу је ватромет бољи!':'The fireworks are better in Vienna!','Ово је хладно!':'This is cold!',
   'Дим ми улази у веш!':'The smoke is getting into my laundry!','Опет ми смрди веш на паприку!':'My laundry smells of peppers again!','Затворите тај бубањ!':'Shut that drum!',
   'Један!':'One!','Два!':'Two!','Три!':'Three!','Четири!':'Four!','Пет!':'Five!','Шест!':'Six!','Седам!':'Seven!','Осам!':'Eight!','Девет!':'Nine!','Десет!':'Ten!',
@@ -2298,6 +2298,20 @@ function drawWall(b,theme,x,y,w,h){
     const mx=x+w*.36, mw=Math.min(ts*2.6,w*.3); rr(b,mx,y+h*.1,mw,h*.7,4); fs(b,'#1f2a33','#c9a227',1.5); b.fillStyle='#ffd34d'; b.font=`900 ${Math.max(6,Math.round(h*.16))}px Rubik, sans-serif`; b.textAlign='center'; b.textBaseline='middle'; b.fillText(tr('ПАЛАЧИНКЕ'),mx+mw/2,y+h*.25);
     b.fillStyle='#f4f1e8'; b.font=`700 ${Math.max(5,Math.round(h*.11))}px Rubik, sans-serif`; ['крем • ораси','џем','шунка • сир'].forEach((tx,k)=>b.fillText(tr(tx),mx+mw/2,y+h*(.42+k*.14)));
     const sbx=x+w*.82; b.save(); b.translate(sbx,y+h*.48); b.rotate(.25); ell(b,0,0,ts*.22,h*.4); fs(b,lg(b,-ts*.2,0,ts*.2,0,'#28d0ff','#1f6fb5'),'#14406a',1.2); b.fillStyle='#ffd34d'; b.fillRect(-ts*.02,-h*.36,ts*.04,h*.72); b.restore();
+    // постер: Ник Слотер из „Тропске врућине“
+    const pw=Math.min(ts*1.05,w*.13), ph=h*.82, pcx=x+w*.68; b.save(); b.translate(pcx,y+h*.06+ph/2); b.rotate(-.04);
+    b.fillStyle='rgba(0,0,0,.25)'; b.fillRect(-pw/2+2,-ph/2+3,pw,ph); rr(b,-pw/2,-ph/2,pw,ph,1); b.fillStyle='#fffaf0'; b.fill();
+    const ix=-pw/2+pw*.06, iy=-ph/2+pw*.06, iw=pw*.88, ih=ph-pw*.12; b.save(); b.beginPath(); b.rect(ix,iy,iw,ih); b.clip();
+    const sky=b.createLinearGradient(0,iy,0,iy+ih); sky.addColorStop(0,'#ffb347'); sky.addColorStop(.5,'#f2607a'); sky.addColorStop(1,'#4a2a7a'); b.fillStyle=sky; b.fillRect(ix,iy,iw,ih);
+    circ(b,ix+iw*.25,iy+ih*.5,iw*.2); b.fillStyle='rgba(255,230,140,.85)'; b.fill();
+    const tx=ix+iw*.86, ty=iy+ih*.82; b.strokeStyle='#2a1430'; b.lineCap='round'; b.lineWidth=Math.max(1.5,iw*.05); b.beginPath(); b.moveTo(tx,ty); b.quadraticCurveTo(tx-iw*.02,iy+ih*.45,tx-iw*.1,iy+ih*.28); b.stroke();
+    b.fillStyle='#2a1430'; for(let k=0;k<5;k++){ const a=-Math.PI*.95+k*Math.PI*.42, fx2=tx-iw*.1, fy2=iy+ih*.28; b.beginPath(); b.moveTo(fx2,fy2); b.quadraticCurveTo(fx2+Math.cos(a-.25)*iw*.16,fy2+Math.sin(a-.25)*iw*.16,fx2+Math.cos(a)*iw*.24,fy2+Math.sin(a)*iw*.24+iw*.05); b.quadraticCurveTo(fx2+Math.cos(a+.2)*iw*.12,fy2+Math.sin(a+.2)*iw*.12,fx2,fy2); b.fill(); }
+    const nick=Object.assign({},lookFor(4242,'g'),{skin:'#e2a87c',hair:'#2b1a10',hat:'hair',shirt:'#f4f1e8',vest:'#2a9d8f',sleeve:'#2a9d8f',trim:'#f2c230',noBelt:true,shades:true,stache:false,beard:false,blush:false,glasses:false});
+    const ns=Math.min(iw*.75,ih*.85); drawChar(b,ix+iw*.42,iy+ih*.52+ns*.35,ns,0,1,0,nick,{flat:true});
+    b.fillStyle='#ffffff'; b.font=`900 ${Math.max(5,Math.round(ih*.13))}px Rubik, sans-serif`; b.textAlign='center'; b.textBaseline='middle'; fitFont(b,tr('ТРОПСКА ВРУЋИНА'),900,Math.max(5,Math.round(ih*.13)),iw*.92);
+    b.lineWidth=2; b.strokeStyle='#8a1a3a'; b.lineJoin='round'; b.strokeText(tr('ТРОПСКА ВРУЋИНА'),0,iy+ih*.11); b.fillStyle='#ffe066'; b.fillText(tr('ТРОПСКА ВРУЋИНА'),0,iy+ih*.11);
+    b.fillStyle='rgba(20,10,30,.78)'; b.fillRect(ix,iy+ih*.8,iw,ih*.2); fitFont(b,tr('НИК СЛОТЕР'),900,Math.max(5,Math.round(ih*.14)),iw*.9); b.fillStyle='#ffffff'; b.fillText(tr('НИК СЛОТЕР'),0,iy+ih*.905);
+    b.restore(); b.fillStyle='rgba(240,235,200,.75)'; for(const sx of [-1,1]) b.fillRect(sx*pw*.32-pw*.1,-ph/2-2,pw*.2,4); b.restore();
   } else if(theme==='docek'){
     for(let i=0;i*ts*.4<w;i++){ b.fillStyle=i%2?'#6a3a1e':'#5a2f18'; b.fillRect(x+i*ts*.4,y,ts*.4+1,h); } b.fillStyle='rgba(0,0,0,.18)'; b.fillRect(x,y+h*.86,w,h*.14);
     b.fillStyle='#f6f8ff'; b.beginPath(); b.moveTo(x,y); for(let i=0;i<=24;i++) b.lineTo(x+w*i/24,y+h*.1+(i%2?h*.06:0)); b.lineTo(x+w,y); b.closePath(); b.fill();
