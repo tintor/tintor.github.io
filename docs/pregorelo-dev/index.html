@@ -60,6 +60,9 @@ h3{font-size:17px; margin:0 0 4px; font-weight:800}
 .seg button{font:inherit; font-weight:800; font-size:15px; border:0; background:transparent; color:var(--muted); padding:8px 18px; border-radius:999px; cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--red); color:#fff}
 .seg button:focus-visible{outline:3px solid var(--brass); outline-offset:1px}
+.langsel{display:flex; justify-content:flex-end; margin:-8px -6px 2px 0}
+.langsel .seg{margin:0}
+.langsel .seg button{font-size:13px; padding:5px 12px}
 
 .menu-list{list-style:none; margin:0; padding:0; border-top:2px solid var(--ink)}
 .menu-item{display:grid; grid-template-columns:auto 1fr auto; gap:4px 14px; align-items:baseline; padding:13px 0; border-bottom:1px solid var(--rule)}
@@ -347,6 +350,271 @@ const SAVE_KEY='kuvaj-bre-v2';
 let save={stars:[0,0,0,0,0,0], best:[0,0,0,0,0,0], sound:true, music:true, mode:'solo', name:''};
 try{ const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); if(s&&Array.isArray(s.stars)) save=Object.assign(save,s); }catch(e){}
 while(save.stars.length<LEVELS.length) save.stars.push(0); while(save.best.length<LEVELS.length) save.best.push(0);
+/* ======================= ЈЕЗИК ======================= */
+/* Изворни текст је српски; tr() га преводи на енглески при приказу.
+   Домаћин шаље поруке на српском, па сваки играч види свој језик. */
+let LANG=save.lang==='en'?'en':'sr';
+const EN={
+  // састојци и јела (српски назив јела остаје у загради)
+  'Парадајз':'Tomato','Краставац':'Cucumber','Сир':'Cheese','Лук':'Onion','Месо':'Meat','Лепиња':'Flatbread (Lepinja)',
+  'Кајмак':'Clotted cream (Kajmak)','Кора':'Phyllo (Kora)','Јогурт':'Yogurt','Јаја':'Eggs','Кукурузно брашно':'Cornmeal','Риба':'Fish',
+  'Алева паприка':'Ground paprika','Кисели купус':'Sauerkraut','Пиринач':'Rice','Прасетина':'Pork','Кромпир':'Potatoes',
+  'Бурек':'Meat pie (Burek)','Гибаница':'Cheese pie (Gibanica)','Проја':'Cornbread (Proja)','Рибља чорба':'Fisherman’s stew (Riblja čorba)',
+  'Сарма':'Cabbage rolls (Sarma)','Печење':'Roast pork (Pečenje)','Загорело':'Burnt',
+  'Паприка':'Peppers','Бели лук':'Garlic','Уље':'Oil','Карфиол':'Cauliflower','Сирће':'Vinegar','Тесто':'Batter','Чоколадни крем':'Chocolate spread',
+  'Џем':'Jam','Ораси':'Walnuts','Шунка':'Ham','Качкаваљ':'Kashkaval cheese (Kačkavalj)','Вино':'Wine','Цимет':'Cinnamon','Поморанџа':'Orange',
+  'Шећер':'Sugar','Ракија':'Fruit brandy (Rakija)','Кестени':'Chestnuts','Ајвар':'Roasted pepper relish (Ajvar)','Пинђур':'Pepper and tomato relish (Pinđur)',
+  'Кувано вино':'Mulled wine (Kuvano vino)','Шумадијски чај':'Hot brandy toddy (Šumadijski čaj)',
+  'Ћевапи':'Grilled kebabs (Ćevapi)','Пљескавица са кајмаком':'Burger with clotted cream (Pljeskavica sa kajmakom)','Шопска салата':'Shopska salad (Šopska salata)',
+  'Бурек са јогуртом':'Meat pie with yogurt (Burek sa jogurtom)','Проја са кајмаком':'Cornbread with clotted cream (Proja sa kajmakom)',
+  'Печење с кромпиром':'Roast pork with potatoes (Pečenje s krompirom)','Туршија':'Pickled vegetables (Turšija)',
+  'Палачинка с кремом и орасима':'Crêpe with chocolate and walnuts (Palačinka s kremom i orasima)','Палачинка с џемом':'Crêpe with jam (Palačinka s džemom)',
+  'Слана палачинка':'Savory crêpe (Slana palačinka)','Печени кестени':'Roasted chestnuts (Pečeni kesteni)',
+  'мрви':'crumble','очисти':'clean','ољушти':'peel','ренде':'grate','зарежи':'score','сецкај':'chop','пеци':'grill',
+  'у лонац':'into the pot','у котлић':'into the cauldron','у казан, мешај!':'into the kettle, stir!','тепсија у фуруну':'tray into the oven',
+  'УЉЕ':'OIL','СИРЋЕ':'VINEGAR','КРЕМ':'CHOCO','ЏЕМ':'JAM','ВИНО':'WINE','РАКИЈА':'RAKIJA','АЈВАР':'AJVAR','ПИНЂУР':'PINĐUR',
+  // нивои
+  'Кафана „Златни котлић“':'Kafana “Golden Cauldron”',
+  'Мирно вече у кафани. Роштиљ ради, гости траже ћевапе, пљескавицу и шопску.':'A quiet evening at the kafana, the Serbian tavern. The grill is on and the guests want ćevapi, pljeskavica and Shopska salad.',
+  'Узми тањир, сложи састојке на њега и однеси јело на шалтер — црвено-бели пулт горе лево. Што брже послужиш, то већи бакшиш.':'Grab a plate, put the ingredients on it and take the dish to the serving window — the red-and-white counter at the top left. The faster you serve, the bigger the tip.',
+  'Пекара „Зора“':'Zora Bakery',
+  'Пет ујутру, а ред пред пекаром. Бурек, гибаница и проја — све из фуруне.':'Five in the morning and there’s already a line outside. Burek, gibanica and proja — all straight from the oven.',
+  'Ново: тепсија и фуруна. Узми тепсију, сложи у њу састојке, па је убаци у фуруну. Кад се испече, захвати јело тањиром. Пекара је подељена зидом, пролаз је на средини.':'New: baking trays and the oven. Take a tray, put the ingredients in it, then slide it into the oven. When it’s baked, scoop the dish onto a plate. A wall splits the bakery; the passage is in the middle.',
+  'Свадба на салашу':'Wedding at the Salaš',
+  'Свадба у Војводини! Рибља чорба из котлића, сарма, печење — и трубачи усред кухиње.':'A wedding on a Vojvodina farmstead! Fisherman’s stew from the cauldron, sarma, roast pork — and a brass band in the middle of the kitchen.',
+  'Ново: котлић и лонац кувају сами чим убациш све састојке. Тањири се враћају прљави поред шалтера — опери их у судопери (E). Склањај се трубачима с пута!':'New: the cauldron and the pot cook on their own once all the ingredients are in. Plates come back dirty next to the serving window — wash them in the sink (E). Stay out of the trumpeters’ way!',
+  'Зимница у дворишту':'Winter Preserves in the Yard',
+  'Цела зграда прави ајвар на паркингу. Паприке се пеку у бубњу, љуште док су вреле, а казан мора стално да се меша.':'The whole building is making ajvar in the parking lot. Peppers roast in the drum and get peeled while hot, and the kettle must be stirred all the time.',
+  'Ново: бубањ за паприке, љуштење и казан. Испечене паприке ољушти на дасци (E) док су вруће — кад се охладе, иде споро. Казан мешај (E) док се кува, иначе загори! Јела се служе у теглама.':'New: the pepper drum, peeling and the kettle. Peel roasted peppers on the board (E) while they’re hot — once they cool, it’s slow going. Stir the kettle (E) while it cooks, or it burns! Dishes are served in jars.',
+  'Палачинке на Ади':'Crêpes on Ada',
+  'Летњи дан на Ади. Купачи, деца, скијаши на води и ролери — сви хоће палачинке.':'A summer day on Ada, Belgrade’s river island. Swimmers, kids, water skiers and rollerbladers — everyone wants crêpes.',
+  'Ново: палачинкара. Сипај тесто, па кад се појави ↻ окрени палачинку (E) — ако закасниш, загори! Пази на галебове: краду палачинке оставене на пулту.':'New: the crêpe griddle. Pour the batter, and when ↻ appears, flip the crêpe (E) — too late and it burns! Watch out for seagulls: they steal crêpes left on the counter.',
+  'Дочек на тргу':'New Year’s Eve on the Square',
+  'Новогодишња ноћ на тргу. Кувано вино, шумадијски чај и печени кестени — све до поноћи!':'New Year’s Eve on the town square. Mulled wine, hot brandy toddy and roasted chestnuts — all the way to midnight!',
+  'Ново: пића се хладе! Кувано вино и чај послужи док се пуше — хладно пиће кошта упола. Кестене прво зарежи на дасци, па их испеци у тигању. Пази да вино не прокува!':'New: drinks get cold! Serve the mulled wine and toddy while they’re steaming — a cold drink pays half. Score the chestnuts on the board first, then roast them in the pan. Don’t let the wine boil over!',
+  // кувари
+  'Мића':'Mića','Стана':'Stana','Бата':'Bata','Мара':'Mara','Евро Тетка':'Euro Auntie','Тетка из Беча':'Auntie from Vienna','Пандур':'Cop',
+  'Интервентни пандур':'Riot cop','Трубач':'Trumpeter','Председник':'Chairman','Председник кућног савета':'Residents’ council chairman',
+  'Спасилац':'Lifeguard','Спасилац са Аде':'Ada lifeguard','Деда Мраз':'Deda Mraz',
+  '★★★ у кафани':'★★★ in the kafana','★★★ у пекари':'★★★ in the bakery','★★★ на свадби':'★★★ at the wedding','★★★ на зимници':'★★★ at the preserves',
+  '★★★ на Ади':'★★★ on Ada','★★★ на дочеку':'★★★ on New Year’s Eve',
+  // поруке у кухињи
+  'Треба ти тањир!':'You need a plate!','Треба ти чаша!':'You need a cup!','Треба ти тегла!':'You need a jar!',
+  'Сервирај на тањиру!':'Serve it on a plate!','Сипај у чашу!':'Pour it into a cup!','Сипај у теглу!':'Put it in a jar!',
+  'Тањир је празан!':'The plate is empty!','Чаша је празна!':'The cup is empty!','Тегла је празна!':'The jar is empty!',
+  'Тањир је пун!':'The plate is full!','Чаша је пуна!':'The cup is full!','Тегла је пуна!':'The jar is full!',
+  'Тањири се не бацају!':'Don’t throw plates away!','Чаше се не бацају!':'Don’t throw cups away!','Тегле се не бацају!':'Don’t throw jars away!',
+  'Тањир је већ празан.':'The plate is already empty.','Чаша је већ празна.':'The cup is already empty.','Тегла је већ празна.':'The jar is already empty.',
+  'Нема чистих тањира!':'No clean plates!','Нема више чаша!':'No cups left!','Нема више тегли!':'No jars left!',
+  'Загорело! Баци у канту.':'Burnt! Throw it in the bin.','Прво измрви сир!':'Crumble the cheese first!','Прво очисти рибу!':'Clean the fish first!',
+  'Прво исецкај!':'Chop it first!','Прво испеци на роштиљу!':'Grill it first!','Прво испеци паприке у бубњу!':'Roast the peppers in the drum first!',
+  'Прво ољушти паприку (E)!':'Peel the pepper first (E)!','Сад их испеци у тигању!':'Now roast them in the pan!','Прво испеци палачинку!':'Cook the crêpe first!',
+  'То иде у лонац!':'That goes in the pot!','То иде у котлић!':'That goes in the cauldron!','То иде у тепсију!':'That goes in a tray!','То иде у казан!':'That goes in the kettle!',
+  'То не иде заједно!':'Those don’t go together!','То не иде у тепсију!':'That doesn’t go in a tray!','То не иде ту!':'That doesn’t go there!',
+  'Тепсија је пуна!':'The tray is full!','Котлић је пун!':'The cauldron is full!','Казан је пун!':'The kettle is full!','Лонац је пун!':'The pot is full!',
+  'Прво очисти тепсију!':'Clean the tray first!','Прво испразни!':'Empty it first!','Још се пече…':'Still cooking…','Још се кува…':'Still simmering…',
+  'Загорело!':'Burnt!','Још нешто фали.':'Something’s still missing.','Празно је.':'It’s empty.','Нема места!':'No room!','Руке су пуне!':'Your hands are full!',
+  'Окрени је (E)!':'Flip it (E)!','Фали још састојака.':'Still missing ingredients.','Прво стави тепсију у фуруну!':'Put a tray in the oven first!',
+  'То не иде у фуруну!':'That doesn’t go in the oven!','Фуруна је заузета!':'The oven is busy!','Стави тепсију у фуруну.':'Put a tray in the oven.',
+  'Опери прљаве тањире!':'Wash the dirty plates!','Нема слободних тепсија!':'No free trays!','Јело није готово!':'The dish isn’t finished!',
+  'Нико то није наручио!':'Nobody ordered that!','Тепсија је већ празна.':'The tray is already empty.','Тај тањир је чист.':'That plate is clean.',
+  'То не иде у судоперу!':'That doesn’t go in the sink!','Прво спусти то што држиш!':'Put down what you’re holding first!',
+  'Охладила се — споро се љушти!':'It’s cooled — slow to peel!','Прво је испеци у бубњу!':'Roast it in the drum first!','Већ је исецкано.':'Already chopped.',
+  'То се не сецка.':'That doesn’t need chopping.','Стави нешто на даску.':'Put something on the board.','Нема прљавих тањира.':'No dirty plates.',
+  'Прво сипај тесто.':'Pour the batter first.','Још није време за окретање.':'Not time to flip yet.','Већ је окренута.':'Already flipped.',
+  'Готово је — узми теглу!':'It’s ready — grab a jar!','Нема шта да се меша.':'Nothing to stir.','Охладило се! Упола цене.':'It went cold! Half price.',
+  'За цео вод!':'For the whole platoon!','Мир у пекари +100':'Peace in the bakery +100','Стигло појачање — још студената!':'Reinforcements — more students!',
+  'Стигло појачање — још полиције!':'Reinforcements — more police!','Туча навијача! Обе наруџбине су пропале.':'Fans are brawling! Both orders are lost.',
+  'То не иде на роштиљ!':'That doesn’t go on the grill!','Роштиљ је заузет!':'The grill is busy!','Ова је већ испечена!':'This one’s already roasted!',
+  'У бубањ иду само паприке!':'Only peppers go in the drum!','Бубањ је пун!':'The drum is full!','Прво зарежи кестене!':'Score the chestnuts first!',
+  'У тигањ иду кестени!':'Chestnuts go in the pan!','Тигањ је пун!':'The pan is full!','На палачинкару иде само тесто!':'Only batter goes on the griddle!',
+  'Палачинкара је заузета!':'The griddle is busy!','Прокувало!':'Boiled over!','Загорело! Мешај казан!':'Burnt! Stir the kettle!',
+  'Галеб украо палачинку!':'A seagull stole a crêpe!','Летња олуја! Сви беже под тенду!':'Summer storm! Everyone runs under the awning!',
+  'Загорело! Окрећи на време!':'Burnt! Flip it in time!','„Померите тај казан, морам да изађем!“':'“Move that kettle, I need to get my car out!”',
+  'Бип-бип!':'Beep beep!','Полако, бре!':'Easy there!','Еј, свирам ја!':'Hey, I’m playing here!','Трубач свира — бакшиш +50%!':'The trumpeter plays — tips +50%!',
+  'Трубачи свирају — бакшиш +50%!':'The trumpeters play — tips +50%!','Још 30 секунди!':'30 seconds left!','Трубачи су у кухињи!':'The trumpeters are in the kitchen!',
+  'Живели!':'Cheers!','Свака част!':'Hats off!','Алал вера!':'Well done!','Ко код маме!':'Just like mom’s!','Мљац!':'Yum!','Баш је фино!':'Really tasty!',
+  // натписи на зидовима и тезгама
+  'ВЕЧЕРАС':'TONIGHT','ДИЈАМАНТА':'DIJAMANTA','ДАНАС ЗА ПАРЕ,':'CASH TODAY,','СУТРА НА ВЕРЕСИЈУ':'CREDIT TOMORROW','ЗЗ „НАПРЕДАК“':'“NAPREDAK” CO-OP',
+  'ОКТОБАР':'OCTOBER','МАРТ':'MARCH','КУЋНИ РЕД':'HOUSE RULES','ПАЛАЧИНКЕ':'CRÊPES','крем • ораси':'choco • walnuts','џем':'jam','шунка • сир':'ham • cheese',
+  'Срећна Нова година!':'Happy New Year!','Живели младенци!':'Cheers to the newlyweds!','БУРЕК':'BUREK','дин':'din','УЖИВО':'LIVE',
+  'ВИЛА ДРАМА • УЖИВО 0-24 • ВЕЛИКА СВАЂА ЗБОГ ЧАШЕ ВОДЕ • ОН ЈЕ ЊОЈ РЕКАО, А ОНА ЊЕМУ… • ГЛАСАЈТЕ ПОРУКОМ • ':'VILLA DRAMA • LIVE 24/7 • HUGE FIGHT OVER A GLASS OF WATER • HE SAID TO HER, AND THEN SHE SAID TO HIM… • VOTE BY TEXT • ',
+  'ПЕКАРА „ЗОРА“':'ZORA BAKERY','ТРАФИКА':'KIOSK','ТРАС!':'CRASH!','БУМ!':'BOOM!','ПАФ!':'POW!','БАНГ!':'BANG!',
+  'ЗИМНИЦА • СТАНАРИ':'WINTER PRESERVES • RESIDENTS','КУВАНО ВИНО • КЕСТЕНИ':'MULLED WINE • CHESTNUTS',
+  'ХОЋУ БУРЕК СА СИРОМ':'I WANT CHEESE BUREK','ДОЛЕ ХЛАДНА ПРОЈА':'DOWN WITH COLD PROJA','ЈОГУРТ ЗА СВЕ!':'YOGURT FOR ALL!',
+  'МИРНО ЧЕКАМ РЕД':'PEACEFULLY WAITING IN LINE','И ЈА':'ME TOO',
+  'Број ':'No. ','Сто ':'Table ','д':'d','Спремни…':'Ready…','Позор…':'Set…','Крени!':'Go!','Крај смене!':'Shift’s over!','Ти':'You',
+  // гости
+  '♪ Ај, ја-ја-ја! ♪':'♪ Ay, ya-ya-ya! ♪','♪ Ој, ој, ој! ♪':'♪ Oy, oy, oy! ♪','♪ Ла-ла-ла-ла! ♪':'♪ La-la-la-la! ♪','♪ Ајде, ајде! ♪':'♪ Hajde, hajde! ♪',
+  'Јеси ли нормалан?!':'Have you lost your mind?!','Ма немој, бре!':'Oh, come on!','Спусти то одмах!':'Put that down right now!',
+  'Срамота!':'Shameful!','Е, баш вам хвала!':'Well, thanks a lot!','Идем ја код другог!':'I’m going somewhere else!',
+  'Још дуго?':'Much longer?','Где је то јело?':'Where’s my food?','Ало, кухињо?':'Hello, kitchen?',
+  'Ај’ брже мало, брате!':'A bit faster, bro!','Имам Голфа у другом реду, брате!':'My Golf is double-parked, bro!','Брате, јел’ то тесто тек месиш?':'Bro, are you only now kneading the dough?',
+  'Ајде, бре, к’о у пошти!':'Come on, it’s like the post office in here!','Брате, нисам јео од синоћ!':'Bro, I haven’t eaten since last night!',
+  'Стрпљење је врлина…':'Patience is a virtue…','Бог је свет створио за шест дана…':'God made the world in six days…','Помолићу се за вашу пећ.':'I’ll pray for your oven.',
+  'Постим ја, ал’ не довека!':'I’m fasting, but not forever!','Господе, дај им снаге…':'Lord, give them strength…',
+  'Захтевамо топао бурек!':'We demand hot burek!','Нећемо стати док не стигне бурек!':'We won’t stop until the burek arrives!','Штрајк глађу? Па већ га радим!':'A hunger strike? I’m already on one!',
+  'Пекару народу!':'The bakery to the people!','Ко не скаче, тај је сит!':'If you’re not jumping, you’re not hungry!',
+  'Централа, кашњење у пекари.':'HQ, delay at the bakery.','Ово ће ићи у записник.':'This is going in the report.','Ово је последње упозорење!':'This is the final warning!',
+  'Шаљем вод на шалтер!':'Sending a platoon to the counter!','Централа, бурек и даље није стигао.':'HQ, the burek still hasn’t arrived.',
+  'Мир Божји, децо!':'God’s peace, children!','Ево, у еврима! Нек се зна!':'Here, in euros! Let everyone see!','Документа, молим.':'Papers, please.',
+  'Имате ли ситно?':'Got any change?','Хвала, колега!':'Thanks, colleague!','Поздрав за мајсторе!':'Respect to the chefs!','Бог благословио!':'God bless!',
+  'Идем по друштво!':'I’m getting the gang!','Зовем појачање!':'Calling for backup!','Нема везе, брате.':'No worries, bro.','Опраштам вам.':'I forgive you.',
+  'Идем ја назад у Беч!':'I’m going back to Vienna!','У Бечу би ово већ стигло!':'In Vienna this would be here already!',
+  'Код нас у Бечу је јефтиније!':'Back home in Vienna it’s cheaper!','Пре је ово било пола цене!':'This used to be half the price!',
+  'За ове паре – бечка шницла!':'For this money — a Wiener schnitzel!','Добро је… ал’ скупо!':'It’s good… but pricey!',
+  'Централа, тражим појачање… гибанице.':'HQ, requesting backup… of gibanica.','Једна проја. По службеној дужности.':'One proja. On official duty.',
+  'Примљено, један са месом.':'Copy that, one with meat.','Бурек и јогурт, к’о и увек!':'Burek and yogurt, as always!','Брате, један бурек!':'Bro, one burek!',
+  'Бог вам помогао!':'God help you!','Јао, што је све поскупело!':'Oh, how prices have gone up!','Десет у пола, с луком!':'Ten in half a lepinja, with onions!',
+  'Бу-рек! Бу-рек!':'Bu-rek! Bu-rek!','Ајмо, црно-бели!':'Come on, black-and-whites!','Ајмо, црвено-бели!':'Come on, red-and-whites!',
+  'Кхм, кхм!':'Ahem, ahem!','Ово је непушачки сто!':'This is a non-smoking table!','Ко то пуши?!':'Who’s smoking?!','Не види се ништа!':'I can’t see a thing!',
+  'Па ја сам у пушачком!':'But I’m in the smoking section!','Опа!':'Opa!','Свирај, мајсторе!':'Play, maestro!',
+  'Е, у моје време…':'Back in my day…','Ово гледа цела Србија?!':'All of Serbia watches this?!','Срамота једна!':'What a disgrace!',
+  'Јао, шта ова ради!':'Oh my, what is she doing!','Јадна њена мајка…':'Her poor mother…','Немој да ми кажеш крај!':'Don’t tell me how it ends!',
+  'Ај’ пребаци на утакмицу!':'Switch to the match!','Они не раде ништа, а ја од пет!':'They do nothing, and I’ve been up since five!',
+  'Ово је горе од испитног рока.':'This is worse than exam season.','Ово ми је за семинарски.':'This is for my term paper.',
+  'Овај се возио код мене!':'This guy rode in my cab!','Ово ми у таксију причају цео дан.':'I hear this in my taxi all day.',
+  'Брате, боље од филма!':'Bro, better than a movie!','Брате, појачај то!':'Bro, turn it up!','Господе, опрости им…':'Lord, forgive them…',
+  'Ово је за покајање.':'This calls for repentance.','Доле ријалити!':'Down with reality TV!','Захтевамо документарац!':'We demand a documentary!',
+  'Ово је горе од протеста.':'This is worse than a protest.','Централа, неред на телевизији.':'HQ, disorder on television.',
+  'Мирније него на нашем стадиону.':'Calmer than at our stadium.','Опет поскупело?!':'Up again?!','Јуче је био јефтинији!':'It was cheaper yesterday!',
+  'Ово је пљачка!':'This is robbery!','Од моје пензије?!':'On my pension?!','Ооо, оле, оле!':'Ohhh, olé, olé!',
+  'Шта?! Ко пуца?!':'What?! Who’s shooting?!','Ко је то, бре?!':'Who was that?!','Јел’ стигла млада?!':'Has the bride arrived?!',
+  'Само да пробам да л’ је печено…':'Just checking if it’s done…','Још мало да пробам…':'Just one more taste…','Ово мора да се провери!':'This needs checking!',
+  'Мислим да је готово!':'I think it’s done!','Хик!':'Hic!','♪ Ја вас све волим! ♪':'♪ I love you all! ♪','Бабо, ти си ми најлепша!':'Granny, you’re the most beautiful!',
+  'Бежи, пијанице!':'Get away, you drunk!','А кад ћеш ти да се удаш?':'So when are you getting married?','А кад ћеш ти да се жениш?':'So when are you getting married?',
+  'Тетка, молим те…':'Auntie, please…','Ускоро, ускоро…':'Soon, soon…','Чим стигне моје јело!':'As soon as my food arrives!',
+  'Кум шкрт! Кум шкрт!':'Stingy best man! Stingy best man!','Ето вам, ето вам!':'There you go, there you go!','Живео куме!':'Long live the best man!',
+  'Држ’те га, то је за супу!':'Catch him, he’s for the soup!','Ееее!':'Heyyy!','Јао!':'Ouch!','Ау, глава!':'Ow, my head!','Опет кобасица!':'Sausage again!',
+  'Комшо, има ли ајвара?':'Neighbor, is there any ajvar?','Ја сам донео тегле!':'I brought the jars!','Само да не загори као лане!':'Just don’t burn it like last year!',
+  'Једну теглу за кућни савет!':'One jar for the residents’ council!','Једну палачинку, мокар сам!':'One crêpe, I’m soaking wet!','Брзо, вода је хладна!':'Quick, the water’s cold!',
+  'Ја хоћу палачинку!':'I want a crêpe!','Мама је рекла да могу!':'Mom said I could!','После скијања — палачинка!':'After skiing — a crêpe!',
+  'Пет кругова на жичари!':'Five laps on the ski cable!','Брзо, у пролазу сам!':'Quick, I’m just passing through!','Добар дан. Палачинку, молим.':'Good afternoon. A crêpe, please.',
+  'Прво мишићи, па палачинка!':'Muscles first, then a crêpe!','Ко ће да спасава без палачинке?':'Who can save lives without a crêpe?',
+  'Једно кувано, да се мало отопим!':'One mulled wine, so I can thaw out!','Није ми хладно, ја сам Снешко!':'I’m not cold, I’m a snowman!',
+  'Срећна двадесет седма!':'Happy ’27!','ТУУУУ!':'TOOOOT!','Селфи са јелком!':'Selfie with the tree!','Слика за Инстаграм!':'A pic for Instagram!',
+  'Брррр! Требало је да понесем јакну!':'Brrrr! Should’ve brought a jacket!','Хаљина је лепа, ал’ хладно!':'Nice dress, but it’s cold!',
+  'Једно кувано за јелена!':'One mulled wine for the reindeer!','Срећна Нова!':'Happy New Year!','Види моју прскалицу!':'Look at my sparkler!',
+  'Комшо, ајде!':'Come on, neighbor!','Смрзох се овде!':'I’m freezing here!','Идем по своје тегле!':'I’m going to get my own jars!',
+  'Ово ћу изнети на састанку станара!':'I’ll raise this at the residents’ meeting!','Записујем!':'I’m writing this down!',
+  'Кућни савет ће о овоме одлучити!':'The residents’ council will decide on this!','Цури ми вода из ушију…':'Water’s dripping from my ears…','Сунце пече!':'The sun is scorching!',
+  'Идем у воду па се враћам!':'Going for a swim, be right back!','Мамааа!':'Mommyyy!','Кад ће палачинка?!':'When’s the crêpe coming?!','Ја ћу да плачем!':'I’m gonna cry!',
+  'Жичара ме чека!':'The ski cable is waiting!','Брже, бре!':'Faster!','Ово је спорије од жичаре!':'This is slower than the ski cable!','Ај, ај, ај!':'Ay, ay, ay!',
+  'Кочим, кочим!':'Braking, braking!','Не могу да стојим у месту!':'I can’t stand still!','Ово ћу записати.':'I’ll make a note of this.',
+  'Где је то, колега?':'Where is it, colleague?','Морам у патролу!':'I have to go on patrol!','Тииии!':'Tweeeet!','Неко се дави, а ја чекам!':'Someone’s drowning and I’m waiting!',
+  'Хитно!':'Emergency!','Хо… хо… кад?!':'Ho… ho… when?!','Деда Мраз нема цело вече!':'Deda Mraz doesn’t have all night!','Јелени ми се смрзавају!':'My reindeer are freezing!',
+  'Почињем да се топим…':'I’m starting to melt…','Шаргарепа ми се смрзла!':'My carrot nose froze!','Брже, бре, у Снешка!':'Faster, the snowman is waiting!',
+  'Хоћу у 2027. сит!':'I want to start 2027 well fed!','Туу… туу…':'Toot… toot…','Још мало па Нова!':'New Year’s almost here!',
+  'Батерија ми је на три посто!':'My battery’s at three percent!','Само још један селфи…':'Just one more selfie…','Лајкујте ово!':'Like this!',
+  'Не осећам прсте!':'I can’t feel my fingers!','Брррр…':'Brrrr…','Цвокоћем!':'My teeth are chattering!','Рогови ми се леде!':'My antlers are freezing!',
+  'Мууу… то јест, брже!':'Mooo… I mean, faster!','Поноћ се ближи!':'Midnight’s coming!','Прскалица ми се гаси!':'My sparkler’s going out!','Хоћу кестене!':'I want chestnuts!',
+  'Е, свака част, комшо!':'Well done, neighbor!','Ко код моје баке!':'Just like my grandma’s!','Ово иде у записник.':'This goes on the record.',
+  'Мљац! Идем у воду!':'Yum! Off for a swim!','Јееее!':'Yaaay!','Право на жичару!':'Straight to the ski cable!','Хвала, летим!':'Thanks, gotta fly!',
+  'Хвала, колега.':'Thanks, colleague.','Хвала, лепотице!':'Thanks, gorgeous!','Ааах, топлије!':'Ahh, warmer!','ТУУУУУ!':'TOOOOOT!',
+  'Сликам кувано вино!':'Taking a pic of my mulled wine!','Ох, топло!':'Oh, that’s warm!','Хо-хо-хо!':'Ho-ho-ho!',
+  'Идем ја код комшинице.':'I’m going over to the neighbor’s.','Видећемо се на састанку станара!':'See you at the residents’ meeting!',
+  'Идем у воду гладан.':'Going swimming hungry.','Ааааа!':'Waaaah!','Жичара не чека!':'The ski cable won’t wait!','Ћао!':'Ciao!',
+  'Идем да спасавам гладан.':'Off to save lives on an empty stomach.','Отопићу се од муке.':'I’ll melt from despair.','Дочекаћу је гладан!':'I’ll ring it in hungry!',
+  'Ово иде у сторије!':'This is going in my stories!','Идем кући по јакну!':'Going home for a jacket!','Хо… хо… ништа.':'Ho… ho… nothing.',
+  'Идем на други штанд!':'I’m going to another stand!','Хо-хо-хо! Једно кувано!':'Ho-ho-ho! One mulled wine!','Хо-хо… хик! Још једно!':'Ho-ho… hic! Another one!',
+  'Где су ми јелени?!':'Where are my reindeer?!','Вејкборд ме сасвим уморио!':'Wakeboarding wore me out!','Скочио сам преко рампе!':'I jumped the ramp!',
+  'Колега! Шта ти радиш ту?':'Colleague! What are you doing here?','У Бечу је ватромет бољи!':'The fireworks are better in Vienna!','Ово је хладно!':'This is cold!',
+  'Дим ми улази у веш!':'The smoke is getting into my laundry!','Опет ми смрди веш на паприку!':'My laundry smells of peppers again!','Затворите тај бубањ!':'Shut that drum!',
+  'Један!':'One!','Два!':'Two!','Три!':'Three!','Четири!':'Four!','Пет!':'Five!','Шест!':'Six!','Седам!':'Seven!','Осам!':'Eight!','Девет!':'Nine!','Десет!':'Ten!',
+  'Брррр!':'Brrrr!','Ко ми је дао да глумим витеза…':'Who told me to play the gentleman…','Ко је звао снег?!':'Who ordered snow?!',
+  '♪ Дијаманта, ла-ла-ла! ♪':'♪ Dijamanta, la-la-la! ♪','♪ Ова ноћ је наша! ♪':'♪ Tonight is ours! ♪','Ајмо коло!':'Let’s dance the kolo!',
+  'Изволи моју јакну, лепотице.':'Here, take my jacket, gorgeous.','Ау, витез!':'Wow, a gentleman!','Брр… шта ми је ово требало.':'Brr… why did I do that.',
+  'Еј!':'Hey!','Ко то баца?!':'Who’s throwing that?!','Ау!':'Ow!','Сад ћеш да видиш!':'Now you’ll see!','Хахаха!':'Hahaha!',
+  'Десет! Девет! Осам!…':'Ten! Nine! Eight!…','Није још поноћ, бре!':'It’s not midnight yet!','Деда Мразе, где ми је поклон?':'Deda Mraz, where’s my present?',
+  'Хо-хо… стиже из Беча, хик!':'Ho-ho… it’s coming from Vienna, hic!','ТУУУУУУ!':'TOOOOOOT!','Ау, уво!':'Ow, my ear!',
+  'Сви кажите: сааарма!':'Everyone say: saaarma!','Сааарма!':'Saaarma!','Пст! Брада је лажна!':'Psst! The beard is fake!',
+  // екрани
+  'Прегорело':'Pregorelo','Прегорело — хаос у српској кухињи':'Pregorelo — chaos in a Serbian kitchen','Кухиња — поље за игру':'Kitchen — play area',
+  'Мени игре':'Game menu','Ради':'Work','Трк':'Dash','Узми':'Grab',
+  'Кафанска кухиња, гладни гости и до четири кувара.':'A kafana kitchen, hungry guests and up to four cooks.','Начин игре':'Game mode','Сам':'Solo','Са друштвом':'With friends',
+  'Твој кувар':'Your cook','Изабери кувара':'Choose your cook','заузет':'taken','Играј':'Play','Закључано. Освоји бар једну звездицу на претходном нивоу.':'Locked. Earn at least one star on the previous level.',
+  'или стрелице: кретање':'or arrow keys: move','Размак':'Space','узми или спусти':'pick up or put down','сецкај или пери':'chop or wash','трк':'dash','мени игре':'game menu',
+  'На телефону: превуци палцем по левој страни екрана за кретање, дугмад су десно. Најбоље игра у положеном положају.':'On a phone: drag your thumb on the left side of the screen to move; the buttons are on the right. Best played in landscape.',
+  'Звук':'Sound','Музика':'Music','Све откључано':'All unlocked','Откључај све':'Unlock all',
+  'Игра са друштвом':'Play with friends','Мрежни део игре није успео да се учита у овом прегледачу.':'Online play failed to load in this browser.',
+  'Учитавам мрежни део…':'Loading online play…','Нова игра':'New game','Направи игру':'Create game','Имаш позивницу?':'Got an invite?',
+  'Направи игру и пошаљи позивницу друштву у поруци (Вајбер, WhatsApp, Телеграм…). Ти си домаћин: бираш ниво и паузираш. До четири кувара.':'Create a game and send the invite to your friends in a message (Viber, WhatsApp, Telegram…). You’re the host: you pick the level and can pause. Up to four cooks.',
+  'Само отвори линк који ти је послао домаћин. Ако имаш копиран линк, налепи га овде.':'Just open the link the host sent you. If you copied the link, paste it here.',
+  'Налепи позивницу':'Paste the invite link','Позивница':'Invite link','Уђи':'Join',
+  'Ради само у објављеној верзији на claude.ai. Подели страницу с друштвом, свако је отвори пријављен, па један направи игру.':'Works only in the published version on claude.ai. Share the page with friends, everyone opens it while signed in, and one of you creates a game.',
+  'Повезивање са собом за игру…':'Connecting to the game room…','Неко':'Someone','Придружи се':'Join',
+  'Ти си домаћин: бираш ниво и паузираш. Добићеш линк и код за друштво. До четири кувара.':'You’re the host: you pick the level and can pause. You’ll get a link and a code for your friends. Up to four cooks.',
+  'Тренутно нема отворених игара.':'No open games right now.','Код игре':'Game code','Уђи са кодом':'Join with code',
+  'Нови кувар откључан!':'New cook unlocked!','Сад куваш ти!':'You’re cooking now!','Изабери':'Choose',
+  'Чекаоница':'Lobby','Слободно':'Free','место за кувара':'a spot for a cook','преко TURN сервера':'via TURN server','директна веза':'direct connection',
+  'повезивање…':'connecting…','преко сервера':'via server',
+  'Пошаљи позивницу друштву у поруци. Ко отвори линк, улази у твоју кухињу.':'Send the invite to your friends in a message. Whoever opens the link joins your kitchen.',
+  'Пошаљи друштву линк или код. Игра им се појављује и у менију „Са друштвом“.':'Send your friends the link or the code. The game also shows up in their “With friends” menu.',
+  'У игри си. Домаћин бира ниво.':'You’re in. The host picks the level.','Копирај':'Copy','Пошаљи':'Send',
+  'Резервни сервер за везу (TURN) је спреман.':'The backup connection server (TURN) is ready.',
+  'Резервни сервер за везу (TURN) није доступан. Игра ради, али неки играчи можда неће моћи да се повежу.':'The backup connection server (TURN) is unavailable. The game works, but some players may not be able to connect.',
+  'Твоје име':'Your name','Домаћин бира ниво…':'The host is picking a level…','Затвори игру':'Close game','Напусти игру':'Leave game',
+  'Назад':'Back','Чека се да домаћин крене…':'Waiting for the host to start…',
+  'Пауза':'Paused','Гости чекају, али време стоји.':'The guests are waiting, but time stands still.','Настави':'Resume','Почни испочетка':'Restart',
+  'Назад у чекаоницу':'Back to the lobby','Главни мени':'Main menu','Домаћин је паузирао игру.':'The host paused the game.',
+  'Газда није задовољан. Пробај поново!':'The boss isn’t happy. Try again!','Није лоше, али може брже.':'Not bad, but you can be faster.',
+  'Браво! Гости су сити и задовољни.':'Bravo! The guests are full and happy.','Свака част! Права кафанска легенда.':'Hats off! A true kafana legend.',
+  'Смена је готова!':'Shift’s over!','Испоручено јела':'Dishes served','Гостију отишло гладно':'Guests who left hungry','Бакшиш':'Tips','Нови рекорд!':'New record!',
+  'Кувар за следећу смену':'Cook for the next shift','Мени':'Menu','Поново':'Again','Следећи ниво':'Next level','Домаћин бира шта даље…':'The host is deciding what’s next…',
+  'Обавештење':'Notice','У реду':'OK','Улазак у игру':'Joining the game','Тражим домаћина…':'Looking for the host…',
+  'Тражим домаћина… Ово може да потраје неколико секунди.':'Looking for the host… This may take a few seconds.','Одустани':'Cancel',
+  'Само тренутак':'Just a moment','Ниво је у току или је кухиња пуна. Улазиш чим домаћин заврши ниво.':'A level is in progress or the kitchen is full. You’ll join as soon as the host finishes the level.',
+  'Игра тече даље док си овде. Паузу може да укључи само домаћин.':'The game keeps running while you’re here. Only the host can pause.','Назад у кухињу':'Back to the kitchen',
+  'Домаћин није пронађен. Провери да ли је игра још отворена. Ако јесте, пробај другу мрежу (на пример Wi‑Fi уместо мобилног интернета) — неке мреже не дозвољавају директну везу.':'Host not found. Check that the game is still open. If it is, try another network (for example Wi‑Fi instead of mobile data) — some networks block direct connections.',
+  'Веза са домаћином је прекинута.':'Lost connection to the host.','Домаћин је напустио игру.':'The host left the game.',
+  'Линк је копиран.':'Link copied.','Означи линк и копирај га ручно.':'Select the link and copy it manually.',
+  'То не личи на позивницу. Налепи цео линк.':'That doesn’t look like an invite. Paste the whole link.','Код има четири цифре.':'The code has four digits.',
+  'Дођи да кувамо заједно у „Прегорело“':'Come cook with me in “Pregorelo”'
+};
+/* поруке са бројем или именом у себи */
+const EN_RE=[
+  [/^(\+?)([\d.,]+) дин\.$/,(m,p,n)=>p+n+' din.'],
+  [/^Рекорд: ([\d.,]+) дин\.$/,(m,n)=>'Best: '+n+' din.'],
+  [/^Бакшиш \+(.+) € ×2$/,(m,n)=>'Tip +'+n+' € ×2'],
+  [/^Бакшиш \+(\d+)( \(музика!\))?$/,(m,n,b)=>'Tip +'+n+(b?' (music!)':'')],
+  [/^Гост је отишао! −(\d+)$/,(m,n)=>'A guest walked out! −'+n],
+  [/^(.+) више није у кухињи$/,(m,n)=>tr(n)+' left the kitchen'],
+  [/^Игра са кодом (\S+) није пронађена\.$/,(m,c)=>'Game '+c+' was not found.'],
+  [/^Улазак у игру (\S+)$/,(m,c)=>'Joining game '+c],
+  [/^Звездице: (\d) од 3$/,(m,n)=>'Stars: '+n+' of 3'],
+  [/^Ниво (\d+)$/,(m,n)=>'Level '+n],
+  [/^за (\d+) кувара$/,(m,n)=>'for '+n+' cooks'],
+  [/^(.+) отвара игру$/,(m,n)=>tr(n)+' is hosting a game'],
+  [/^Код (\S+), (\d) од 4 кувара(, ниво је у току)?$/,(m,c,n,b)=>'Code '+c+', '+n+' of 4 cooks'+(b?', level in progress':'')],
+  [/^(.+), (домаћин|кувар)$/,(m,n,r)=>tr(n)+', '+(r==='домаћин'?'host':'cook')],
+  [/^(.+), заузет$/,(m,n)=>tr(n)+', taken'],
+  [/^Сви нивои су пређени! (.+)$/,(m,v)=>'All levels cleared! '+tr(v)],
+  [/^(.+) на тањир$/,(m,n)=>tr(n)+' on the plate']
+];
+const CYR=/[\u0400-\u04FF]/;
+function tr(s){
+  if(LANG!=='en'||s==null) return s;
+  s=String(s); if(!CYR.test(s)) return s;
+  const t=EN[s]; if(t!==undefined) return t;
+  for(const [re,f] of EN_RE){ const m=s.match(re); if(m) return f(...m); }
+  return s;
+}
+/* преводи текст и натписе у HTML-у екрана после цртања */
+function trDom(root){
+  if(LANG!=='en') return;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT), ns=[]; while(w.nextNode()) ns.push(w.currentNode);
+  for(const n of ns){ const s=n.nodeValue, t=s.trim(); if(!CYR.test(t)) continue; const r=tr(t); if(r!==t) n.nodeValue=s.replace(t,()=>r); }
+  root.querySelectorAll('[aria-label],[placeholder]').forEach(el=>{ for(const a of ['aria-label','placeholder']){ const v=el.getAttribute(a); if(v&&CYR.test(v)) el.setAttribute(a,tr(v)); } });
+}
+function applyLang(){
+  document.documentElement.lang=LANG==='en'?'en':'sr-Cyrl-RS';
+  document.title=tr('Прегорело — хаос у српској кухињи');
+  cv.setAttribute('aria-label',tr('Кухиња — поље за игру'));
+  $('#pauseBtn').setAttribute('aria-label',tr('Мени игре'));
+  document.querySelectorAll('#tbtns .tb').forEach(b=>{ b.textContent=tr({work:'Ради',dash:'Трк',grab:'Узми'}[b.dataset.act]); });
+  bgKey=''; iconCache.clear(); uiForce=true; uiSig='';
+}
+function setLang(l){ LANG=l==='en'?'en':'sr'; save.lang=LANG; persist(); applyLang(); }
 const QTHEMES=new Set(['pekara','zimnica','ada','docek']), isQ=th=>QTHEMES.has(th);
 const chefOpen=i=>i>=0&&i<CHARS.length&&(!CHEF_REQ[i]||!!save.allOpen||(save.stars[CHEF_REQ[i].li]|0)>=3);
 const levelOpen=i=>UNLOCK_ALL||!!save.allOpen||i===0||(save.stars[i-1]|0)>=1;
@@ -355,7 +623,7 @@ function persist(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }
 
 /* ======================= ПОМОЋНЕ ======================= */
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const fmt=n=>String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const fmt=n=>String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,LANG==='en'?',':'.');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const now=()=>performance.now()/1000;
 function rr(c,x,y,w,h,r){ r=Math.max(0,Math.min(r,w/2,h/2)); c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
@@ -693,7 +961,7 @@ function iGarlic(c,ch){ if(ch){ c.fillStyle='#f4efe2'; for(let i=0;i<14;i++){ rr
   c.beginPath(); c.moveTo(-4,-22); c.lineTo(0,-34); c.lineTo(4,-22); c.closePath(); c.fillStyle='#e8dcc0'; c.fill(); }
 function iBottle(c,body,label,txt,cap){ rr(c,-14,-44,28,14,4); c.fillStyle=cap||'#7a5a2a'; c.fill(); rr(c,-11,-34,22,18,4); c.fillStyle=body; c.fill();
   c.beginPath(); c.moveTo(-11,-18); c.quadraticCurveTo(-22,-10,-22,4); c.lineTo(-22,40); c.quadraticCurveTo(-22,46,-16,46); c.lineTo(16,46); c.quadraticCurveTo(22,46,22,40); c.lineTo(22,4); c.quadraticCurveTo(22,-10,11,-18); c.closePath(); fs(c,body,'rgba(30,20,10,.55)',2);
-  rr(c,-18,6,36,26,3); fs(c,label,'rgba(0,0,0,.25)',1); if(txt){ c.fillStyle='#2b1a10'; c.font='900 13px Rubik, sans-serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillText(txt,0,19); }
+  rr(c,-18,6,36,26,3); fs(c,label,'rgba(0,0,0,.25)',1); if(txt){ txt=tr(txt); c.fillStyle='#2b1a10'; fitFont(c,txt,900,13,34); c.textAlign='center'; c.textBaseline='middle'; c.fillText(txt,0,19); }
   c.fillStyle='rgba(255,255,255,.35)'; rr(c,-18,-6,5,44,2); c.fill(); }
 function iCauli(c,ch){ if(!ch){ for(const [x,y] of [[-26,18],[26,18],[0,30]]){ ell(c,x,y,20,10,x/40); c.fillStyle='#4f9a3a'; c.fill(); } }
   const pts=ch?[[-18,-6],[14,-10],[0,14],[-22,18],[22,14]]:[[0,-8],[-16,0],[16,0],[-8,12],[8,12],[0,-22],[-18,-16],[18,-16]];
@@ -702,7 +970,7 @@ function iBatter(c){ ell(c,0,10,40,26); fs(c,lg(c,0,-14,0,36,'#e8e8ec','#b8bcc4'
   c.strokeStyle='#8a9096'; c.lineWidth=5; c.lineCap='round'; c.beginPath(); c.moveTo(10,2); c.lineTo(34,-36); c.stroke(); ell(c,8,4,9,6); c.fillStyle='#9aa0a6'; c.fill(); }
 function iPancake(c){ circ(c,0,0,38); fs(c,rg(c,-8,-8,38,'#f2c878','#d08a3a'),'#a0601e',2); c.fillStyle='rgba(140,70,20,.35)'; for(let i=0;i<12;i++){ circ(c,Math.cos(i*2.4)*(8+i*2),Math.sin(i*2.4)*(8+i*2),3); c.fill(); } }
 function iJar(c,fill,label,top){ rr(c,-30,-38,60,12,4); fs(c,top||'#c9a227','#7a5a08',2); rr(c,-32,-28,64,72,14); fs(c,'rgba(220,235,240,.55)','rgba(80,100,110,.6)',2);
-  rr(c,-28,-18,56,58,12); c.fillStyle=fill; c.fill(); if(label){ rr(c,-24,0,48,20,3); fs(c,'#fffdf4','rgba(0,0,0,.2)',1); c.fillStyle='#b5121b'; c.font='900 12px Rubik, sans-serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillText(label,0,10); }
+  rr(c,-28,-18,56,58,12); c.fillStyle=fill; c.fill(); if(label){ rr(c,-24,0,48,20,3); fs(c,'#fffdf4','rgba(0,0,0,.2)',1); c.fillStyle='#b5121b'; label=tr(label); fitFont(c,label,900,12,44); c.textAlign='center'; c.textBaseline='middle'; c.fillText(label,0,10); }
   c.fillStyle='rgba(255,255,255,.45)'; rr(c,-26,-22,6,56,3); c.fill(); }
 function iNuts(c){ for(const [x,y] of [[-16,-6],[14,-10],[0,16]]){ ell(c,x,y,17,15); fs(c,rg(c,x-4,y-4,17,'#c89a5a','#8a5a2a'),'#5a3a14',2); c.strokeStyle='rgba(80,50,20,.6)'; c.lineWidth=1.5; c.beginPath(); c.moveTo(x,y-14); c.quadraticCurveTo(x+5,y,x,y+14); c.stroke(); } }
 function iHam(c){ for(const [x,y,a] of [[-8,-6,-.2],[8,8,.2]]){ c.save(); c.translate(x,y); c.rotate(a); ell(c,0,0,30,20); fs(c,'#f2a8a8','#c86a6a',2); ell(c,0,0,30,20); c.strokeStyle='#fff2ee'; c.lineWidth=4; c.stroke(); ell(c,-8,-4,8,4); c.fillStyle='rgba(255,255,255,.4)'; c.fill(); c.restore(); } }
@@ -1694,10 +1962,10 @@ function musicSync(){
 function playEvent(e){
   const ty=e[1];
   if(ty==='s'){ const who=e[3]; if(who===undefined||who<0||who===Game.mySlot) sfx(e[2]); }
-  else if(ty==='f'){ if(e[6]<0||e[6]===Game.mySlot) FX.floats.push({x:e[4],y:e[5],text:String(e[2]),color:String(e[3]),t:0,life:e[7]?1.15:1.5,small:!!e[7]}); }
+  else if(ty==='f'){ if(e[6]<0||e[6]===Game.mySlot) FX.floats.push({x:e[4],y:e[5],text:tr(String(e[2])),color:String(e[3]),t:0,life:e[7]?1.15:1.5,small:!!e[7]}); }
   else if(ty==='b') burst(e[2],e[3],e[4]);
   else if(ty==='k') FX.shake=.35;
-  else if(ty==='o') FX.toast={text:String(e[2]),t:2.4};
+  else if(ty==='o') FX.toast={text:tr(String(e[2])),t:2.4};
   else if(ty==='p') FX.scorePulse=1;
   else if(ty==='g') sceneEvent(e);
 }
@@ -1891,8 +2159,8 @@ function turboPoster(b,cx,y,h){
   b.fillStyle='rgba(255,230,150,.85)'; for(let k=0;k<16;k++){ circ(b,hx+(hash(k,71)-.5)*s*.2,hy+s*(.11+hash(73,k)*.26),s*.008); b.fill(); }
   b.strokeStyle='#222'; b.lineWidth=Math.max(1,s*.014); b.beginPath(); b.moveTo(hx+s*.05,hy+s*.16); b.lineTo(hx+s*.022,hy+s*.065); b.stroke(); circ(b,hx+s*.02,hy+s*.058,s*.018); b.fillStyle='#666'; b.fill();
   b.fillStyle='rgba(30,0,30,.55)'; b.fillRect(x0,y0,pw,ph*.15); b.fillRect(x0,y0+ph*.84,pw,ph*.16);
-  b.textAlign='center'; b.fillStyle='#ffe680'; b.font=`900 ${Math.max(6,Math.round(pw*.19))}px Rubik, sans-serif`; b.textBaseline='middle'; b.fillText('ВЕЧЕРАС',cx,y0+ph*.075);
-  b.fillStyle='#ffffff'; b.font=`900 ${Math.max(5,Math.round(pw*.14))}px Rubik, sans-serif`; b.fillText('ДИЈАМАНТА',cx,y0+ph*.92);
+  b.textAlign='center'; b.fillStyle='#ffe680'; b.font=`900 ${Math.max(6,Math.round(pw*.19))}px Rubik, sans-serif`; b.textBaseline='middle'; b.fillText(tr('ВЕЧЕРАС'),cx,y0+ph*.075);
+  b.fillStyle='#ffffff'; b.font=`900 ${Math.max(5,Math.round(pw*.14))}px Rubik, sans-serif`; b.fillText(tr('ДИЈАМАНТА'),cx,y0+ph*.92);
   b.restore(); b.strokeStyle='#1a0a20'; b.lineWidth=1; b.strokeRect(x0+.5,y0+.5,pw-1,ph-1);
   b.fillStyle='rgba(255,255,230,.65)'; for(const [tx,rot] of [[x0+2,-.6],[x0+pw-2,.6]]){ b.save(); b.translate(tx,y0+2); b.rotate(rot); b.fillRect(-pw*.13,-ph*.025,pw*.26,ph*.05); b.restore(); }
 }
@@ -1902,9 +2170,9 @@ function veresijaSign(b,cx,y,h,maxW){
   b.fillStyle='rgba(0,0,0,.2)'; rr(b,x0+2,y0+3,sw,sh,3); b.fill();
   rr(b,x0,y0,sw,sh,3); b.fillStyle=lg(b,x0,y0,x0,y0+sh,'#ecd09a','#c89a58'); b.fill(); b.strokeStyle='#6a4520'; b.lineWidth=1.5; b.stroke();
   b.strokeStyle='rgba(110,70,30,.22)'; b.lineWidth=1; for(let k=1;k<4;k++){ b.beginPath(); b.moveTo(x0+3,y0+sh*k/4); b.quadraticCurveTo(cx,y0+sh*k/4+2,x0+sw-3,y0+sh*k/4); b.stroke(); }
-  let f=sh*.36; b.font=`900 ${f}px Rubik, sans-serif`; const tw=b.measureText('СУТРА НА ВЕРЕСИЈУ').width; f=Math.max(5,f*Math.min(1,sw*.9/tw));
+  let f=sh*.36; b.font=`900 ${f}px Rubik, sans-serif`; const tw=b.measureText(tr('СУТРА НА ВЕРЕСИЈУ')).width; f=Math.max(5,f*Math.min(1,sw*.9/tw));
   b.textAlign='center'; b.textBaseline='middle'; b.font=`900 ${f}px Rubik, sans-serif`;
-  b.fillStyle='#b5121b'; b.fillText('ДАНАС ЗА ПАРЕ,',cx,y0+sh*.31); b.fillStyle='#3a2210'; b.fillText('СУТРА НА ВЕРЕСИЈУ',cx,y0+sh*.71);
+  b.fillStyle='#b5121b'; b.fillText(tr('ДАНАС ЗА ПАРЕ,'),cx,y0+sh*.31); b.fillStyle='#3a2210'; b.fillText(tr('СУТРА НА ВЕРЕСИЈУ'),cx,y0+sh*.71);
 }
 function goblen(b,cx,y,h){
   const gw=h*.84, gh=h*.54, x0=cx-gw/2, y0=y+h*.17, fr=Math.max(3,h*.065);
@@ -1938,7 +2206,7 @@ function zzCalendar(b,cx,y0,cw,ch,k){
   b.fillStyle='rgba(0,0,0,.2)'; b.fillRect(x0+2,y0+3,cw,ch);
   b.fillStyle='#fbf8ef'; b.fillRect(x0,y0,cw,ch); b.strokeStyle='rgba(80,60,30,.45)'; b.strokeRect(x0+.5,y0+.5,cw-1,ch-1);
   b.fillStyle='#2e7d32'; b.fillRect(x0,y0,cw,ch*.15);
-  b.fillStyle='#ffffff'; b.textAlign='center'; b.textBaseline='middle'; fitFont(b,'ЗЗ „НАПРЕДАК“',900,ch*.1,cw*.9); b.fillText('ЗЗ „НАПРЕДАК“',cx,y0+ch*.077);
+  b.fillStyle='#ffffff'; b.textAlign='center'; b.textBaseline='middle'; fitFont(b,tr('ЗЗ „НАПРЕДАК“'),900,ch*.1,cw*.9); b.fillText(tr('ЗЗ „НАПРЕДАК“'),cx,y0+ch*.077);
   const px0=x0+cw*.06, py0=y0+ch*.18, pw=cw*.88, ph=ch*.4;
   b.save(); b.beginPath(); b.rect(px0,py0,pw,ph); b.clip();
   b.fillStyle=lg(b,px0,py0,px0,py0+ph,'#9fd0f0','#e8f4fa'); b.fillRect(px0,py0,pw,ph);
@@ -1958,7 +2226,7 @@ function zzCalendar(b,cx,y0,cw,ch,k){
     b.fillStyle='#ffffff'; ell(b,cx2-u*.42,cy2-u*.08,u*.12,u*.1); b.fill(); b.fillStyle='#f2a8b0'; ell(b,cx2-u*.5,cy2-u*.04,u*.06,u*.05); b.fill();
     b.fillStyle='#222'; circ(b,cx2-u*.44,cy2-u*.12,u*.02); b.fill(); }
   b.restore(); b.strokeStyle='rgba(0,0,0,.25)'; b.lineWidth=1; b.strokeRect(px0+.5,py0+.5,pw-1,ph-1);
-  const month=k?'ОКТОБАР':'МАРТ'; b.fillStyle='#c8202b'; fitFont(b,month,900,ch*.12,cw*.86); b.fillText(month,cx,y0+ch*.67);
+  const month=tr(k?'ОКТОБАР':'МАРТ'); b.fillStyle='#c8202b'; fitFont(b,month,900,ch*.12,cw*.86); b.fillText(month,cx,y0+ch*.67);
   const gx0=x0+cw*.08, gy0=y0+ch*.75, cwid=cw*.84/7, rh=ch*.055;
   for(let r=0;r<4;r++) for(let c=0;c<7;c++){ b.fillStyle=c===6?'rgba(200,32,43,.6)':'rgba(70,70,70,.45)'; b.fillRect(gx0+c*cwid+cwid*.2,gy0+r*rh,cwid*.6,rh*.6); }
   const cr=k?[3,2]:[0,1]; b.strokeStyle='#c8202b'; b.lineWidth=Math.max(1,cw*.025); circ(b,gx0+cr[1]*cwid+cwid*.5,gy0+cr[0]*rh+rh*.3,cwid*.55); b.stroke();
@@ -1987,19 +2255,19 @@ function drawWall(b,theme,x,y,w,h){
     b.fillStyle=lg(b,x,y,x,y+h,'#e2dccf','#cfc7b6'); b.fillRect(x,y,w,h); b.fillStyle='#8a8478'; b.fillRect(x,y+h*.86,w,h*.14);
     b.strokeStyle='rgba(120,110,95,.35)'; b.lineWidth=1; for(let i=1;i<4;i++){ b.beginPath(); b.moveTo(x,y+h*i/4.6); b.lineTo(x+w,y+h*i/4.6); b.stroke(); }
     const mb=x+w*.08; for(let i=0;i<6;i++){ const bx=mb+(i%3)*ts*.42, by2=y+h*.18+Math.floor(i/3)*h*.28; rr(b,bx,by2,ts*.38,h*.24,2); fs(b,lg(b,bx,by2,bx,by2+h*.24,'#c8ccd0','#9aa0a6'),'#6a7076',1); b.fillStyle='#333'; b.fillRect(bx+ts*.08,by2+h*.06,ts*.22,h*.025); }
-    const nb=x+w*.42, nw=Math.min(ts*1.4,w*.16); rr(b,nb,y+h*.12,nw,h*.66,2); fs(b,'#fffdf4','#b8b0a0',1); b.fillStyle='#2b1a10'; b.font=`900 ${Math.max(6,Math.round(h*.13))}px Rubik, sans-serif`; b.textAlign='center'; b.textBaseline='middle'; b.fillText('КУЋНИ РЕД',nb+nw/2,y+h*.22);
+    const nb=x+w*.42, nw=Math.min(ts*1.4,w*.16); rr(b,nb,y+h*.12,nw,h*.66,2); fs(b,'#fffdf4','#b8b0a0',1); b.fillStyle='#2b1a10'; b.font=`900 ${Math.max(6,Math.round(h*.13))}px Rubik, sans-serif`; b.textAlign='center'; b.textBaseline='middle'; b.fillText(tr('КУЋНИ РЕД'),nb+nw/2,y+h*.22);
     b.fillStyle='rgba(60,60,60,.45)'; for(let k=0;k<5;k++) b.fillRect(nb+nw*.12,y+h*(.34+k*.08),nw*(.6+hash(k,3)*.2),h*.025);
     for(let i=0;i<2;i++){ const dx2=x+w*(.7+i*.15); rr(b,dx2,y+h*.1,ts*.75,h*.76,2); fs(b,lg(b,dx2,0,dx2+ts*.75,0,'#6a4a2a','#4a3018'),'#2a1a08',1); circ(b,dx2+ts*.62,y+h*.5,ts*.04); b.fillStyle='#d9a21b'; b.fill(); }
   } else if(theme==='ada'){
     for(let i=0;i*ts*.36<w;i++){ b.fillStyle=i%2?'#b88a56':'#a87a48'; b.fillRect(x+i*ts*.36,y,ts*.36+1,h); } b.fillStyle='rgba(0,0,0,.12)'; b.fillRect(x,y+h*.86,w,h*.14);
     const lx=x+w*.14, ly=y+h*.45, R=h*.32; circ(b,lx,ly,R); b.fillStyle='#ffffff'; b.fill(); for(let k=0;k<4;k++){ b.beginPath(); b.moveTo(lx,ly); b.arc(lx,ly,R,k*Math.PI/2+.4,k*Math.PI/2+1.1); b.closePath(); b.fillStyle='#e8202b'; b.fill(); } circ(b,lx,ly,R*.5); b.fillStyle=lg(b,lx,y,lx,y+h,'#b88a56','#a87a48'); b.fill();
-    const mx=x+w*.36, mw=Math.min(ts*2.6,w*.3); rr(b,mx,y+h*.1,mw,h*.7,4); fs(b,'#1f2a33','#c9a227',1.5); b.fillStyle='#ffd34d'; b.font=`900 ${Math.max(6,Math.round(h*.16))}px Rubik, sans-serif`; b.textAlign='center'; b.textBaseline='middle'; b.fillText('ПАЛАЧИНКЕ',mx+mw/2,y+h*.25);
-    b.fillStyle='#f4f1e8'; b.font=`700 ${Math.max(5,Math.round(h*.11))}px Rubik, sans-serif`; ['крем • ораси','џем','шунка • сир'].forEach((tx,k)=>b.fillText(tx,mx+mw/2,y+h*(.42+k*.14)));
+    const mx=x+w*.36, mw=Math.min(ts*2.6,w*.3); rr(b,mx,y+h*.1,mw,h*.7,4); fs(b,'#1f2a33','#c9a227',1.5); b.fillStyle='#ffd34d'; b.font=`900 ${Math.max(6,Math.round(h*.16))}px Rubik, sans-serif`; b.textAlign='center'; b.textBaseline='middle'; b.fillText(tr('ПАЛАЧИНКЕ'),mx+mw/2,y+h*.25);
+    b.fillStyle='#f4f1e8'; b.font=`700 ${Math.max(5,Math.round(h*.11))}px Rubik, sans-serif`; ['крем • ораси','џем','шунка • сир'].forEach((tx,k)=>b.fillText(tr(tx),mx+mw/2,y+h*(.42+k*.14)));
     const sbx=x+w*.82; b.save(); b.translate(sbx,y+h*.48); b.rotate(.25); ell(b,0,0,ts*.22,h*.4); fs(b,lg(b,-ts*.2,0,ts*.2,0,'#28d0ff','#1f6fb5'),'#14406a',1.2); b.fillStyle='#ffd34d'; b.fillRect(-ts*.02,-h*.36,ts*.04,h*.72); b.restore();
   } else if(theme==='docek'){
     for(let i=0;i*ts*.4<w;i++){ b.fillStyle=i%2?'#6a3a1e':'#5a2f18'; b.fillRect(x+i*ts*.4,y,ts*.4+1,h); } b.fillStyle='rgba(0,0,0,.18)'; b.fillRect(x,y+h*.86,w,h*.14);
     b.fillStyle='#f6f8ff'; b.beginPath(); b.moveTo(x,y); for(let i=0;i<=24;i++) b.lineTo(x+w*i/24,y+h*.1+(i%2?h*.06:0)); b.lineTo(x+w,y); b.closePath(); b.fill();
-    const bw2=Math.min(w*.5,ts*6.5), bxx=x+w/2-bw2/2; rr(b,bxx,y+h*.36,bw2,h*.36,5); fs(b,'#fff8e8','#c9a227',2); b.fillStyle='#b5121b'; b.font=`400 ${Math.round(h*.24)}px Lobster, Georgia, serif`; b.textAlign='center'; b.textBaseline='middle'; b.fillText('Срећна Нова година!',x+w/2,y+h*.55);
+    const bw2=Math.min(w*.5,ts*6.5), bxx=x+w/2-bw2/2; rr(b,bxx,y+h*.36,bw2,h*.36,5); fs(b,'#fff8e8','#c9a227',2); b.fillStyle='#b5121b'; b.font=`400 ${Math.round(h*.24)}px Lobster, Georgia, serif`; b.textAlign='center'; b.textBaseline='middle'; b.fillText(tr('Срећна Нова година!'),x+w/2,y+h*.55);
     b.strokeStyle='rgba(30,20,10,.7)'; b.lineWidth=1.2; b.beginPath(); b.moveTo(x,y+h*.24); for(let i=0;i<=40;i++) b.lineTo(x+w*i/40,y+h*.24+Math.sin(i/40*Math.PI*5)*h*.05); b.stroke();
     for(let i=0;i<40;i++){ const px2=x+w*(i+.5)/40, py2=y+h*.24+Math.sin((i+.5)/40*Math.PI*5)*h*.05+h*.04; circ(b,px2,py2,Math.max(2,h*.045)); b.fillStyle=['#ff4a6a','#ffd34d','#7fd0ff','#9be36e'][i%4]; b.fill(); }
   } else {
@@ -2015,7 +2283,7 @@ function drawWall(b,theme,x,y,w,h){
     b.fillStyle='rgba(0,0,0,.18)'; rr(b,bx+2,by+3,bw,bh,6); b.fill();
     rr(b,bx,by,bw,bh,6); b.fillStyle='#fff8e8'; b.fill(); b.strokeStyle='#b5121b'; b.lineWidth=2; b.stroke();
     b.fillStyle='#b5121b'; b.font=`400 ${Math.round(bh*.66)}px Lobster, Georgia, serif`; b.textAlign='center'; b.textBaseline='middle';
-    b.fillText('Живели младенци!',x+w/2,by+bh/2+1);
+    b.fillText(tr('Живели младенци!'),x+w/2,by+bh/2+1);
     { const side=(w-bw)/2, ch=h*.74, cw=ch*.8; if(side>cw*1.3){ zzCalendar(b,x+side*.5,y+h*.2,cw,ch,0); zzCalendar(b,x+w-side*.5,y+h*.2,cw,ch,1); } }
     for(let k=0;k<Math.floor(w/(ts*.7));k++){ const px=x+(k+.5)*ts*.7, py=y+h*.06; const g=b.createRadialGradient(px,py,0,px,py,ts*.12); g.addColorStop(0,'rgba(255,230,140,.9)'); g.addColorStop(1,'rgba(255,200,80,0)'); b.fillStyle=g; b.fillRect(px-ts*.12,py-ts*.12,ts*.24,ts*.24); circ(b,px,py,ts*.025); b.fillStyle='#ffe9a6'; b.fill(); }
   }
@@ -2692,7 +2960,7 @@ function spotFor(g){
 }
 const exitFor=s=>({x:s.x,y:s.p.y+s.p.h+SCN.sc*.9});
 function waiterEntry(s){ const p=s.p, sc=SCN.sc; if(SCN.mode==='left') return {x:p.x+p.w-sc*.55,y:p.y+sc*.45}; return {x:p.x+sc*.6,y:p.y+sc*.35}; }
-function bubble(ent,text,life){ if(!live()) return; SCN.bubbles=SCN.bubbles.filter(b=>b.ent!==ent); SCN.bubbles.push({ent,text,t:0,life:life||2.3}); if(SCN.bubbles.length>7) SCN.bubbles.shift(); }
+function bubble(ent,text,life){ if(!live()) return; SCN.bubbles=SCN.bubbles.filter(b=>b.ent!==ent); SCN.bubbles.push({ent,text:tr(text),src:text,t:0,life:life||2.3}); if(SCN.bubbles.length>7) SCN.bubbles.shift(); }
 function spart(o){ SCN.parts.push(Object.assign({t:0,vx:0,vy:0,g:0,life:1},o)); if(SCN.parts.length>300) SCN.parts.shift(); }
 function moveTo(e,dt,spd){ const dx=e.tx-e.x, dy=e.ty-e.y, d=Math.hypot(dx,dy); if(d<1.2){ e.x=e.tx; e.y=e.ty; e.walk=(e.walk||0)*.8; return true; }
   const st=Math.min(d,spd*dt); e.x+=dx/d*st; e.y+=dy/d*st; e.fx=dx/d; e.fy=dy/d; e.walk=(e.walk||0)+st/SCN.sc*5; return false; }
@@ -2885,7 +3153,7 @@ function drawPriceBoard(){
   ctx.fillStyle='rgba(255,255,255,.05)'; for(let k=0;k<5;k++) ctx.fillRect(x0+hash(k,81)*bw*.7,y0+hash(83,k)*bh*.8,bw*.3,bh*.08);
   const chalk="'Comic Sans MS','Chalkboard SE',Rubik,sans-serif";
   ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#f4f1e8';
-  ctx.font=`700 ${Math.max(6,Math.round(bh*.2))}px ${chalk}`; ctx.fillText('БУРЕК',bcx,y0+bh*.15);
+  ctx.font=`700 ${Math.max(6,Math.round(bh*.2))}px ${chalk}`; ctx.fillText(tr('БУРЕК'),bcx,y0+bh*.15);
   const old=BUREK_PRICES.slice(Math.max(0,cur-3),cur), oy2=y0+bh*.4, ofs=Math.max(5,Math.round(bh*.15));
   ctx.font=`700 ${ofs}px ${chalk}`;
   old.forEach((pv,i)=>{ const ox2=x0+bw*(.2+i*.3), t=String(pv), tw=ctx.measureText(t).width;
@@ -2895,7 +3163,7 @@ function drawPriceBoard(){
   const pop=at<.6?1+.45*Math.sin(Math.min(1,at/.6)*Math.PI):1, cf=Math.max(7,Math.round(bh*.3));
   ctx.save(); ctx.translate(bcx+bw*.05,y0+bh*.74); ctx.rotate(-.08); ctx.scale(pop,pop);
   ctx.fillStyle='#ffe066'; ctx.font=`900 ${cf}px ${chalk}`; const ptxt=String(BUREK_PRICES[cur]), pw=ctx.measureText(ptxt).width; ctx.fillText(ptxt,-cf*.3,0);
-  ctx.font=`700 ${Math.max(5,Math.round(cf*.42))}px ${chalk}`; ctx.fillStyle='#f4f1e8'; ctx.textAlign='left'; ctx.fillText('дин',-cf*.3+pw/2+2,cf*.12); ctx.restore();
+  ctx.font=`700 ${Math.max(5,Math.round(cf*.42))}px ${chalk}`; ctx.fillStyle='#f4f1e8'; ctx.textAlign='left'; ctx.fillText(tr('дин'),-cf*.3+pw/2+2,cf*.12); ctx.restore();
 }
 const TV_TICKER='ВИЛА ДРАМА • УЖИВО 0-24 • ВЕЛИКА СВАЂА ЗБОГ ЧАШЕ ВОДЕ • ОН ЈЕ ЊОЈ РЕКАО, А ОНА ЊЕМУ… • ГЛАСАЈТЕ ПОРУКОМ • ';
 function drawTV(){
@@ -2922,13 +3190,13 @@ function drawTV(){
   ctx.fillStyle='#7a1a1a'; ell(ctx,rx-u*.02,hy+u*.07,u*.035,!talkA||dr>0?u*.028:u*.008); ctx.fill();
   if(dr>0){ ctx.fillStyle=`rgba(255,255,255,${Math.max(0,dr-.7)*1.6})`; ctx.fillRect(sx,sy,sw,sh);
     ctx.fillStyle='#ffe066'; ctx.font=`900 ${Math.max(6,Math.round(sh*.32))}px Rubik, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('!!!',sx+sw*.5,sy+sh*.3); }
-  const bfs=Math.max(4,Math.round(sh*.13)); ctx.font=`900 ${bfs}px Rubik, sans-serif`; const bwid=ctx.measureText('УЖИВО').width+bfs*1.4;
+  const bfs=Math.max(4,Math.round(sh*.13)); ctx.font=`900 ${bfs}px Rubik, sans-serif`; const bwid=ctx.measureText(tr('УЖИВО')).width+bfs*1.4;
   rr(ctx,sx+2,sy+2,bwid,bfs*1.35,2); ctx.fillStyle='#d01020'; ctx.fill();
   if(Math.sin(G_anim*5)>0){ circ(ctx,sx+2+bfs*.55,sy+2+bfs*.68,bfs*.25); ctx.fillStyle='#fff'; ctx.fill(); }
-  ctx.fillStyle='#fff'; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText('УЖИВО',sx+2+bfs*1.05,sy+2+bfs*.7);
+  ctx.fillStyle='#fff'; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText(tr('УЖИВО'),sx+2+bfs*1.05,sy+2+bfs*.7);
   const tk=sh*.17; ctx.fillStyle='rgba(10,10,30,.85)'; ctx.fillRect(sx,sy+sh-tk,sw,tk);
-  ctx.font=`700 ${Math.max(4,Math.round(tk*.72))}px Rubik, sans-serif`; ctx.fillStyle='#ffe066'; const tw2=ctx.measureText(TV_TICKER).width, off=(G_anim*sw*.35)%tw2;
-  ctx.fillText(TV_TICKER+TV_TICKER,sx-off,sy+sh-tk/2);
+  ctx.font=`700 ${Math.max(4,Math.round(tk*.72))}px Rubik, sans-serif`; ctx.fillStyle='#ffe066'; const tick=tr(TV_TICKER), tw2=ctx.measureText(tick).width, off=(G_anim*sw*.35)%tw2;
+  ctx.fillText(tick+tick,sx-off,sy+sh-tk/2);
   ctx.restore();
   ctx.fillStyle='rgba(255,255,255,.08)'; ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(sx+sw*.35,sy); ctx.lineTo(sx,sy+sh*.6); ctx.closePath(); ctx.fill();
   circ(ctx,x0+tw*.92,y0+th*.93,Math.max(1,tw*.012)); ctx.fillStyle='#ff3030'; ctx.fill();
@@ -3165,9 +3433,9 @@ function drawSceneStatic(b){
     if(!aw&&SCN.queue.length){ b.strokeStyle='rgba(150,30,30,.6)'; b.lineWidth=2.5; const qc=SCN.qcols||6; for(let r=0;r*qc<SCN.queue.length;r++){ const q0=SCN.queue[r*qc], q3=SCN.queue[r*qc+qc-1]; if(!q0||!q3) continue; const yy=q0.y+sc*.38, xa=Math.min(q0.x,q3.x)-sc*.4, xb=Math.max(q0.x,q3.x)+sc*.4; b.beginPath(); b.moveTo(xa,yy); b.quadraticCurveTo((xa+xb)/2,yy+sc*.12,xb,yy); b.stroke(); } }
     if(aw){ b.save(); rr(b,aw.x,aw.y-6,aw.w,aw.h+20,0); b.clip(); b.fillStyle='#b9a58a'; b.fillRect(aw.x,aw.y-6,aw.w,8);
       const sw=Math.max(14,sc*.42); for(let i=0;i*sw<aw.w;i++){ b.fillStyle=i%2?'#ffffff':'#c8202b'; b.beginPath(); b.moveTo(aw.x+i*sw,aw.y); b.lineTo(aw.x+(i+1)*sw,aw.y); b.lineTo(aw.x+(i+1)*sw,aw.y+aw.h); b.quadraticCurveTo(aw.x+(i+.5)*sw,aw.y+aw.h+sw*.35,aw.x+i*sw,aw.y+aw.h); b.closePath(); b.fill(); }
-      b.restore(); const th0=aw.h*.78; b.font=`900 ${Math.round(th0*.62)}px Rubik, sans-serif`; const tw0=Math.min(aw.w*.7,b.measureText('ПЕКАРА „ЗОРА“').width+th0*1.2);
+      b.restore(); const th0=aw.h*.78; b.font=`900 ${Math.round(th0*.62)}px Rubik, sans-serif`; const tw0=Math.min(aw.w*.7,b.measureText(tr('ПЕКАРА „ЗОРА“')).width+th0*1.2);
       rr(b,aw.x+aw.w/2-tw0/2,aw.y+aw.h*.1,tw0,th0,3); fs(b,'#33200f','#d9a21b',1.5);
-      b.fillStyle='#ffd34d'; b.textAlign='center'; b.textBaseline='middle'; b.fillText('ПЕКАРА „ЗОРА“',aw.x+aw.w/2,aw.y+aw.h*.1+th0/2+1);
+      b.fillStyle='#ffd34d'; b.textAlign='center'; b.textBaseline='middle'; b.fillText(tr('ПЕКАРА „ЗОРА“'),aw.x+aw.w/2,aw.y+aw.h*.1+th0/2+1);
       b.strokeStyle='rgba(150,30,30,.6)'; b.lineWidth=2.5;
       const qc=SCN.qcols||4; for(let r=0;r*qc<SCN.queue.length;r++){ const q0=SCN.queue[r*qc], q3=SCN.queue[r*qc+qc-1]; if(!q0||!q3) continue; const yy=q0.y+sc*.38, xa=Math.min(q0.x,q3.x)-sc*.4, xb=Math.max(q0.x,q3.x)+sc*.4;
         b.beginPath(); b.moveTo(xa,yy); b.quadraticCurveTo((xa+xb)/2,yy+sc*.12,xb,yy); b.stroke();
@@ -3182,7 +3450,7 @@ function drawSceneStatic(b){
       b.fillStyle='#9a9690'; b.fillRect(x0,y+sc*.4,w,sc*.12); b.fillStyle='#b8b4ad'; b.fillRect(x0,y+sc*.52,w,p.y+p.h-y);
       const kx=x0+w*.08, ky=y+sc*1.0, kw=Math.min(w*.34,sc*1.5), kh=sc*1.1;
       rr(b,kx,ky,kw,kh,3); fs(b,'#2f6a8f','rgba(0,0,0,.4)',1); b.fillStyle='#eaf4fa'; b.fillRect(kx+kw*.1,ky+kh*.22,kw*.8,kh*.4);
-      b.fillStyle='#c8202b'; b.fillRect(kx,ky,kw,kh*.16); b.fillStyle='#fff'; b.font=`900 ${Math.max(7,Math.round(kh*.13))}px Rubik, sans-serif`; b.textAlign='center'; b.textBaseline='middle'; b.fillText('ТРАФИКА',kx+kw/2,ky+kh*.085);
+      b.fillStyle='#c8202b'; b.fillRect(kx,ky,kw,kh*.16); b.fillStyle='#fff'; b.font=`900 ${Math.max(7,Math.round(kh*.13))}px Rubik, sans-serif`; b.textAlign='center'; b.textBaseline='middle'; b.fillText(tr('ТРАФИКА'),kx+kw/2,ky+kh*.085);
       for(let k=0;k<4;k++){ b.fillStyle=['#f2e6c8','#e8d0d0','#d8e6f2','#f6f0d0'][k]; b.fillRect(kx+kw*(.14+k*.18),ky+kh*.28,kw*.14,kh*.26); }
       const cx2=x0+w*.42, cy2=y+sc*.08, cw=Math.min(w*.32,sc*1.5), ch=sc*.55;
       rr(b,cx2,cy2,cw,ch,ch*.45); fs(b,'#d9cfa8','rgba(0,0,0,.45)',1); rr(b,cx2+cw*.22,cy2+ch*.12,cw*.48,ch*.76,ch*.3); fs(b,'#bfe0f0','rgba(0,0,0,.3)',1);
@@ -3204,6 +3472,7 @@ function drawSceneStatic(b){
 function propGlass(c,x,y,s){ c.beginPath(); c.moveTo(x-s*.05,y-s*.08); c.lineTo(x+s*.05,y-s*.08); c.lineTo(x+s*.035,y+s*.04); c.lineTo(x-s*.035,y+s*.04); c.closePath(); fs(c,'rgba(235,242,246,.9)','rgba(70,80,90,.8)',1); c.fillStyle='rgba(240,195,110,.85)'; c.fillRect(x-s*.035,y-s*.03,s*.07,s*.05); }
 function propFlask(c,x,y,s){ circ(c,x,y,s*.09); fs(c,rg(c,x,y,s*.09,'#d79a5a','#7a4a1e'),'#3e2410',1.2); circ(c,x,y,s*.045); c.strokeStyle='rgba(255,225,170,.7)'; c.lineWidth=1; c.stroke(); c.fillStyle='#3e2410'; c.fillRect(x-s*.018,y-s*.14,s*.036,s*.06); }
 function propSign(c,hx,hy,s,text,tiny){
+  text=tr(text);
   const fz=Math.max(7,Math.round(s*(tiny?.13:.15))); c.font=`900 ${fz}px Rubik, system-ui, sans-serif`;
   const words=text.split(' '), lines=[]; let cur=''; for(const w of words){ const t=cur?cur+' '+w:w; if(c.measureText(t).width>s*(tiny?.5:1.15)&&cur){ lines.push(cur); cur=w; } else cur=t; } if(cur) lines.push(cur);
   const w=Math.max(...lines.map(l=>c.measureText(l).width))+fz*.8, h=lines.length*fz*1.1+fz*.5, sy=hy-s*.12-h;
@@ -3359,7 +3628,7 @@ function drawScene(){
   if(SCN.cloud){ const C=SCN.cloud, a=C.t<5.2?Math.min(1,C.t/.6):Math.max(0,(6.5-C.t)/1.3), grow=Math.min(1,C.t/2.6);
     for(let k=0;k<9;k++){ const ang=k/9*Math.PI*2+C.t*.4, r=sc*(.25+.35*grow)*(1+.2*Math.sin(C.t*2+k)); circ(ctx,C.x+Math.cos(ang)*r,C.y+Math.sin(ang)*r*.55,sc*(.22+.25*grow)); ctx.fillStyle=`rgba(${150+k*6},${150+k*6},${155+k*6},${.5*a})`; ctx.fill(); } }
   for(const br of SCN.brawls) if(br.t<2.6){ for(let k=0;k<11;k++){ const a=k/11*Math.PI*2+G_anim*3, r=sc*(.5+.15*Math.sin(G_anim*20+k)); circ(ctx,br.x+Math.cos(a)*r,br.y-sc*.4+Math.sin(a)*r*.6,sc*(.36+.08*Math.sin(G_anim*15+k*2))); ctx.fillStyle=k%2?'rgba(225,215,195,.95)':'rgba(200,190,170,.95)'; ctx.fill(); }
-    ctx.fillStyle='#2b1a10'; ctx.font=`900 ${Math.round(sc*.3)}px Rubik, sans-serif`; ctx.textAlign='center'; ctx.fillText(['ТРАС!','БУМ!','ПАФ!'][Math.floor(G_anim*4)%3],br.x,br.y-sc*.32);
+    ctx.fillStyle='#2b1a10'; ctx.font=`900 ${Math.round(sc*.3)}px Rubik, sans-serif`; ctx.textAlign='center'; ctx.fillText(tr(['ТРАС!','БУМ!','ПАФ!'][Math.floor(G_anim*4)%3]),br.x,br.y-sc*.32);
     ctx.fillStyle=br.t%0.5<.25?'#111':'#c8202b'; ctx.fillRect(br.x+Math.sin(G_anim*17)*sc*.5,br.y-sc*.5,sc*.18,sc*.06); }
   if(SCN.tumble&&SCN.street){ const st=SCN.street, k=SCN.tumble.t/3.2, x=st.x0-sc+(st.x1-st.x0+sc*2)*k, y=st.y+sc*.05-Math.abs(Math.sin(SCN.tumble.t*5))*sc*.35;
     ctx.save(); ctx.translate(x,y); ctx.rotate(SCN.tumble.t*7); ctx.strokeStyle='#9a7a4a'; ctx.lineWidth=1.4; for(let i=0;i<7;i++){ ctx.beginPath(); ctx.arc((hash(i,1)-.5)*sc*.12,(hash(1,i)-.5)*sc*.12,sc*(.12+hash(i,i)*.1),i,i+4); ctx.stroke(); } ctx.restore(); }
@@ -3377,7 +3646,7 @@ function drawScene(){
     else if(q.kind==='bill'){ ctx.save(); ctx.translate(q.x,q.y); ctx.rotate(q.t*9); ctx.fillStyle=Math.floor(q.x)%2?'#6fae55':'#5a8fd0'; ctx.fillRect(-sc*.06,-sc*.03,sc*.12,sc*.06); ctx.restore(); }
     else if(q.kind==='spark'){ ctx.globalAlpha=k; ctx.fillStyle='#f2c230'; ctx.font=`900 ${Math.round(sc*.3)}px Rubik, sans-serif`; ctx.textAlign='center'; ctx.fillText('⚡',q.x,q.y); ctx.globalAlpha=1; }
     else if(q.kind==='star'){ ctx.globalAlpha=k; ctx.fillStyle='#f2c230'; ctx.font=`900 ${Math.round(sc*.26)}px Rubik, sans-serif`; ctx.textAlign='center'; ctx.fillText('★',q.x,q.y); ctx.globalAlpha=1; }
-    else if(q.kind==='bang'){ ctx.save(); ctx.globalAlpha=k; ctx.translate(q.x,q.y); ctx.scale(1+(1-k)*.4,1+(1-k)*.4); ctx.fillStyle='#ffd34d'; ctx.beginPath(); for(let i=0;i<16;i++){ const a=i/16*Math.PI*2, r=i%2?sc*.25:sc*.5; ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r*.7); } ctx.closePath(); ctx.fill(); ctx.fillStyle='#b5121b'; ctx.font=`900 ${Math.round(sc*.26)}px Rubik, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('БАНГ!',0,1); ctx.restore(); }
+    else if(q.kind==='bang'){ ctx.save(); ctx.globalAlpha=k; ctx.translate(q.x,q.y); ctx.scale(1+(1-k)*.4,1+(1-k)*.4); ctx.fillStyle='#ffd34d'; ctx.beginPath(); for(let i=0;i<16;i++){ const a=i/16*Math.PI*2, r=i%2?sc*.25:sc*.5; ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r*.7); } ctx.closePath(); ctx.fill(); ctx.fillStyle='#b5121b'; ctx.font=`900 ${Math.round(sc*.26)}px Rubik, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(tr('БАНГ!'),0,1); ctx.restore(); }
   }
   ctx.fillStyle='rgba(25,12,5,.1)'; for(const p of SCN.panels) ctx.fillRect(p.x,p.y,p.w,p.h);
   for(const b of SCN.bubbles) drawBubble(b);
@@ -3417,7 +3686,7 @@ function drawHangers(){
   const L=hangSpots(); if(!L.length) return;
   const now=performance.now()/1000, dt=Math.min(.05,Math.max(0,now-(HANG.t||now))); HANG.t=now;
   for(const p of DP){ for(const h of L){ const key=p.slot+'|'+h.i, inside=Math.abs(p.x-h.x)<.5&&Math.abs(p.y-h.y)<.42, was=HANG.prev.get(key);
-      if(inside&&!was&&TALL.has(p.ch|0)&&Game.phase==='play'){ const cd=HANG.bonk.get(p.slot); if(!cd||now-cd.at>1){ const helm=CHARS[p.ch|0]&&CHARS[p.ch|0].hat==='riot'; HANG.bonk.set(p.slot,{at:now,text:helm?null:pick(['Јао!','Ау, глава!','Опет кобасица!']),helm}); h.amp=1; sfx(helm?'clank':'bonk'); } }
+      if(inside&&!was&&TALL.has(p.ch|0)&&Game.phase==='play'){ const cd=HANG.bonk.get(p.slot); if(!cd||now-cd.at>1){ const helm=CHARS[p.ch|0]&&CHARS[p.ch|0].hat==='riot'; HANG.bonk.set(p.slot,{at:now,text:helm?null:tr(pick(['Јао!','Ау, глава!','Опет кобасица!'])),helm}); h.amp=1; sfx(helm?'clank':'bonk'); } }
       HANG.prev.set(key,inside); } }
   for(const h of L){ h.amp=Math.max(0,h.amp-dt*.8); drawRack(h,now); }
   for(const p of DP){ const bk=HANG.bonk.get(p.slot); if(!bk||bk.helm) continue; const age=now-bk.at; if(age>1.2) continue;
@@ -3499,7 +3768,7 @@ function standTick(th,dt,on){
   STAND.flash=Math.max(0,(STAND.flash||0)-dt);
   if(th==='zimnica'){
     if(on&&Math.random()<dt*3.5) spart({kind:'smoke',x:P.x+P.w*(.75+Math.random()*.2),y:SCN.awning.y-sc*.1,vx:-6-Math.random()*8,vy:-16-Math.random()*8,life:2.6});
-    if(on&&(STAND.yell=(STAND.yell===undefined?7:STAND.yell)-dt)<=0){ STAND.yell=14+Math.random()*8; STAND.yellT=2.4; STAND.yellTxt=pick(['Дим ми улази у веш!','Опет ми смрди веш на паприку!','Затворите тај бубањ!']); }
+    if(on&&(STAND.yell=(STAND.yell===undefined?7:STAND.yell)-dt)<=0){ STAND.yell=14+Math.random()*8; STAND.yellT=2.4; STAND.yellTxt=tr(pick(['Дим ми улази у веш!','Опет ми смрди веш на паприку!','Затворите тај бубањ!'])); }
     STAND.yellT=Math.max(0,(STAND.yellT||0)-dt);
   } else if(th==='ada'){
     STAND.stormT=Math.max(0,(STAND.stormT||0)-dt);
@@ -3523,7 +3792,7 @@ function standTick(th,dt,on){
       g.pc=(g.pc||0)+dt; g.inLine=(g.inLine||0)+dt; const dancing=g.jacket||(g.pc%7)<4;
       if(dancing!==g.wasDancing){ g.wasDancing=dancing; if(!dancing&&!g.jacket&&Math.random()<.6) bubble(g,pick(['Брррр!','Цвокоћем!','Ко је звао снег?!']),1.4); }
       if(on&&dancing&&(g.sing=(g.sing===undefined?2:g.sing)-dt)<=0){ g.sing=9+Math.random()*4; if(!SCN.bubbles.some(b=>b.ent===g)) bubble(g,pick(['♪ Дијаманта, ла-ла-ла! ♪','♪ Ова ноћ је наша! ♪','Ајмо коло!']),1.8);
-        const lastB=SCN.bubbles.find(b=>b.ent===g); if(lastB&&lastB.text==='Ајмо коло!'){ for(const n of W.filter(q=>q!==g).sort((p,q)=>Math.hypot(p.x-g.x,p.y-g.y)-Math.hypot(q.x-g.x,q.y-g.y)).slice(0,2)) n.danceT=3.2; } }
+        const lastB=SCN.bubbles.find(b=>b.ent===g); if(lastB&&lastB.src==='Ајмо коло!'){ for(const n of W.filter(q=>q!==g).sort((p,q)=>Math.hypot(p.x-g.x,p.y-g.y)-Math.hypot(q.x-g.x,q.y-g.y)).slice(0,2)) n.danceT=3.2; } }
       if(on&&!g.jacketAsked&&g.inLine>6){ const giver=W.filter(q=>q!==g&&['irv','nao','sne','pen','stu','g'].includes(q.ct)&&!q.cold).sort((p,q)=>Math.hypot(p.x-g.x,p.y-g.y)-Math.hypot(q.x-g.x,q.y-g.y))[0];
         if(giver){ g.jacketAsked=true; bubble(giver,'Изволи моју јакну, лепотице.',2.2);
           setTimeout(()=>{ if(g.state!=='wait'&&g.state!=='in') return; g.jacket=true; g.look=Object.assign({},g.look,{vest:giver.look.vest||'#2a3a5a',sleeve:giver.look.vest||'#2a3a5a',trim:giver.look.trim||'#e8e0d0',sequins:false}); bubble(g,'Ау, витез!',1.8);
@@ -3575,8 +3844,8 @@ function drawStandStatic(th,b){
   if(aw){ const C={zimnica:['#2e7d32','#ffffff','ЗИМНИЦА • СТАНАРИ'],ada:['#1f6fb5','#ffffff','ПАЛАЧИНКЕ'],docek:['#b5121b','#f2c230','КУВАНО ВИНО • КЕСТЕНИ']}[th];
     b.save(); rr(b,aw.x,aw.y-6,aw.w,aw.h+20,0); b.clip(); const sw=Math.max(14,sc*.42);
     for(let i=0;i*sw<aw.w;i++){ b.fillStyle=i%2?C[1]:C[0]; b.beginPath(); b.moveTo(aw.x+i*sw,aw.y); b.lineTo(aw.x+(i+1)*sw,aw.y); b.lineTo(aw.x+(i+1)*sw,aw.y+aw.h); b.quadraticCurveTo(aw.x+(i+.5)*sw,aw.y+aw.h+sw*.35,aw.x+i*sw,aw.y+aw.h); b.closePath(); b.fill(); }
-    b.restore(); const th0=aw.h*.78; b.font=`900 ${Math.round(th0*.58)}px Rubik, sans-serif`; const tw0=Math.min(aw.w*.86,b.measureText(C[2]).width+th0*1.2);
-    rr(b,aw.x+aw.w/2-tw0/2,aw.y+aw.h*.1,tw0,th0,3); fs(b,'#33200f','#d9a21b',1.5); b.fillStyle='#ffd34d'; b.textAlign='center'; b.textBaseline='middle'; b.fillText(C[2],aw.x+aw.w/2,aw.y+aw.h*.1+th0/2+1); }
+    b.restore(); const th0=aw.h*.78; b.font=`900 ${Math.round(th0*.58)}px Rubik, sans-serif`; const tw0=Math.min(aw.w*.86,b.measureText(tr(C[2])).width+th0*1.2);
+    rr(b,aw.x+aw.w/2-tw0/2,aw.y+aw.h*.1,tw0,th0,3); fs(b,'#33200f','#d9a21b',1.5); b.fillStyle='#ffd34d'; b.textAlign='center'; b.textBaseline='middle'; b.fillText(tr(C[2]),aw.x+aw.w/2,aw.y+aw.h*.1+th0/2+1); }
   const by=P.y+P.h*.93;
   if(th==='zimnica'){ for(const [fx,col] of [[.18,'#c8202b'],[.62,'#2f6fb5']]) topCar(b,P.x+P.w*fx,by,sc*1.15,col,0); }
   else if(th==='ada'){ for(const [fx,col] of [[.2,'#e85a7a'],[.58,'#f2c230'],[.86,'#2f8fd8']]){ const x=P.x+P.w*fx; b.fillStyle='rgba(0,0,0,.18)'; ell(b,x+4,by+4,sc*.42,sc*.16); b.fill();
@@ -3631,7 +3900,7 @@ function drawStandBackdrop(th){
     const el=live()?Math.max(0,V.L.time-V.timeLeft):0, tot=V.L.time, secs=Math.max(0,Math.round(tot-el)), mm=Math.floor(secs/60), ss=secs%60;
     const clk=secs<=0?'00:00':`23:${String(59-mm).padStart(2,'0')}:${String(59-ss<0?0:(60-ss)%60).padStart(2,'0')}`;
     const cw=w*.36, ch=h*.24, cx=x0+w*.06, cy=y0+h*.06; rr(ctx,cx,cy,cw,ch,4); fs(ctx,'#111','#c9a227',1.5); ctx.fillStyle=secs<=10?'#ff4a4a':'#ff9a2a'; ctx.font=`900 ${Math.round(ch*.62)}px "Courier New", monospace`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(secs<=0?'00:00:00':clk,cx+cw/2,cy+ch/2+1);
-    if(STAND.ny){ const k=Math.min(1,STAND.nyT/.6); ctx.globalAlpha=k; ctx.fillStyle='#ffd34d'; ctx.strokeStyle='#5a1010'; ctx.lineWidth=3; ctx.font=`900 ${Math.round(h*.2)}px Lobster, Georgia, serif`; ctx.strokeText('Срећна Нова година!',x0+w/2,y0+h*.45); ctx.fillText('Срећна Нова година!',x0+w/2,y0+h*.45); ctx.globalAlpha=1; }
+    if(STAND.ny){ const k=Math.min(1,STAND.nyT/.6); ctx.globalAlpha=k; ctx.fillStyle='#ffd34d'; ctx.strokeStyle='#5a1010'; ctx.lineWidth=3; ctx.font=`900 ${Math.round(h*.2)}px Lobster, Georgia, serif`; ctx.strokeText(tr('Срећна Нова година!'),x0+w/2,y0+h*.45); ctx.fillText(tr('Срећна Нова година!'),x0+w/2,y0+h*.45); ctx.globalAlpha=1; }
   }
   ctx.restore();
   const P=SCN.panels[0];
@@ -3689,7 +3958,7 @@ function drawKitchenFx(){
       if(k>.5){ ctx.fillStyle='#e8b060'; ell(ctx,0,s*.12,s*.14,s*.06); ctx.fill(); } ctx.restore(); }
     else if(f.type==='pet'){ if(!f.boom){ ctx.fillStyle='#c8202b'; rr(ctx,tx-s*.05,ty-s*.12,s*.1,s*.2,2); ctx.fill(); for(let k=0;k<5;k++){ ctx.fillStyle='#ffd34d'; circ(ctx,tx+(Math.random()-.5)*s*.2,ty-s*.16-Math.random()*s*.1,s*.02); ctx.fill(); } }
       else { const k=(f.t-.45)/.85; ctx.globalAlpha=Math.max(0,1-k); ctx.fillStyle='#ffd34d'; ctx.beginPath(); for(let i=0;i<16;i++){ const a=i/16*Math.PI*2, r=s*(i%2?.18:.42)*(.6+k*.6); ctx.lineTo(tx+Math.cos(a)*r,ty+Math.sin(a)*r); } ctx.closePath(); ctx.fill();
-        ctx.fillStyle='#b5121b'; ctx.font=`900 ${Math.round(s*.28)}px Rubik, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('БУМ!',tx,ty-s*.05-k*s*.2); ctx.globalAlpha=1; } } }
+        ctx.fillStyle='#b5121b'; ctx.font=`900 ${Math.round(s*.28)}px Rubik, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(tr('БУМ!'),tx,ty-s*.05-k*s*.2); ctx.globalAlpha=1; } } }
   const hotDish=new Set(['kvK','scK']);
   const drawHeat=(it,x,y)=>{ if(!it) return; if(it.h>0){ for(let k=0;k<2;k++){ const ph=(G_anim*1.1+k*.5+x*.01)%1; ctx.strokeStyle=`rgba(255,255,255,${.55*(1-ph)*it.h+.1})`; ctx.lineWidth=Math.max(1,s*.03); ctx.beginPath(); ctx.moveTo(x-s*.08+k*s*.16,y-s*.15); ctx.quadraticCurveTo(x-s*.14+k*s*.16,y-s*.3-ph*s*.15,x-s*.06+k*s*.16,y-s*.42-ph*s*.2); ctx.stroke(); } }
     else if(it.k==='p'&&it.c.some(c=>hotDish.has(c))){ ctx.fillStyle='#bfe6ff'; ctx.font=`900 ${Math.round(s*.24)}px Rubik, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('❄',x+s*.24,y-s*.24); } };
@@ -3711,7 +3980,7 @@ function drawTicket(o,x,y,w,h){
   const n=row.length, iu=Math.min(h*.23,(w-12)/n), iy=y+h-iu/2-5;
   const du=Math.min(h-bh-iu-18,w*.7); drawFnAt(ctx,'dish:'+o.r,cc=>dishArt(cc,o.r),sx+w/2,y+bh+7+du/2,du);
   const fsz=Math.max(9,Math.round(h*.105)); ctx.font=`700 ${fsz}px Rubik, system-ui, sans-serif`; ctx.fillStyle='#8a6d52'; ctx.textAlign='left'; ctx.textBaseline='top';
-  ctx.fillText((isQ(V.L.theme)?'Број ':'Сто ')+o.tb,sx+6,y+bh+8);
+  ctx.fillText(tr(isQ(V.L.theme)?'Број ':'Сто ')+o.tb,sx+6,y+bh+8);
   if(o.ct==='bec'){ const R=Math.max(7,h*.085), cx=sx+w-R-6, cy=y+bh+8+R; circ(ctx,cx,cy,R); ctx.fillStyle='#f2c230'; ctx.fill(); ctx.strokeStyle='#9c7414'; ctx.lineWidth=1.2; ctx.stroke();
     ctx.fillStyle='#6a4a08'; ctx.font=`900 ${Math.round(R*1.3)}px Rubik, system-ui, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('€',cx,cy+.5); }
   rr(ctx,sx+4,iy-iu/2-2,w-8,iu+4,5); ctx.fillStyle='#efe2c8'; ctx.fill();
@@ -3735,8 +4004,8 @@ function drawHUD(dt){
     ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx,cy-r*.65); ctx.moveTo(cx,cy); ctx.lineTo(cx+r*.5,cy+r*.15); ctx.stroke(); });
   const sc=1+FX.scorePulse*.12, my=py+ph+6+ph/2;
   ctx.save(); ctx.translate(px+pw/2,my); ctx.scale(sc,sc); ctx.translate(-(px+pw/2),-my);
-  pill(px,py+ph+6,pw,ph,'#fffdf8','#33200f',fmt(V.score)+' дин.',(cx,cy,r)=>{ circ(ctx,cx,cy,r); fs(ctx,rg(ctx,cx,cy,r,'#ffe08a','#d9a21b'),'#9c7414',Math.max(1.2,r*.15));
-    ctx.fillStyle='#7a5a0c'; ctx.font=`900 ${Math.round(r*1.2)}px Rubik, system-ui, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('д',cx,cy+1); });
+  pill(px,py+ph+6,pw,ph,'#fffdf8','#33200f',tr(fmt(V.score)+' дин.'),(cx,cy,r)=>{ circ(ctx,cx,cy,r); fs(ctx,rg(ctx,cx,cy,r,'#ffe08a','#d9a21b'),'#9c7414',Math.max(1.2,r*.15));
+    ctx.fillStyle='#7a5a0c'; ctx.font=`900 ${Math.round(r*1.2)}px Rubik, system-ui, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(tr('д'),cx,cy+1); });
   ctx.restore();
 }
 function bigText(text,size,color,alpha,yy){
@@ -3745,9 +4014,9 @@ function bigText(text,size,color,alpha,yy){
 }
 function drawCenter(){
   const cy=oy+V.rows*ts/2, base=clamp(ts*1.1,34,90);
-  if(Game.phase==='countdown'){ const c=V.countdown, txt=c>1.2?'Спремни…':'Позор…', p=c>1.2?(2.4-c)/1.2:(1.2-c)/1.2; bigText(txt,base*(1+.15*(1-clamp(p,0,1))),'#fffdf8',1,cy); }
-  if(V.goT>0) bigText('Крени!',base*(1.2+(.9-V.goT)*.4),'#ffd34d',Math.min(1,V.goT/.4),cy);
-  if(Game.phase==='ending') bigText('Крај смене!',base,'#fffdf8',1,cy);
+  if(Game.phase==='countdown'){ const c=V.countdown, txt=tr(c>1.2?'Спремни…':'Позор…'), p=c>1.2?(2.4-c)/1.2:(1.2-c)/1.2; bigText(txt,base*(1+.15*(1-clamp(p,0,1))),'#fffdf8',1,cy); }
+  if(V.goT>0) bigText(tr('Крени!'),base*(1.2+(.9-V.goT)*.4),'#ffd34d',Math.min(1,V.goT/.4),cy);
+  if(Game.phase==='ending') bigText(tr('Крај смене!'),base,'#fffdf8',1,cy);
   if(FX.toast){ const a=Math.min(1,FX.toast.t/.4,(2.4-FX.toast.t)/.25), sz=clamp(ts*.42,15,26);
     ctx.save(); ctx.globalAlpha=a; ctx.font=`800 ${Math.round(sz)}px Rubik, system-ui, sans-serif`; const w=ctx.measureText(FX.toast.text).width+sz*1.6, h=sz*2, y=oy+ts*.3;
     rr(ctx,VW/2-w/2,y,w,h,h/2); ctx.fillStyle='rgba(181,18,27,.95)'; ctx.fill(); ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(FX.toast.text,VW/2,y+h/2+1); ctx.restore(); }
@@ -3806,7 +4075,7 @@ function render(dt){
     for(const e of ents){
       if(e.p){ const p=e.p, s=ts, hx=p.hold;
         drawChar(ctx,ox+p.x*ts,oy+p.y*ts,s,p.fx,p.fy,p.walk,CHARS[p.ch]||CHARS[0],{holding:!!hx,working:p.wk===1||p.wk===2,knife:p.wk===1?(FX.chopT.get('w'+p.slot)||0)/.2:undefined,
-          drawHold:hx?((x,y)=>drawItemAt(ctx,hx,x,y,s*.52)):null,label:multi?(p.me?'Ти':slotName(p.slot)):null}); }
+          drawHold:hx?((x,y)=>drawItemAt(ctx,hx,x,y,s*.52)):null,label:multi?tr(p.me?'Ти':slotName(p.slot)):null}); }
       else { const n=e.n; if(n.kind==='car'){ if(!n.gone) topCar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts*1.15,'#c8202b',Math.atan2(n.fy||0,n.fx||-1)); } else drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk,BAND,{trumpet:true,holding:true}); }
     }
     drawHangers(); drawKitchenFx();
@@ -3850,11 +4119,11 @@ function ui(){
   const k=overlayKind(), playing=['countdown','play','ending'].includes(Game.phase)&&(!k||k==='cmenu');
   $('#pauseBtn').hidden=!(playing&&!k); $('#touch').hidden=!(playing&&!k&&TOUCH);
   if(!uiForce) return; uiForce=false;
-  const sig=k+'#'+sigFor(k); if(sig===uiSig) return; uiSig=sig;
+  const sig=k+'#'+LANG+'#'+sigFor(k); if(sig===uiSig) return; uiSig=sig;
   if(!k){ ov.hidden=true; ov.innerHTML=''; try{ cv.focus({preventScroll:true}); }catch(e){} return; }
   const ae=document.activeElement, focusId=ae&&ae.id, keep={}; ov.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const wasHidden=ov.hidden;
-  ov.hidden=false; ov.innerHTML=BUILD[k]();
+  ov.hidden=false; ov.innerHTML=BUILD[k](); trDom(ov);
   ov.querySelectorAll('canvas[data-icon]').forEach(hydrateIcon);
   for(const id in keep){ const i=ov.querySelector('#'+id); if(i&&!i.readOnly) i.value=keep[id]; }
   const f=(focusId&&ov.querySelector('#'+focusId))||(wasHidden||!ov.contains(document.activeElement)?ov.querySelector('[data-primary]'):null);
@@ -3914,7 +4183,7 @@ function rewardCard(){
 const chefSig=()=>[myCh(),save.ch|0,save.stars.join(''),save.allOpen?1:0,JSON.stringify(Net.slots.map(s=>[s.slot,s.ch])),Game.reward?Game.reward.ch:''].join(';');
 const BUILD={
   menu:()=>{ const solo=Game.mode!=='mp';
-    return `<div class="sheet"><div class="cloth"></div><div class="sheet-body"><h1 class="logo">Прегорело</h1><p class="tagline">Кафанска кухиња, гладни гости и до четири кувара.</p><div class="kilim"></div>
+    return `<div class="sheet"><div class="cloth"></div><div class="sheet-body"><div class="langsel"><div class="seg" role="group" aria-label="Језик / Language"><button data-act="lang" data-l="sr" lang="sr" aria-pressed="${LANG==='sr'}">Српски</button><button data-act="lang" data-l="en" lang="en" aria-pressed="${LANG==='en'}">English</button></div></div><h1 class="logo">Прегорело</h1><p class="tagline">Кафанска кухиња, гладни гости и до четири кувара.</p><div class="kilim"></div>
     <div class="seg" role="group" aria-label="Начин игре"><button data-act="mode" data-m="solo" aria-pressed="${solo}">Сам</button><button data-act="mode" data-m="mp" aria-pressed="${!solo}">Са друштвом</button></div>
     ${chefPicker()}${solo?levelList():mpPanel()}${howto()}${toggles(true)}</div></div>`; },
   lobby:()=>{ const host=Game.role==='host', link=inviteLink();
@@ -3968,7 +4237,7 @@ const BUILD={
 };
 function copyLink(){
   const inp=$('#linkIn'), hint=$('#copyHint'); if(!inp) return;
-  const done=ok=>{ if(hint) hint.textContent=ok?'Линк је копиран.':'Означи линк и копирај га ручно.'; };
+  const done=ok=>{ if(hint) hint.textContent=tr(ok?'Линк је копиран.':'Означи линк и копирај га ручно.'); };
   inp.select(); inp.setSelectionRange(0,inp.value.length);
   if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(inp.value).then(()=>done(true),()=>{ let ok=false; try{ ok=document.execCommand('copy'); }catch(e){} done(ok); });
   else { let ok=false; try{ ok=document.execCommand('copy'); }catch(e){} done(ok); }
@@ -3978,6 +4247,7 @@ function act(a,b){
   switch(a){
     case 'chef': setMyChef(+b.dataset.ch); break;
     case 'unlockall': if(!save.allOpen){ save.allOpen=true; persist(); sfx('unlock'); uiDirty(); } break;
+    case 'lang': setLang(b.dataset.l); break;
     case 'mode': Game.mode=b.dataset.m; save.mode=Game.mode; persist(); uiDirty(); break;
     case 'pick': openIntro(+b.dataset.li); break;
     case 'go': beginLevel(Game.li); break;
@@ -3990,8 +4260,8 @@ function act(a,b){
     case 'join': joinGame(b.dataset.code); break;
     case 'joincode': { const raw=(($('#codeIn')||{}).value||'').trim(), m=raw.match(/igra=([a-z0-9]{4,16})/i);
       const c=m?m[1].toLowerCase():(Net.standalone?raw.toLowerCase():raw.replace(/\D/g,''));
-      if(Net.standalone?/^[a-z0-9]{4,16}$/.test(c):/^\d{4}$/.test(c)) joinGame(c); else { const h=$('#codeHint'); if(h) h.textContent=Net.standalone?'То не личи на позивницу. Налепи цео линк.':'Код има четири цифре.'; } break; }
-    case 'share': { const url=inviteLink(); if(navigator.share) navigator.share({title:'Прегорело',text:'Дођи да кувамо заједно у „Прегорело“',url}).catch(()=>{}); break; }
+      if(Net.standalone?/^[a-z0-9]{4,16}$/.test(c):/^\d{4}$/.test(c)) joinGame(c); else { const h=$('#codeHint'); if(h) h.textContent=tr(Net.standalone?'То не личи на позивницу. Налепи цео линк.':'Код има четири цифре.'); } break; }
+    case 'share': { const url=inviteLink(); if(navigator.share) navigator.share({title:tr('Прегорело'),text:tr('Дођи да кувамо заједно у „Прегорело“'),url}).catch(()=>{}); break; }
     case 'copy': copyLink(); break;
     case 'leave': leaveGame(); break;
     case 'toggle': { const k=b.dataset.k; save[k]=!save[k]; persist(); audioInit(); applyVolumes(); if(k==='music'&&!save.music) musicStop(); uiForce=true; uiSig=''; break; }
@@ -4016,11 +4286,11 @@ function frame(t){
   }catch(err){ console.error(err); }
   requestAnimationFrame(frame);
 }
-V=viewForLevel(0); resize();
+V=viewForLevel(0); resize(); applyLang();
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ bgKey=''; iconCache.clear(); });
 netInit();
 requestAnimationFrame(frame);
-window.__kb={SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
+window.__kb={tr,setLang,SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
 })();
 </script>
 </body>

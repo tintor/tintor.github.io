@@ -111,6 +111,7 @@ That key is visible to anyone who opens the page, so restrict it in your Metered
 
 - **Solo:** open the page and pick a level.
 - **Multiplayer:** the host creates a game and shares the invite link, which looks like `…/pregorelo/#igra=abc123`. Friends open the link, or paste it into the join field. Up to 4 players. The host's browser runs the game, so if the host leaves, the game ends for everyone.
+- **Language:** Serbian by default. The **Српски / English** switch at the top of the main menu changes it, and the browser remembers the choice. In English, Serbian dish names stay in parentheses after the English name, e.g. *Cabbage rolls (Sarma)*. In multiplayer, each player sees the game in their own language.
 
 ## Credits
 
