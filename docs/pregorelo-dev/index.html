@@ -2147,7 +2147,7 @@ function layout(){
   hs=clamp(Math.min(VW,VH)/12.5,30,60);
   const L=V?V.L:LEVELS[0], n=Math.max(1,(Game.role==='solo'?1:Net.slots.length)||1);
   const maxN=Math.min(7,L.maxOrders+(n-1)), rightW=hs*2.9+64, avail=VW-rightW-20;
-  tw=Math.max(44,Math.min(hs*2.05,(avail-(maxN-1)*8)/maxN)); th=Math.min(hs*1.85,tw*1.08);
+  tw=Math.max(44,Math.min(hs*2.4,(avail-(maxN-1)*8)/maxN)); th=Math.min(hs*2.15,tw*1.08);
   topH=10+Math.max(th,hs*.72*2+6)+8;
   if(!V||!V.grid) return;
   const land=VW>VH*1.15, rightPad=land&&TOUCH?190:18;
@@ -4008,7 +4008,7 @@ function drawTicket(o,x,y,w,h){
   const col=frac>.5?'#3aa655':frac>.25?'#e0a01e':'#d63a2e';
   if(frac>0){ rr(ctx,sx+5,y+5,Math.max(bh,(w-10)*frac),bh,bh/2); ctx.fillStyle=col; ctx.fill(); }
   const rc=RECIPES[o.r]; const row=rc.cook?[...rc.in.map(k=>['k',k]),['s',rc.cook],...rc.parts.filter(p=>p!==rc.out+'K').map(k=>['k',k])]:rc.parts.map(k=>['k',k]);
-  const n=row.length, iu=Math.min(h*.23,(w-12)/n), iy=y+h-iu/2-5;
+  const n=row.length, iu=Math.min(h*.3,(w-8)/n), iy=y+h-iu/2-5;
   const du=Math.min(h-bh-iu-18,w*.7); drawFnAt(ctx,'dish:'+o.r,cc=>dishArt(cc,o.r),sx+w/2,y+bh+7+du/2,du);
   const fsz=Math.max(9,Math.round(h*.105)); ctx.font=`700 ${fsz}px Rubik, system-ui, sans-serif`; ctx.fillStyle='#8a6d52'; ctx.textAlign='left'; ctx.textBaseline='top';
   ctx.fillText(tr(isQ(V.L.theme)?'Број ':'Сто ')+o.tb,sx+6,y+bh+8);
@@ -4016,7 +4016,7 @@ function drawTicket(o,x,y,w,h){
     ctx.fillStyle='#6a4a08'; ctx.font=`900 ${Math.round(R*1.3)}px Rubik, system-ui, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('€',cx,cy+.5); }
   rr(ctx,sx+4,iy-iu/2-2,w-8,iu+4,5); ctx.fillStyle='#efe2c8'; ctx.fill();
   let ix=sx+w/2-(n*iu)/2+iu/2;
-  for(const [kind,k] of row){ if(kind==='k') drawKeyAt(ctx,k,ix,iy,iu*.9); else drawFnAt(ctx,'st:'+k,k==='pot'?iPotIcon:k==='kotlic'?iKotlicIcon:k==='kazan'?iKazanIcon:iOvenIcon,ix,iy,iu*.88); ix+=iu; }
+  for(const [kind,k] of row){ if(kind==='k') drawKeyAt(ctx,k[2]==='C'?k.slice(0,2)+'R':k,ix,iy,iu*.96); else drawFnAt(ctx,'st:'+k,k==='pot'?iPotIcon:k==='kotlic'?iKotlicIcon:k==='kazan'?iKazanIcon:iOvenIcon,ix,iy,iu*.88); ix+=iu; }
 }
 function pill(x,y,w,h,bg1,fg,text,icon){
   ctx.fillStyle='rgba(0,0,0,.32)'; rr(ctx,x+2,y+3,w,h,h/2); ctx.fill();
