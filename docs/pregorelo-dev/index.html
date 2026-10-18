@@ -433,7 +433,7 @@ const LEVELS=[
   { name:'Кафана „Златни котлић“', theme:'kafana', tune:'kolo',
     desc:'Мирно вече у кафани. Роштиљ ради, гости траже ћевапе, пљескавицу и шопску.',
     novo:'Узми тањир, сложи састојке на њега и однеси јело на шалтер — црвено-бели пулт горе лево. Што брже послужиш, то већи бакшиш.',
-    time:150, recipes:['cevapi','pljeskavica','sopska'], interval:18, maxOrders:4, patience:80, plates:4, trays:0, dirty:false,
+    time:150, recipes:['cevapi','pljeskavica','sopska'], interval:18, maxOrders:4, patience:80, plates:4, trays:0, dirty:false, mess:true,
     stars:[600,1500,2500],
     map:['#WW#p#k#s#l##','#...........X','D...........X','#...#####...#','#...#####...G','#...........G','R.....@.....#','##h#j##m#####']},
   { name:'Пекара „Зора“', theme:'pekara', tune:'kolo2',
@@ -574,7 +574,7 @@ const EN={
   'Тањири се не бацају!':'Don’t throw plates away!','Чаше се не бацају!':'Don’t throw cups away!','Тегле се не бацају!':'Don’t throw jars away!',
   'Тањир је већ празан.':'The plate is already empty.','Чаша је већ празна.':'The cup is already empty.','Тегла је већ празна.':'The jar is already empty.',
   'Нема чистих тањира!':'No clean plates!','Нема више чаша!':'No cups left!','Нема више тегли!':'No jars left!',
-  'Загорело! Баци у канту.':'Burnt! Throw it in the bin.','Прво измрви сир!':'Crumble the cheese first!','Прво очисти рибу!':'Clean the fish first!',
+  'Загорело! Баци у канту.':'Burnt! Throw it in the bin.','Тако нешто нико не наручује! Баци у канту.':'Nobody orders that! Throw it in the bin.','Прво измрви сир!':'Crumble the cheese first!','Прво очисти рибу!':'Clean the fish first!',
   'Прво исецкај!':'Chop it first!','Прво испеци на роштиљу!':'Grill it first!','Прво испеци паприке у бубњу!':'Roast the peppers in the drum first!',
   'Прво ољушти паприку (E)!':'Peel the pepper first (E)!','Сад их испеци у тигању!':'Now roast them in the pan!','Прво испеци палачинку!':'Cook the crêpe first!',
   'То иде у лонац!':'That goes in the pot!','То иде у котлић!':'That goes in the cauldron!','То иде у тепсију!':'That goes in a tray!','То иде у казан!':'That goes in the kettle!',
@@ -963,7 +963,7 @@ XL.es={
   'Тањири се не бацају!':'¡Los platos no se tiran!','Чаше се не бацају!':'¡Los vasos no se tiran!','Тегле се не бацају!':'¡Los frascos no se tiran!',
   'Тањир је већ празан.':'El plato ya está vacío.','Чаша је већ празна.':'El vaso ya está vacío.','Тегла је већ празна.':'El frasco ya está vacío.',
   'Нема чистих тањира!':'¡No hay platos limpios!','Нема више чаша!':'¡No quedan vasos!','Нема више тегли!':'¡No quedan frascos!',
-  'Загорело! Баци у канту.':'¡Quemado! Tíralo a la basura.','Прво измрви сир!':'¡Primero desmenuza el queso!','Прво очисти рибу!':'¡Primero limpia el pescado!',
+  'Загорело! Баци у канту.':'¡Quemado! Tíralo a la basura.','Тако нешто нико не наручује! Баци у канту.':'¡Nadie pide eso! Tíralo a la basura.','Прво измрви сир!':'¡Primero desmenuza el queso!','Прво очисти рибу!':'¡Primero limpia el pescado!',
   'Прво исецкај!':'¡Primero pícalo!','Прво испеци на роштиљу!':'¡Primero ásalo a la parrilla!','Прво испеци паприке у бубњу!':'¡Primero asa los pimientos en el tambor!',
   'Прво ољушти паприку (E)!':'¡Primero pela el pimiento (E)!','Сад их испеци у тигању!':'¡Ahora ásalas en la sartén!','Прво испеци палачинку!':'¡Primero haz la crepe!',
   'То иде у лонац!':'¡Eso va en la olla!','То иде у котлић!':'¡Eso va en el caldero!','То иде у тепсију!':'¡Eso va en una bandeja!','То иде у казан!':'¡Eso va en el perol!',
@@ -1319,7 +1319,7 @@ XL.zh={
   'Тањири се не бацају!':'盘子可不能扔！','Чаше се не бацају!':'杯子可不能扔！','Тегле се не бацају!':'罐子可不能扔！',
   'Тањир је већ празан.':'盘子已经空了。','Чаша је већ празна.':'杯子已经空了。','Тегла је већ празна.':'罐子已经空了。',
   'Нема чистих тањира!':'没有干净盘子了！','Нема више чаша!':'杯子用完了！','Нема више тегли!':'罐子用完了！',
-  'Загорело! Баци у канту.':'烧焦了！扔进垃圾桶。','Прво измрви сир!':'先把奶酪捏碎！','Прво очисти рибу!':'先把鱼处理干净！',
+  'Загорело! Баци у канту.':'烧焦了！扔进垃圾桶。','Тако нешто нико не наручује! Баци у канту.':'没人点这个！扔进垃圾桶。','Прво измрви сир!':'先把奶酪捏碎！','Прво очисти рибу!':'先把鱼处理干净！',
   'Прво исецкај!':'先切好！','Прво испеци на роштиљу!':'先放到烤架上烤！','Прво испеци паприке у бубњу!':'先把红椒放进滚筒里烤！',
   'Прво ољушти паприку (E)!':'先给红椒剥皮 (E)！','Сад их испеци у тигању!':'现在放进平底锅里烤！','Прво испеци палачинку!':'先把可丽饼煎好！',
   'То иде у лонац!':'这个要放进汤锅！','То иде у котлић!':'这个要放进吊锅！','То иде у тепсију!':'这个要放进烤盘！','То иде у казан!':'这个要放进大锅！',
@@ -1675,7 +1675,7 @@ XL.hi={
   'Тањири се не бацају!':'प्लेटें मत फेंको!','Чаше се не бацају!':'कप मत फेंको!','Тегле се не бацају!':'जार मत फेंको!',
   'Тањир је већ празан.':'प्लेट पहले से खाली है।','Чаша је већ празна.':'कप पहले से खाली है।','Тегла је већ празна.':'जार पहले से खाली है।',
   'Нема чистих тањира!':'साफ़ प्लेटें नहीं हैं!','Нема више чаша!':'कप ख़त्म हो गए!','Нема више тегли!':'जार ख़त्म हो गए!',
-  'Загорело! Баци у канту.':'जल गया! कूड़ेदान में फेंको।','Прво измрви сир!':'पहले चीज़ का चूरा करो!','Прво очисти рибу!':'पहले मछली साफ़ करो!',
+  'Загорело! Баци у канту.':'जल गया! कूड़ेदान में फेंको।','Тако нешто нико не наручује! Баци у канту.':'ऐसा कोई ऑर्डर नहीं करता! कूड़ेदान में फेंको।','Прво измрви сир!':'पहले चीज़ का चूरा करो!','Прво очисти рибу!':'पहले मछली साफ़ करो!',
   'Прво исецкај!':'पहले काटो!','Прво испеци на роштиљу!':'पहले ग्रिल करो!','Прво испеци паприке у бубњу!':'पहले मिर्च को ड्रम में भूनो!',
   'Прво ољушти паприку (E)!':'पहले मिर्च छीलो (E)!','Сад их испеци у тигању!':'अब इन्हें पैन में भूनो!','Прво испеци палачинку!':'पहले क्रेप पकाओ!',
   'То иде у лонац!':'यह पतीले में जाता है!','То иде у котлић!':'यह हांडी में जाता है!','То иде у тепсију!':'यह ट्रे में जाता है!','То иде у казан!':'यह कड़ाह में जाता है!',
@@ -2031,7 +2031,7 @@ XL.pt={
   'Тањири се не бацају!':'Não jogue os pratos fora!','Чаше се не бацају!':'Não jogue os copos fora!','Тегле се не бацају!':'Não jogue os potes fora!',
   'Тањир је већ празан.':'O prato já está vazio.','Чаша је већ празна.':'O copo já está vazio.','Тегла је већ празна.':'O pote já está vazio.',
   'Нема чистих тањира!':'Sem pratos limpos!','Нема више чаша!':'Acabaram os copos!','Нема више тегли!':'Acabaram os potes!',
-  'Загорело! Баци у канту.':'Queimou! Jogue no lixo.','Прво измрви сир!':'Esfarele o queijo primeiro!','Прво очисти рибу!':'Limpe o peixe primeiro!',
+  'Загорело! Баци у канту.':'Queimou! Jogue no lixo.','Тако нешто нико не наручује! Баци у канту.':'Ninguém pede isso! Jogue no lixo.','Прво измрви сир!':'Esfarele o queijo primeiro!','Прво очисти рибу!':'Limpe o peixe primeiro!',
   'Прво исецкај!':'Pique primeiro!','Прво испеци на роштиљу!':'Grelhe primeiro!','Прво испеци паприке у бубњу!':'Asse os pimentões no tambor primeiro!',
   'Прво ољушти паприку (E)!':'Descasque o pimentão primeiro (E)!','Сад их испеци у тигању!':'Agora asse na frigideira!','Прво испеци палачинку!':'Faça o crepe primeiro!',
   'То иде у лонац!':'Isso vai na panela!','То иде у котлић!':'Isso vai no caldeirão!','То иде у тепсију!':'Isso vai numa assadeira!','То иде у казан!':'Isso vai no tacho!',
@@ -2387,7 +2387,7 @@ XL.ja={
   'Тањири се не бацају!':'お皿は捨てないで！','Чаше се не бацају!':'カップは捨てないで！','Тегле се не бацају!':'瓶は捨てないで！',
   'Тањир је већ празан.':'お皿はもう空です。','Чаша је већ празна.':'カップはもう空です。','Тегла је већ празна.':'瓶はもう空です。',
   'Нема чистих тањира!':'きれいなお皿がありません！','Нема више чаша!':'カップがもうありません！','Нема више тегли!':'瓶がもうありません！',
-  'Загорело! Баци у канту.':'焦げた！ゴミ箱に捨てよう。','Прво измрви сир!':'まずチーズを崩そう！','Прво очисти рибу!':'まず魚をさばこう！',
+  'Загорело! Баци у канту.':'焦げた！ゴミ箱に捨てよう。','Тако нешто нико не наручује! Баци у канту.':'そんなの誰も頼まない！ゴミ箱に捨てよう。','Прво измрви сир!':'まずチーズを崩そう！','Прво очисти рибу!':'まず魚をさばこう！',
   'Прво исецкај!':'まず刻もう！','Прво испеци на роштиљу!':'まずグリルで焼こう！','Прво испеци паприке у бубњу!':'まずパプリカをドラムで焼こう！',
   'Прво ољушти паприку (E)!':'まずパプリカの皮をむこう(E)！','Сад их испеци у тигању!':'次はフライパンで焼こう！','Прво испеци палачинку!':'まずクレープを焼こう！',
   'То иде у лонац!':'それは鍋へ！','То иде у котлић!':'それは釜へ！','То иде у тепсију!':'それは天板へ！','То иде у казан!':'それは大釜へ！',
@@ -2743,7 +2743,7 @@ XL.fr={
   'Тањири се не бацају!':'On ne jette pas les assiettes\u202f!','Чаше се не бацају!':'On ne jette pas les tasses\u202f!','Тегле се не бацају!':'On ne jette pas les bocaux\u202f!',
   'Тањир је већ празан.':'L’assiette est déjà vide.','Чаша је већ празна.':'La tasse est déjà vide.','Тегла је већ празна.':'Le bocal est déjà vide.',
   'Нема чистих тањира!':'Plus d’assiettes propres\u202f!','Нема више чаша!':'Plus de tasses\u202f!','Нема више тегли!':'Plus de bocaux\u202f!',
-  'Загорело! Баци у канту.':'Brûlé\u202f! Jette-le à la poubelle.','Прво измрви сир!':'Émiette d’abord le fromage\u202f!','Прво очисти рибу!':'Nettoie d’abord le poisson\u202f!',
+  'Загорело! Баци у канту.':'Brûlé\u202f! Jette-le à la poubelle.','Тако нешто нико не наручује! Баци у канту.':'Personne ne commande ça\u202f! Jette-le à la poubelle.','Прво измрви сир!':'Émiette d’abord le fromage\u202f!','Прво очисти рибу!':'Nettoie d’abord le poisson\u202f!',
   'Прво исецкај!':'Coupe-le d’abord\u202f!','Прво испеци на роштиљу!':'Grille-le d’abord\u202f!','Прво испеци паприке у бубњу!':'Grille d’abord les poivrons dans le tambour\u202f!',
   'Прво ољушти паприку (E)!':'Épluche d’abord le poivron (E)\u202f!','Сад их испеци у тигању!':'Maintenant, grille-les à la poêle\u202f!','Прво испеци палачинку!':'Fais d’abord cuire la crêpe\u202f!',
   'То иде у лонац!':'Ça va dans la marmite\u202f!','То иде у котлић!':'Ça va dans le chaudron\u202f!','То иде у тепсију!':'Ça va dans un moule\u202f!','То иде у казан!':'Ça va dans la cuve\u202f!',
@@ -3742,7 +3742,12 @@ function isSub(a,b){ const m={}; for(const k of b) m[k]=(m[k]||0)+1; for(const k
 /* листићи злата (фјужн): највише један на тањиру, не мењају које је јело */
 const goldCore=c=>{ const i=c.indexOf('zlR'); return i<0?c:[...c.slice(0,i),...c.slice(i+1)]; };
 function plateDishOf(L,c){ if(!L||!c||!c.length) return null; if(L.gold) c=goldCore(c); return L.recipes.find(r=>RECIPES[r].parts.length===c.length&&isSub(c,RECIPES[r].parts))||null; }
-function plateValid(c){ if(S.L.gold&&c.includes('zlR')){ if(c.filter(k=>k==='zlR').length>1) return false; c=goldCore(c); if(!c.length) return true; } return S.L.recipes.some(r=>isSub(c,RECIPES[r].parts)); }
+/* на тањиру је почетак неког јела са менија */
+const plateOnTrack=c=>{ if(S.L.gold) c=goldCore(c); return S.L.recipes.some(r=>isSub(c,RECIPES[r].parts)); };
+/* ниво с mess (кафана): исецкан парадајз, краставац, сир и лук иду на тањир у било ком споју, до три комада —
+   лук у шопској, два парадајза, три сира. Такво јело нико не наручује, па иде у канту. */
+const MESS=new Set(['paC','krC','siC','luC']);
+function plateValid(c){ if(S.L.gold&&c.includes('zlR')){ if(c.filter(k=>k==='zlR').length>1) return false; c=goldCore(c); if(!c.length) return true; } return plateOnTrack(c)||!!S.L.mess&&c.length<=3&&c.every(k=>MESS.has(k)); }
 /* рецепти нивоа заједно са међупроизводима */
 const lvR=L=>L.preps?L.recipes.concat(L.preps):L.recipes;
 function vesselValid(kind,c){ return lvR(S.L).some(r=>RECIPES[r].cook===kind&&isSub(c,RECIPES[r].in)); }
@@ -4049,7 +4054,7 @@ function simGrab(p){
       if(!h) return;
       if(h.k!=='p'){ deny(p,t,PW('serve')); return; }
       if(!h.c.length){ deny(p,t,PW('empty')); return; }
-      const d=plateDishOf(S.L,h.c); if(!d){ deny(p,t,'Јело није готово!'); return; }
+      const d=plateDishOf(S.L,h.c); if(!d){ deny(p,t,plateOnTrack(h.c)?'Јело није готово!':'Тако нешто нико не наручује! Баци у канту.'); return; }
       if(S.L.theme==='kasarna'){ const lux=d!=='pasulj';
         if(t.officer&&!lux){ deny(p,t,'Шта је ово, војска?!'); return; }
         if(!t.officer&&lux){ steal(p,t,d); return; } }
