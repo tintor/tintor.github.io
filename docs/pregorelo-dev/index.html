@@ -61,10 +61,10 @@ h3{font-size:17px; margin:0 0 4px; font-weight:800}
 .seg button{font:inherit; font-weight:800; font-size:15px; border:0; background:transparent; color:var(--muted); padding:8px 18px; border-radius:999px; cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--red); color:#fff}
 .seg button:focus-visible{outline:3px solid var(--brass); outline-offset:1px}
-.langsel{display:flex; justify-content:flex-end; margin:-8px -6px 2px 0}
+.langsel{display:flex; justify-content:center; margin:-8px 0 2px}
 .langsel .seg{margin:0}
 .langsel .seg button{font-size:13px; padding:5px 12px}
-.langsel .langs{flex-wrap:wrap; justify-content:flex-end; border-radius:18px}
+.langsel .langs{flex-wrap:wrap; justify-content:center; border-radius:18px}
 
 .pass{background-color:#3b2416; background-image:repeating-linear-gradient(0deg,transparent 0 30px,rgba(0,0,0,.18) 30px 32px),repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.14) 46px 48px); border-radius:14px; padding:16px clamp(10px,2.4vw,20px) 20px; display:flex; flex-direction:column; gap:18px}
 .rail{position:relative; padding-top:7px}
@@ -519,7 +519,7 @@ const progSig=()=>save.stars.join('')+'/'+save.best.join(',')+'/'+(save.tutStars
    Домаћин шаље поруке на српском, па сваки играч види свој језик. */
 const LANGS=[['sr','Српски','sr-Cyrl-RS'],['en','English','en'],['es','Español','es'],['zh','中文','zh-Hans'],['hi','हिन्दी','hi'],['pt','Português','pt-BR'],['ja','日本語','ja'],['fr','Français','fr']]; // код, име на том језику, lang за HTML
 const langOk=l=>LANGS.some(x=>x[0]===l);
-let LANG=langOk(save.lang)?save.lang:'sr', langOpen=false;
+let LANG=langOk(save.lang)?save.lang:'sr';
 const EN={
   // састојци и јела (српски назив јела остаје у загради)
   'Парадајз':'Tomato','Краставац':'Cucumber','Сир':'Cheese','Лук':'Onion','Месо':'Meat','Лепиња':'Flatbread (Lepinja)',
@@ -3097,7 +3097,7 @@ function applyLang(){
   document.querySelectorAll('#tbtns .tb').forEach(b=>{ b.textContent=tr({work:'Ради',dash:'Трк',grab:'Узми'}[b.dataset.act]); });
   bgKey=''; iconCache.clear(); uiForce=true; uiSig='';
 }
-function setLang(l){ LANG=langOk(l)?l:'sr'; langOpen=false; save.lang=LANG; persist(); applyLang(); }
+function setLang(l){ LANG=langOk(l)?l:'sr'; save.lang=LANG; persist(); applyLang(); }
 const QTHEMES=new Set(['pekara','zimnica','ada','docek']), isQ=th=>QTHEMES.has(th);
 const chefOpen=i=>i>=0&&i<CHARS.length&&(!CHEF_REQ[i]||DEBUGGING||!!save.allOpen||starsOf(CHEF_REQ[i].li)>=3);
 const levelOpen=i=>UNLOCK_ALL||DEBUGGING||!!save.allOpen||i<=1||starsOf(i-1)>=1; // обука и кафана су увек отворене
@@ -8813,7 +8813,7 @@ function nPlayers(){ return Game.role==='solo'?1:Math.max(1,(Game.role==='couch'
 function scaledStars(L){ const n=nPlayers(); return L.stars.map(v=>Math.round(v*(1+.35*(n-1))/50)*50); }
 function sigFor(k){
   switch(k){
-    case 'menu': return [langOpen,pad.on,couchSig(),Game.mode,Net.avail,Net.standalone,JSON.stringify(Net.adverts.map(a=>[a.code,a.n,a.ph,Net.names[a.by]||''])),progSig(),save.sound,save.music,chefSig()].join('|');
+    case 'menu': return [pad.on,couchSig(),Game.mode,Net.avail,Net.standalone,JSON.stringify(Net.adverts.map(a=>[a.code,a.n,a.ph,Net.names[a.by]||''])),progSig(),save.sound,save.music,chefSig()].join('|');
     case 'lobby': return [chefSig(),Game.role,Net.code,Game.li,JSON.stringify(Net.slots.map(s=>[s.slot,s.ch,s.peer===Net.myPeer||s.peer==='me',slotName(s.slot),Game.role==='host'&&s.peer!=='me'?!!(Net.conns.get(s.peer)||{}).dcOpen:''])),Net.rtcState,progSig(),JSON.stringify(Net.routes),TURN.state].join('|');
     case 'intro': return [Game.role,Game.li,nPlayers(),chefSig(),couchSig()].join('|');
     case 'pause': return Game.role+'|'+save.sound+save.music;
@@ -8948,10 +8948,9 @@ function ipsQR(){
   for(let r=0;r<n;r++) for(let c=0;c<n;c++) if(q.isDark(r,c)) d+=`M${c+4} ${r+4}h1v1h-1z`;
   return ipsSvg=`<svg viewBox="0 0 ${w} ${w}" shape-rendering="crispEdges" aria-hidden="true"><rect width="${w}" height="${w}" fill="#fff"/><path d="${d}" fill="#000"/></svg>`;
 }
-/* избор језика: 🌐 и име текућег језика; клик отвара сва имена, свако написано на свом језику */
+/* избор језика: сви језици увек на врху менија, сваки написан на свом језику; id чува фокус кад се мени поново нацрта */
 function langSel(){
-  if(!langOpen){ const c=LANGS.find(x=>x[0]===LANG); return `<div class="langsel"><div class="seg"><button id="langBtn" data-act="langs" lang="${c[2]}" aria-expanded="false"><span aria-hidden="true">🌐</span> ${c[1]} <span aria-hidden="true">▾</span></button></div></div>`; }
-  return `<div class="langsel"><div class="seg langs" role="group" aria-label="Језик">${LANGS.map(([c,n,h])=>`<button ${c===LANG?'id="langBtn" data-back ':''}data-act="lang" data-l="${c}" lang="${h}" aria-pressed="${c===LANG}">${n}</button>`).join('')}</div></div>`;
+  return `<div class="langsel"><div class="seg langs" role="group" aria-label="Језик">${LANGS.map(([c,n,h])=>`<button id="lang-${c}" data-act="lang" data-l="${c}" lang="${h}" aria-pressed="${c===LANG}">${n}</button>`).join('')}</div></div>`;
 }
 const BUILD={
   menu:()=>{ const m=Game.mode==='mp'?'mp':Game.mode==='couch'?'couch':'solo';
@@ -9042,7 +9041,6 @@ function act(a,b){
     case 'kofi': window.open(TIP.kofi,'_blank','noopener'); break;
     case 'tipcopy': copyAcct(); break;
     case 'tipdone': if(!save.allOpen){ save.allOpen=true; persist(); sfx('unlock'); } Game.tip=false; uiDirty(); break;
-    case 'langs': langOpen=true; uiDirty(); break;
     case 'lang': setLang(b.dataset.l); break;
     case 'mode': Game.mode=b.dataset.m; save.mode=Game.mode; if(Game.role==='solo'||Game.role==='couch') Game.role=Game.mode==='couch'?'couch':'solo'; persist(); uiDirty(); break;
     case 'cchef': couchCycle(+b.dataset.slot,+b.dataset.d); break;
