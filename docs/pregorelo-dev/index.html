@@ -5658,7 +5658,7 @@ function buildRows45(th){
   for(const P of parts.slice().sort((a,b)=>b.ah-a.ah)){ Object.assign(P,atlasAlloc45(P.aw,P.ah));
     atlasDraw45(P,P.x,P.y,DPR,c=>{ if(P.draw) return P.draw(c); for(const t of P.row){ c.save(); c.translate(ox+t.x*ts,oy+(t.y-zl45(t))*ts); c.scale(u,u); base45(c,t,th); c.restore(); }
       if(V.L.street){ c.save(); c.translate(ox+P.row[0].x*ts,oy+P.row[0].y*ts); c.scale(u,u); iceAwning(c,P.row); c.restore(); } }); }
-  if(V.L.farm||V.L.street) sprAtlas(V.L.farm?'farm':'street');
+  if(V.L.farm) sprAtlas('farm'); // остали нивои имају по неколико спрајтова (голубови, прасе): они иду у AT45 преко spr45
 }
 
 /* ---- оно што се мрда, сваки кадар ---- */
@@ -7989,28 +7989,30 @@ function weddingFun(dt,on){
     if(!Rr.dove&&Math.abs(Rr.x-c.x)<sc*.75&&Rr.x>P.x+sc*.5&&Rr.x<P.x+P.w-sc*.5){ Rr.dove=true; c.diveT=.9; bubble(c,'Ееее!',1); for(let i=0;i<12;i++) spart({kind:'feather',x:Rr.x-Rr.dir*sc*.1,y:Rr.y-sc*.15,vx:(Math.random()-.5)*90,vy:-40-Math.random()*40,g:90,life:1.4,rot:Math.random()*6}); sfxS('crow'); }
     if((Rr.dir>0&&c.x>P.x+P.w+sc*1.2)||(Rr.dir<0&&c.x<P.x-sc*1.2)) SCN.rooster=null; }
 }
-function drawPig(x,y,w,bites){
-  const h=w*.42; ctx.save(); ctx.translate(x,y);
-  ctx.strokeStyle='#8a4a1e'; ctx.lineWidth=h*.12; ctx.lineCap='round'; ctx.beginPath(); for(const lx of [-.3,-.15,.15,.3]){ ctx.moveTo(lx*w,h*.25); ctx.lineTo(lx*w*1.1,h*.58); } ctx.stroke();
-  ell(ctx,0,0,w*.5,h*.5); fs(ctx,lg(ctx,0,-h*.5,0,h*.5,'#e09a52','#8a4a1e'),'rgba(60,25,5,.6)',1.2);
-  ell(ctx,-w*.12,-h*.22,w*.22,h*.08); ctx.fillStyle='rgba(255,230,180,.38)'; ctx.fill();
-  for(let i=0;i<Math.min(4,bites);i++){ ell(ctx,-w*.28+i*w*.15,-h*.4,w*.065,h*.14); ctx.fillStyle='#f2c0a6'; ctx.fill(); ctx.strokeStyle='rgba(90,40,10,.6)'; ctx.lineWidth=1; ctx.stroke(); }
-  ell(ctx,w*.5,-h*.05,h*.42,h*.36); fs(ctx,lg(ctx,0,-h*.4,0,h*.3,'#e09a52','#8a4a1e'),'rgba(60,25,5,.6)',1.2);
-  ctx.beginPath(); ctx.moveTo(w*.42,-h*.3); ctx.lineTo(w*.48,-h*.56); ctx.lineTo(w*.56,-h*.3); ctx.closePath(); ctx.fillStyle='#a8602a'; ctx.fill();
-  ell(ctx,w*.8,-h*.02,h*.16,h*.14); fs(ctx,'#c86e3c','rgba(60,25,5,.6)',1);
-  circ(ctx,w*.93,h*.07,h*.14); fs(ctx,'#d8261c','rgba(80,0,0,.6)',1); ctx.fillStyle='#3f8f3a'; ctx.fillRect(w*.93-1,h*.07-h*.22,2.5,h*.09);
-  ctx.strokeStyle='#3a1a08'; ctx.lineWidth=1.3; ctx.beginPath(); ctx.arc(w*.58,-h*.1,h*.06,0,Math.PI); ctx.stroke();
-  ctx.beginPath(); ctx.arc(-w*.53,-h*.12,h*.08,0,Math.PI*1.6); ctx.stroke(); ctx.restore();
-}
+/* прасе на ражњу: Ink & cel спрајтови у атласу нивоа; ноге и одсјај круже око ражња док ражњар окреће ручицу */
 function drawRoast(){
-  const R=SCN.roast, sc=SCN.sc, x=R.x, y=R.y, w=sc*1.25, py=y-sc*.34, st=SCN.roastSt||{bites:0};
-  ctx.fillStyle='rgba(0,0,0,.25)'; ell(ctx,x,y+sc*.12,w*.6,sc*.18); ctx.fill();
-  for(let i=0;i<8;i++){ const a=i/8*Math.PI*2; ell(ctx,x+Math.cos(a)*w*.42,y+sc*.06+Math.sin(a)*sc*.13,sc*.07,sc*.05); ctx.fillStyle=`rgb(${120+i*8},${112+i*7},${104+i*6})`; ctx.fill(); }
-  ctx.strokeStyle='#5a3a20'; ctx.lineWidth=sc*.06; ctx.beginPath(); ctx.moveTo(x-w*.28,y+sc*.1); ctx.lineTo(x+w*.28,y+sc*.02); ctx.moveTo(x-w*.25,y); ctx.lineTo(x+w*.25,y+sc*.12); ctx.stroke();
-  for(let i=0;i<6;i++){ const fx=x-w*.25+i*w*.1, f=.7+.35*Math.sin(G_anim*12+i*1.9); ctx.beginPath(); ctx.moveTo(fx-sc*.05,y+sc*.06); ctx.quadraticCurveTo(fx,y-sc*.24*f,fx+sc*.05,y+sc*.06); ctx.closePath(); ctx.fillStyle=i%2?'rgba(255,170,40,.95)':'rgba(255,90,20,.9)'; ctx.fill(); }
-  ctx.strokeStyle='#6b4a2a'; ctx.lineWidth=sc*.05; ctx.beginPath(); for(const sx of [-1,1]){ ctx.moveTo(x+sx*w*.56,y+sc*.08); ctx.lineTo(x+sx*w*.56,py); ctx.moveTo(x+sx*w*.56,py+sc*.04); ctx.lineTo(x+sx*w*.5,py-sc*.07); ctx.moveTo(x+sx*w*.56,py+sc*.04); ctx.lineTo(x+sx*w*.62,py-sc*.07); } ctx.stroke();
-  drawPig(x,py,w*.8,st.bites);
-  ctx.strokeStyle='#9a9a9a'; ctx.lineWidth=sc*.03; ctx.beginPath(); ctx.moveTo(x-w*.64,py); ctx.lineTo(x+w*.68,py); const ca=G_anim*1.6; ctx.moveTo(x+w*.68,py); ctx.lineTo(x+w*.68+Math.cos(ca)*sc*.1,py+Math.sin(ca)*sc*.1); ctx.stroke();
+  const R=SCN.roast, sc=SCN.sc, x=R.x, y=R.y, U=sc*.0088, st=SCN.roastSt||{bites:0}, th=G_anim*1.6;
+  ctx.fillStyle='rgba(0,0,0,.25)'; ell(ctx,x,y+sc*.12,sc*.78,sc*.18); ctx.fill();
+  ctx.save(); ctx.translate(x,y+sc*.06); ctx.scale(U,U); ctx.lineCap='round'; ctx.lineJoin='round';
+  fdr(ctx,'rpPit');
+  for(let i=0;i<7;i++){ const fx=-54+i*18, f=.7+.35*Math.sin(G_anim*12+i*1.9), h=(18+(i%3)*7)*f; ctx.beginPath(); ctx.moveTo(fx-7,4); ctx.quadraticCurveTo(fx-6,-h*.5,fx+Math.sin(G_anim*7+i)*3,-h); ctx.quadraticCurveTo(fx+6,-h*.5,fx+7,4); ctx.closePath(); ctx.fillStyle=i%2?'rgba(255,170,40,.95)':'rgba(255,96,24,.9)'; ctx.fill(); }
+  for(let i=0;i<4;i++){ const fx=-40+i*26, f=.6+.3*Math.sin(G_anim*15+i*2.3); ctx.beginPath(); ctx.ellipse(fx,-4*f,3.4,9*f,0,0,Math.PI*2); ctx.fillStyle='rgba(255,236,150,.9)'; ctx.fill(); }
+  for(const sx of [-1,1]){ ctx.save(); ctx.translate(sx*82,-2); fdr(ctx,'rpPost'); ctx.restore(); }
+  ctx.translate(0,-42);
+  ctx.strokeStyle=INK45; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(-92,0); ctx.lineTo(98,0); ctx.stroke(); ctx.strokeStyle='#b8bec2'; ctx.lineWidth=2.6; ctx.stroke();
+  ctx.save(); ctx.scale(-1,1);
+  const leg=(lx,a)=>{ const cv=Math.cos(a); ctx.save(); ctx.translate(lx,17*cv); ctx.scale(1,cv||.01); fdr(ctx,'rpL'); ctx.restore(); };
+  const L=[[-36,th],[-26,th+.35],[18,th+.15],[28,th+.5]];
+  for(const [lx,a] of L) if(Math.sin(a)<=0) leg(lx,a);
+  fdr(ctx,'rpB');
+  for(let k=0;k<3;k++){ const a=th+k*2.094, sn=Math.sin(a); if(sn<=0) continue; ctx.globalAlpha=.3*sn; ctx.fillStyle='#fff0c8'; ctx.beginPath(); ctx.ellipse(-4,-19*Math.cos(a),38,2.6+2*sn,0,0,Math.PI*2); ctx.fill(); } ctx.globalAlpha=1;
+  for(let i=0;i<Math.min(4,st.bites);i++){ const bx=-30+i*15; ctx.beginPath(); ctx.arc(bx,-22,6,0,Math.PI); ctx.closePath(); ctx.fillStyle='#f2c0a6'; ctx.fill(); ctx.strokeStyle=INK45; ctx.lineWidth=1.6; ctx.stroke(); }
+  for(const [lx,a] of L) if(Math.sin(a)>0) leg(lx,a);
+  ctx.restore();
+  ctx.strokeStyle=INK45; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(98,0); ctx.lineTo(98+Math.cos(th)*13,Math.sin(th)*13); ctx.stroke(); ctx.strokeStyle='#b8bec2'; ctx.lineWidth=2.6; ctx.stroke();
+  ctx.beginPath(); ctx.arc(98+Math.cos(th)*13,Math.sin(th)*13,3.6,0,Math.PI*2); ctx.fillStyle='#6b4a2a'; ctx.fill();
+  for(let k=0;k<3;k++){ const f=(G_anim*1.3+k*.37)%1; ctx.globalAlpha=1-f; ctx.beginPath(); ctx.ellipse(-30+k*24,22+f*26,1.8,2.6,0,0,Math.PI*2); ctx.fillStyle='#ffd36a'; ctx.fill(); } ctx.globalAlpha=1;
+  ctx.restore();
 }
 function drawRooster(x,y,s,dir,t){
   ctx.save(); ctx.translate(x,y); ctx.scale(dir,1);
@@ -9358,7 +9360,7 @@ function farmUnsnap(o,f){ const fm=o.fm;
    Јединице: плочица је 100, y расте надоле, висина се одузима од y. */
 const FSP=new Map(); let FSPG='farm'; // група: спрајтови једног нивоа иду у његов атлас
 const fsp=(id,x,y,w,h,fn)=>FSP.set(id,[fn,x,y,w,h,FSPG]);
-/* Спрајтови дворишта (~120) и голубова иду у свој атлас FAT, а не у AT45: AT45 са њима прелази 32 MiB на 4K, а тада га Chrome
+/* Спрајтови дворишта (~120) иду у свој атлас FAT, а не у AT45: AT45 са њима прелази 32 MiB на 4K, а тада га Chrome
    шаље на картицу у сваком кадру (ниво пада на 4 кадра у секунди). Види /extra/lessons_learned/*atlas-over-32mib*. */
 const FAT={cv:null,key:'',map:new Map()};
 function sprAtlas(g){ const u=ts/100*DPR, AW=Math.max(256,Math.ceil(VW*DPR)), key=[g,ts,DPR,AW].join(); if(FAT.cv&&FAT.key===key) return; FAT.key=key; FAT.map.clear();
@@ -9368,7 +9370,7 @@ function sprAtlas(g){ const u=ts/100*DPR, AW=Math.max(256,Math.ceil(VW*DPR)), ke
   for(const [id,d,ax,ay,w,h] of pos){ c.save(); c.beginPath(); c.rect(ax,ay,w,h); c.clip(); c.setTransform(u,0,0,u,ax+2-d[1]*u,ay+2-d[2]*u); c.lineJoin='round'; c.lineCap='round'; CEL45=true;
     try{ d[0](c); } finally{ CEL45=false; c.restore(); } FAT.map.set(id,{ax,ay,aw:w,ah:h}); } }
 // спрајт у c (у јединицама плочице)
-function fdr(c,id){ const d=FSP.get(id), r=FAT.map.get(id); if(!d||!r) return; const u=ts/100*DPR; c.drawImage(FAT.cv,r.ax,r.ay,r.aw,r.ah,d[1]-2/u,d[2]-2/u,r.aw/u,r.ah/u); }
+function fdr(c,id){ const d=FSP.get(id); if(!d) return; const r=FAT.map.get(id); if(!r) return spr45(c,id,d[0],d[1],d[2],d[3],d[4]); const u=ts/100*DPR; c.drawImage(FAT.cv,r.ax,r.ay,r.aw,r.ah,d[1]-2/u,d[2]-2/u,r.aw/u,r.ah/u); }
 // спрајт у тачки (X,Y) на екрану: fx<0 окреће лево, rot у радијанима, k размера
 function fput(id,X,Y,fx,rot,k){ const u=ts/100*(k||1); ctx.save(); ctx.translate(X,Y); ctx.scale(fx<0?-u:u,u); if(rot) ctx.rotate(rot); fdr(ctx,id); ctx.restore(); }
 
@@ -10590,6 +10592,29 @@ function pigeonArt(c,o){
 FSPG='street';
 for(const [k,o] of [['st',{}],['w0',{l:2,hx:14,hy:-22}],['w1',{l:-2,hx:9,hy:-21}],['pk',{hx:15,hy:-6}],['pu',{puff:1,hx:10,hy:-28}],['f0',{fly:'up',hx:13,hy:-20}],['f1',{fly:'down',hx:13,hy:-20}]])
   fsp('pig'+k,-30,-44,58,52,c=>pigeonArt(c,o));
+FSPG='farm';
+// прасе на ражњу на свадби (drawRoast)
+FSPG='salas';
+fsp('rpB',-66,-44,160,76,c=>{
+  inkLn(c,'M-52,-8 C-62,-14 -64,-2 -58,1 C-52,4 -54,-7 -60,-6','#b05a20',2.6);
+  // тело: сапи, леђа, трбух; сјајна корица
+  kqx(c,P2('M-54,0 C-58,-20 -44,-30 -22,-28 C-2,-27 14,-30 28,-26 C40,-22 46,-12 46,0 C46,12 40,22 26,24 C6,28 -24,28 -42,20 C-52,15 -54,8 -54,0 Z'),'#c8692a',()=>{
+    c.fillStyle='rgba(90,30,5,.4)'; c.fill(pE(-6,23,50,9,0)); c.fillStyle='rgba(255,196,110,.5)'; c.fill(pE(-10,-17,38,7,-.04));
+    c.strokeStyle='rgba(120,45,10,.35)'; c.lineWidth=1.6; c.beginPath(); for(const y of [-8,4,14]){ c.moveTo(-48,y); c.quadraticCurveTo(-6,y+5,40,y-2); } c.stroke();
+    for(let i=0;i<34;i++) dot(c,-50+hash(i,3)*94,-24+hash(5,i)*44,.9+hash(i,9)*1.2,'rgba(255,226,170,.65)');
+    c.strokeStyle='rgba(255,250,235,.85)'; c.lineWidth=2.6; c.beginPath(); c.moveTo(-34,-22); c.quadraticCurveTo(-16,-26,4,-24); c.moveTo(14,-23); c.lineTo(22,-22); c.stroke(); },2.6);
+  // глава: велика, са подбратком, њушка напред
+  kqx(c,P2('M30,-24 C42,-32 60,-28 68,-16 C72,-10 74,-2 74,4 C74,14 66,20 54,20 C44,20 34,16 30,8 C27,0 26,-16 30,-24 Z'),'#cc6e2c',()=>{
+    c.fillStyle='rgba(255,196,110,.45)'; c.fill(pE(48,-22,14,4,-.2)); c.fillStyle='rgba(90,30,5,.35)'; c.fill(pE(48,18,18,5,0)); },2.6);
+  kq(c,P2('M70,-6 C78,-8 84,-4 84,4 C84,12 78,14 72,12 Z'),'#b85a24',2.2); dot(c,80,0,1.6,'#4a1606'); dot(c,80,7,1.6,'#4a1606');
+  kq(c,P2('M40,-26 C40,-40 52,-42 60,-34 C56,-28 50,-22 44,-20 Z'),'#a8501c',2.2); fP(c,P2('M44,-28 C45,-36 51,-37 55,-33 C52,-29 48,-25 45,-24 Z'),'rgba(255,190,140,.35)');
+  ln(c,'M54,-10 q4.5,-4 9,0',INK45,2); ln(c,'M60,6 q5,4 10,1',INK45,1.6);
+  kq(c,pC(88,8,8.5),'#d8261c',2); dot(c,85.5,4.5,2.4,'rgba(255,255,255,.6)'); kq(c,P2('M88,0 Q90,-7 96,-7 Q94,-1 88,0 Z'),'#3f8f3a',1.2,true); });
+fsp('rpL',-8,-2,16,32,c=>{ kq(c,pR(-5.5,0,11,22,5),'#c06428',2,true); fP(c,pR(-3,2,3,16,1.5),'rgba(255,200,140,.4)'); kq(c,pR(-6,17,12,9,3.5),'#3a2010',1.6,true); });
+fsp('rpPit',-90,-26,180,52,c=>{ kq(c,pE(0,4,74,16),'#2a1a10',2); c.fillStyle='#a8320c'; c.fill(pE(0,3,62,11)); c.fillStyle='#e8661a'; c.fill(pE(-6,2,40,7)); c.fillStyle='#ffb040'; c.fill(pE(-8,1,20,3.5));
+  inkLn(c,'M-62,-4 L-14,6','#6a4022',6); inkLn(c,'M8,8 L56,-6','#6a4022',6); dot(c,-14,6,2.4,'#e8661a'); dot(c,8,8,2.4,'#e8661a');
+  for(let i=0;i<12;i++){ const a=i/12*Math.PI*2, x=Math.cos(a)*76, y=4+Math.sin(a)*17; kq(c,pE(x,y,9+hash(i,2)*3,6,a),`rgb(${130+(i%3)*14},${122+(i%3)*12},${112+(i%3)*10})`,1.6,true); } });
+fsp('rpPost',-10,-52,20,58,c=>{ inkLn(c,'M0,2 L0,-36','#6b4a2a',4.4); inkLn(c,'M0,-34 L-7,-47 M0,-34 L7,-47','#6b4a2a',3.4); });
 FSPG='farm';
 /* ---- колица са сладоледом: свака плочица тезге ---- */
 function drawCartTile(b,t){
