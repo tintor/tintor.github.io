@@ -5172,6 +5172,7 @@ addEventListener('keydown',e=>{
   if(MOVE.has(e.code)){ keys.add(e.code); e.preventDefault(); return; }
   if(e.code==='KeyH'&&!e.repeat&&helpLevel(V&&V.L)){ e.preventDefault(); toggleHelp(); return; }
   if(DASH_KEYS.includes(e.code)) keys.add(e.code); // држање трка: Ник хода
+  if(WORK_KEYS.includes(e.code)) keys.add(e.code); // држање рада: мужа траје док се држи E
   const kind=KEY_ACT[e.code]; if(!kind) return;
   e.preventDefault(); if(e.repeat) return;
   if(Game.role!=='couch') doAction(kind); else { const c=couchKbPlayer(e.code); if(c) doAction(kind,c.slot); }
