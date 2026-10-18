@@ -3439,18 +3439,63 @@ function drawDirtyIcon(c,n){ const m=Math.min(n,4); for(let i=m-1;i>=0;i--){ c.s
 
 /* кеш икона — свака икона се црта једном по величини */
 const iconCache=new Map();
+/* „Мастило и цел“ за храну и посуђе: свака већа попуњена форма добије срп сенке доле десно и светао руб горе лево,
+   а цела икона мастиљав обрис (испод 32 px обрис се не црта). Све се ради једном, док се икона памти, у помоћном
+   платну на процесору: clip и прелив маске су тамо јефтини, а на главном платну би коштали у сваком кадру. */
+const ICEL={a:null,b:null}, INKF='#3a1d0c', PATHOPS=new Set(['moveTo','lineTo','arc','arcTo','ellipse','bezierCurveTo','quadraticCurveTo','rect','roundRect','closePath']);
+function icelLayer(w){ if(!ICEL.a) for(const k of ['a','b']){ ICEL[k]=document.createElement('canvas'); ICEL[k].getContext('2d',{willReadFrequently:true}); }
+  for(const k of ['a','b']) if(ICEL[k].width<w){ ICEL[k].width=ICEL[k].height=w; } return ICEL; }
+// провидност боје попуне (за гранање: сенче се само чврсте форме)
+function fillAlpha(f){ if(typeof f!=='string') return 1; const m=f.match(/rgba\([^)]*,\s*([\d.]+)\s*\)/); return m?+m[1]:1; }
+// платно које бележи путању сваке попуне, па јој после попуне дода срп сенке и руб светла
+function celCtx(c,K){
+  let P=null, T=null, bx0=1e9, by0=1e9, bx1=-1e9, by1=-1e9;
+  const grow=(x,y,r)=>{ r=r||0; bx0=Math.min(bx0,x-r); by0=Math.min(by0,y-r); bx1=Math.max(bx1,x+r); by1=Math.max(by1,y+r); };
+  const shade=(path,rule)=>{ const M=c.getTransform(), sc=Math.hypot(M.a,M.b);
+    if(c.globalAlpha<.6||c.globalCompositeOperation!=='source-over'||fillAlpha(c.fillStyle)<.6||Math.min(bx1-bx0,by1-by0)*sc<12) return;
+    const I=M.inverse(), dir=(dx,dy,L)=>{ const ux=I.a*dx+I.c*dy, uy=I.b*dx+I.d*dy, l=Math.hypot(ux,uy)||1, k=L*Math.min(1,K/sc*1.6)/l; return [ux*k,uy*k]; };
+    const [sx,sy]=dir(-5,-6,7.8), [hx,hy]=dir(2.5,3,3.9), D=new Path2D(), H=new Path2D();
+    D.addPath(path); D.addPath(path,new DOMMatrix([1,0,0,1,sx,sy])); H.addPath(path); H.addPath(path,new DOMMatrix([1,0,0,1,hx,hy]));
+    const fs0=c.fillStyle; c.save(); c.clip(path,rule||'nonzero'); c.fillStyle='rgba(58,16,4,.3)'; c.fill(D,'evenodd'); c.fillStyle='rgba(255,255,255,.38)'; c.fill(H,'evenodd'); c.restore(); c.fillStyle=fs0; };
+  const W={
+    beginPath(){ c.beginPath(); P=new Path2D(); T=c.getTransform(); bx0=by0=1e9; bx1=by1=-1e9; },
+    fill(...a){ c.fill(...a); if(a[0] instanceof Path2D){ bx0=by0=-1e9; bx1=by1=1e9; shade(a[0],a[1]); return; }
+      const M=c.getTransform(); if(P&&T&&M.a===T.a&&M.b===T.b&&M.c===T.c&&M.d===T.d&&M.e===T.e&&M.f===T.f) shade(P,a[0]); } };
+  return new Proxy(c,{ get(t,p){ if(p in W) return W[p];
+      if(PATHOPS.has(p)) return (...a)=>{ t[p](...a); if(P){ P[p](...a); if(p==='arc'||p==='ellipse') grow(a[0],a[1],Math.max(a[2],p==='ellipse'?a[3]:0)); else for(let i=0;i+1<a.length;i+=2) grow(a[i],a[i+1]); } };
+      const v=t[p]; return typeof v==='function'?v.bind(t):v; },
+    set(t,p,v){ t[p]=v; return true; } }); }
+// икона се нацрта у помоћно платно W×W пиксела (setup постави размеру), па се у dst пренесе са обрисом од мастила;
+// px је величина иконе у CSS пикселима, K пиксела платна по јединици иконе (кутија иконе је 100)
+function inkIcon(dst,W,setup,fn,px,K){
+  const L=icelLayer(W+2), a=L.a.getContext('2d'), b=L.b.getContext('2d');
+  a.setTransform(1,0,0,1,0,0); a.clearRect(0,0,W+2,W+2); a.globalAlpha=1; a.globalCompositeOperation='source-over'; setup(a); a.lineJoin='round'; a.lineCap='round';
+  fn(celCtx(a,K));
+  dst.save(); dst.setTransform(1,0,0,1,0,0);
+  if(px>=32){ const ow=Math.max(1.2,K*2);
+    // маска од чврстих делова (сенка испод тањира и провидни одсјаји не добијају обрис), обојена мастилом
+    const im=a.getImageData(0,0,W,W), d=im.data; for(let i=3;i<d.length;i+=4){ const v=(d[i]-110)*4; d[i-3]=58; d[i-2]=29; d[i-1]=12; d[i]=v<0?0:v>255?255:v; }
+    b.setTransform(1,0,0,1,0,0); b.clearRect(0,0,W+2,W+2); b.putImageData(im,0,0);
+    for(let i=0;i<10;i++){ const an=i/10*Math.PI*2; dst.drawImage(L.b,0,0,W,W,Math.cos(an)*ow+ow*.3,Math.sin(an)*ow+ow*.4,W,W); } }
+  dst.drawImage(L.a,0,0,W,W,0,0,W,W); dst.restore(); }
 function itemSig(it){ if(!it) return ''; if(it.k==='i') return it.t+it.s+(it.c?it.c.join(''):'')+(it.st>1?'#'+it.st:''); if(it.k==='p') return 'P'+it.c.join(''); if(it.k==='d') return 'D'+it.n;
   if(it.k==='t') return 'T'+it.ph+(it.dish||'')+it.c.join('')+(it.ph==='c'?Math.round(it.cook*8):''); return ''; }
+// мастило и цел коштају ~1 ms по икони, па им за сваких 12 ms (отприлике кадар) иде највише ICON_BUDGET ms; остале
+// се прво нацртају обично и дораде касније. Кеш избацује најстарије иконе, да се не би све правиле одједном.
+const ICON_BUDGET=4, ICB={t:-1e9,spent:0};
 function cachedIcon(sig,fn,px){
   px=Math.max(8,Math.round(px)); const key=sig+'@'+px+'@'+DPR;
   let cnv=iconCache.get(key);
-  if(!cnv){
-    if(iconCache.size>700) iconCache.clear();
-    const pad=Math.ceil(px*.18), size=px+pad*2; cnv=document.createElement('canvas'); cnv.width=Math.ceil(size*DPR); cnv.height=cnv.width; cnv._pad=pad;
-    const x=cnv.getContext('2d'); x.scale(DPR,DPR); x.translate(size/2,size/2); x.scale(px/100,px/100); x.lineJoin='round'; x.lineCap='round'; fn(x);
-    iconCache.set(key,cnv);
-  }
-  return cnv;
+  if(cnv){ iconCache.delete(key); iconCache.set(key,cnv); if(!cnv._plain) return cnv; }
+  const now=performance.now(); if(now-ICB.t>12){ ICB.t=now; ICB.spent=0; }
+  const fast=ICB.spent>=ICON_BUDGET; if(cnv&&fast) return cnv;
+  if(!cnv&&iconCache.size>700){ let n=0; for(const k of iconCache.keys()){ iconCache.delete(k); if(++n>=120) break; } }
+  const pad=Math.ceil(px*.18), size=px+pad*2;
+  if(!cnv){ cnv=document.createElement('canvas'); cnv.width=Math.ceil(size*DPR); cnv.height=cnv.width; cnv._pad=pad; iconCache.set(key,cnv); }
+  const x=cnv.getContext('2d'), setup=a=>{ a.scale(DPR,DPR); a.translate(size/2,size/2); a.scale(px/100,px/100); };
+  if(fast){ setup(x); x.lineJoin='round'; x.lineCap='round'; fn(x); x.setTransform(1,0,0,1,0,0); cnv._plain=true; return cnv; }
+  x.setTransform(1,0,0,1,0,0); x.clearRect(0,0,cnv.width,cnv.height); inkIcon(x,cnv.width,setup,fn,px,px*DPR/100); cnv._plain=false;
+  ICB.spent+=performance.now()-now; return cnv;
 }
 function blit(c,cnv,x,y){ const s=cnv.width/DPR; c.drawImage(cnv,x-s/2,y-s/2,s,s); }
 function drawItemAt(c,item,x,y,u,L){ const cnv=itemIcon(item,u,L); if(cnv) blit(c,cnv,x,y); }
@@ -9366,14 +9411,27 @@ function drawKitchenFx(){
 /* =================== КНЕЗ МИХАИЛОВА: сладолед, гужва, гости у реду и живот улице =================== */
 /* ---- иконе: кугле и корнет ---- */
 const ICE_COL={iv:['#fdf3d2','#e6cf92','#6a4a20'],ic:['#9a5e36','#5a321a','#d29a6c'],ij:['#f9b4c6','#e0789a','#c8203a'],ip:['#c8e4a0','#90b45e','#4f7024']};
-function scoopBall(c,x,y,r,f){
-  const C=ICE_COL[f]||ICE_COL.iv;
-  circ(c,x,y,r); fs(c,rg(c,x,y,r,C[0],C[1]),OUT,2);
-  c.fillStyle=C[2]; for(let i=0;i<7;i++){ const a=i*2.39996+r, d=r*(.2+(i*7%10)/15); ell(c,x+Math.cos(a)*d,y+Math.sin(a)*d*.75-r*.15,r*(f==='ic'?.12:.065),r*.05,a); c.fill(); }
-  ell(c,x-r*.36,y-r*.42,r*.3,r*.15,-.5); c.fillStyle='rgba(255,255,255,.5)'; c.fill();
-  // таласаста ивица кугле
-  for(let i=0;i<7;i++){ circ(c,x-r*.9+i*r*.3,y+r*.72+(i%2)*r*.05,r*.24); fs(c,C[1],OUT,1.2); }
+// кугла из нацрта Kitchen Lab: таласаст доњи руб, мрвице и одсјај горе лево (r је половина ширине)
+const SCOOP_C={iv:['#fff1c8','#3a2a1a'],ij:['#f49cb0','#c8304a'],ip:['#b6d68c','#5f8a2e'],ic:['#8f5532','#3a1a0a']};
+function scoopBall(c,x,y,r,f){ const C=SCOOP_C[f]||SCOOP_C.iv, k=r/20;
+  c.save(); c.translate(x,y-2*k); c.scale(k,k); const P=pS('M-20,6 C-22,-6 -10,-12 0,-12 C10,-12 22,-6 20,6 C18,12 14,10 12,14 C10,18 6,12 2,14 C-2,16 -6,12 -10,14 C-14,15 -18,12 -20,6 Z');
+  c.fillStyle=C[0]; c.fill(P); c.strokeStyle=INKF; c.lineWidth=2.6; c.lineJoin='round'; c.stroke(P);
+  c.fillStyle=C[1]; for(const [dx,dy] of [[-8,0],[6,2],[0,-5],[11,-5]]){ c.beginPath(); c.arc(dx,dy,f==='ic'?1.6:1.2,0,Math.PI*2); c.fill(); }
+  c.fillStyle='rgba(255,255,255,.55)'; c.beginPath(); c.ellipse(-9,-5,5,2.4,-.4,0,Math.PI*2); c.fill(); c.restore();
 }
+/* јела нацртана изнова по нацрту Kitchen Lab (табла 02): облици у кутији иконе 100×100 са средиштем у (0,0).
+   t: c круг, e елипса, r правоугаоник, p путања, g група (tr: t помак, r окрет у степенима, s размера); f попуна,
+   s потез и w дебљина се наслеђују из групе; k је мастиљав обрис. Срп сенке дода платно иконе (celCtx). */
+const DISH45={"pljeskavica":[{"t":"c","a":[0,4,48],"f":"rgba(0,0,0,.22)"},{"t":"c","a":[0,0,46],"k":1,"f":"#fbf8f1"},{"t":"c","a":[0,0,39],"f":"none","s":"rgba(47,95,158,.55)","w":2.4},{"t":"g","ch":[{"t":"c","a":[42.5,0,1.6]},{"t":"c","a":[36.8,21.3,1.6]},{"t":"c","a":[21.3,36.8,1.6]},{"t":"c","a":[0,42.5,1.6]},{"t":"c","a":[-21.3,36.8,1.6]},{"t":"c","a":[-36.8,21.3,1.6]},{"t":"c","a":[-42.5,0,1.6]},{"t":"c","a":[-36.8,-21.3,1.6]},{"t":"c","a":[-21.3,-36.8,1.6]},{"t":"c","a":[0,-42.5,1.6]},{"t":"c","a":[21.3,-36.8,1.6]},{"t":"c","a":[36.8,-21.3,1.6]}],"f":"rgba(181,18,27,.6)"},{"t":"e","a":[0,4,34,30],"k":1,"f":"#e3b46a"},{"t":"e","a":[0,4,28,24],"f":"#f2d496"},{"t":"p","d":"M-24,0 C-26,-18 -8,-26 6,-24 C22,-22 28,-8 26,4 C24,18 8,24 -6,22 C-20,20 -23,12 -24,0 Z","k":1,"f":"#8a4422"},{"t":"p","d":"M-16,-12 q12,-6 26,0 M-20,-1 q16,-6 38,0 M-18,10 q14,-5 30,0","f":"none","s":"#3a1606","w":2.4,"lc":"round"},{"t":"g","ch":[{"t":"p","d":"M-15,-6 C-16,-15 -4,-18 5,-15 C14,-12 15,-3 11,2 C14,6 15,12 12,15 C9,17 7.5,11 5.5,7 C0,9 -13,6 -15,-6 Z","k":1,"f":"#fffaf0"},{"t":"e","a":[-5,-10,6,2.2],"f":"rgba(255,255,255,.9)"}]},{"t":"g","ch":[{"t":"r","a":[18,20,7,6,2]},{"t":"r","a":[26,15,7,6,2]},{"t":"r","a":[24,24,7,6,2]}],"f":"#efe6f2","s":"#3a1d0c","w":1.2}],"burek":[{"t":"c","a":[0,4,48],"f":"rgba(0,0,0,.16)"},{"t":"c","a":[0,0,46],"k":1,"f":"#fbf8f1"},{"t":"c","a":[0,0,39],"f":"none","s":"rgba(47,95,158,.55)","w":2.4},{"t":"p","d":"M-28,24 L-28,-26 A50,50 0 0 1 19,6.9 Z","k":1,"f":"#eeb453"},{"t":"g","ch":[{"t":"p","d":"M-28,10 A14,14 0 0 1 -14.8,19.2"},{"t":"p","d":"M-28,-2 A26,26 0 0 1 -3.6,15.1"},{"t":"p","d":"M-28,-14 A38,38 0 0 1 7.7,11"}],"f":"none","s":"rgba(140,70,15,.6)","w":2.2,"lc":"round"},{"t":"p","d":"M-28,-26 A50,50 0 0 1 19,6.9","f":"none","s":"#b86a22","w":5,"lc":"round"},{"t":"g","ch":[{"t":"e","a":[-18,-12,4,2]},{"t":"e","a":[-6,2,3.5,1.8]},{"t":"e","a":[-20,6,3,1.6]},{"t":"e","a":[2,-12,3,1.6]}],"f":"rgba(255,240,200,.75)"},{"t":"g","ch":[{"t":"c","a":[-12,-4,1.5]},{"t":"c","a":[-22,-20,1.3]},{"t":"c","a":[6,0,1.3]}],"f":"rgba(140,70,15,.45)"},{"t":"g","ch":[{"t":"r","a":[-11,-16,22,32,5],"k":1,"f":"rgba(214,232,240,.75)"},{"t":"r","a":[-8,-10,16,23,4],"f":"#fbfbf6"},{"t":"e","a":[0,-10,8,2.6],"f":"#ffffff"},{"t":"r","a":[-8,-6,3,16,1.5],"f":"rgba(180,210,225,.8)"},{"t":"g","ch":[{"t":"c","a":[7,2,1]},{"t":"c","a":[6,8,0.8]}],"f":"rgba(255,255,255,.9)"}],"tr":[["t",27,-20]]}],"corba":[{"t":"e","a":[0,6,46,42],"f":"rgba(0,0,0,.2)"},{"t":"e","a":[0,0,44,40],"k":1,"f":"#b8612f"},{"t":"e","a":[0,-2,37,33],"f":"#7f3814"},{"t":"e","a":[0,-1,34,30],"f":"#e2602a"},{"t":"p","d":"M-26,-12 A30,26 0 0 1 4,-28","f":"none","s":"rgba(255,190,120,.6)","w":3,"lc":"round"},{"t":"g","ch":[{"t":"c","a":[-14,8,3]},{"t":"c","a":[16,-10,2.4]},{"t":"c","a":[20,12,3.2]},{"t":"c","a":[-22,-6,2]},{"t":"c","a":[2,18,2.2]}],"f":"none","s":"rgba(255,214,130,.85)","w":1.4},{"t":"g","ch":[{"t":"r","a":[-9,-6,18,12,4],"k":1,"f":"#fbe6da"}],"tr":[["t",-10,-6],["r",-14]]},{"t":"g","ch":[{"t":"r","a":[-9,-6,18,12,4],"k":1,"f":"#fbe6da"}],"tr":[["t",12,4],["r",18]]},{"t":"g","ch":[{"t":"r","a":[-8,-5,16,10,4],"k":1,"f":"#fbe6da"}],"tr":[["t",-2,14],["r",4]]},{"t":"c","a":[22,-18,5],"f":"none","s":"#c8202b","w":2.6},{"t":"g","ch":[{"t":"c","a":[-24,10,1.6]},{"t":"c","a":[6,-18,1.5]},{"t":"c","a":[26,2,1.6]},{"t":"c","a":[-6,24,1.4]}],"f":"#3f8f3a"}],"tursija":[{"t":"e","a":[0,46,30,5],"f":"rgba(0,0,0,.18)"},{"t":"r","a":[-30,-28,60,72,13],"k":1,"f":"rgba(222,236,228,.75)"},{"t":"r","a":[-26,-18,52,58,11],"f":"rgba(226,214,132,.75)"},{"t":"g","ch":[{"t":"p","d":"M-24,-3 Q-20,-11 0,-10 Q20,-9 26,0 Q20,9 0,10 Q-20,11 -24,3 Z","k":1,"f":"#e2392e"},{"t":"e","a":[-3,-5,12,2],"f":"rgba(255,230,220,.6)"},{"t":"r","a":[-31,-4,8,8,3],"k":1,"f":"#4f8a2a"}],"tr":[["t",-4,6],["r",-55]]},{"t":"g","ch":[{"t":"c","a":[12,24,6]},{"t":"c","a":[18,18,5]},{"t":"c","a":[7,18,4.5]},{"t":"c","a":[-14,-8,5]},{"t":"c","a":[-9,-13,4]},{"t":"c","a":[-16,30,5]}],"f":"#fbf6e6","s":"#3a1d0c","w":1.4},{"t":"g","ch":[{"t":"r","a":[-24,-14,5,50,2.5]}],"f":"rgba(255,255,255,.55)"},{"t":"r","a":[-32,-40,64,14,5],"k":1,"f":"#3f8f3a"},{"t":"p","d":"M-26,-35 H26","s":"rgba(255,255,255,.35)","w":2,"lc":"round"},{"t":"g","ch":[],"f":"#ffffff"}],"palkrem":[{"t":"c","a":[0,4,48],"f":"rgba(0,0,0,.18)"},{"t":"c","a":[0,0,46],"k":1,"f":"#fffdf8"},{"t":"c","a":[0,0,41],"f":"none","s":"#e8dcc4","w":5,"da":[2.2,3]},{"t":"c","a":[0,0,35],"f":"none","s":"rgba(47,127,184,.35)","w":1.6},{"t":"g","ch":[{"t":"r","a":[-36,-14,72,28,14],"k":1,"f":"#efbb66"},{"t":"p","d":"M24,-14 Q30,0 24,14","f":"none","s":"#b8702a","w":2.4},{"t":"g","ch":[{"t":"c","a":[-24,-6,2.6]},{"t":"c","a":[-10,6,2.2]},{"t":"c","a":[4,-7,2.4]},{"t":"c","a":[16,6,2]}],"f":"rgba(150,75,20,.35)"},{"t":"p","d":"M-28,-4 l7,8 l7,-8 l7,8 l7,-8 l7,8 l7,-8 l7,8","f":"none","s":"#4a2410","w":4.2,"lc":"round"}],"tr":[["r",-22]]},{"t":"g","ch":[{"t":"p","d":"M14,22 l5,-4 l5,3 l-2,5 l-6,1 Z"},{"t":"p","d":"M24,14 l4,-3 l4,3 l-2,4 l-5,0 Z"},{"t":"p","d":"M6,28 l4,-3 l4,3 l-2,4 l-5,0 Z"}],"f":"#b7864a","s":"#3a1d0c","w":1.2},{"t":"g","ch":[{"t":"c","a":[-14,-18,1]},{"t":"c","a":[-4,-22,1]},{"t":"c","a":[-20,-8,0.9]}],"f":"#ffffff"}],"kuvano":[{"t":"e","a":[0,40,30,6],"f":"rgba(0,0,0,.2)"},{"t":"p","d":"M24,-14 C42,-14 42,18 24,18","k":1,"f":"none","w":7},{"t":"p","d":"M24,-14 C42,-14 42,18 24,18","f":"none","s":"#fffdf8","w":3.4},{"t":"p","d":"M-26,-22 L-26,30 Q-26,38 -18,38 L18,38 Q26,38 26,30 L26,-22 Z","k":1,"f":"#fffdf8"},{"t":"r","a":[-26,10,52,8,0],"f":"#c8202b"},{"t":"p","d":"M-26,14 H26","s":"#fffdf8","w":1.4,"da":[3,3]},{"t":"e","a":[0,-22,26,8],"k":1,"f":"#fffdf8"},{"t":"e","a":[0,-22,21,5.5],"f":"#6a1020"},{"t":"g","ch":[{"t":"c","a":[0,0,8],"k":1,"f":"#f6a234"},{"t":"c","a":[0,0,5.5],"f":"#ffc45a"},{"t":"p","d":"M0,-5 V5 M-5,0 H5 M-3.5,-3.5 L3.5,3.5 M3.5,-3.5 L-3.5,3.5","s":"#f6a234","w":1}],"tr":[["t",-6,-27]]},{"t":"g","ch":[{"t":"r","a":[-3,-14,6,24,3],"k":1,"f":"#8a4a1a"}],"tr":[["t",12,-30],["r",35]]},{"t":"p","d":"M-22,-6 L-22,24","s":"rgba(255,255,255,.7)","w":3,"lc":"round"},{"t":"g","ch":[],"f":"none","s":"rgba(255,255,255,.95)","w":2.6,"lc":"round"}],"pasulj":[{"t":"e","a":[0,6,46,36],"f":"rgba(0,0,0,.22)"},{"t":"r","a":[38,-6,14,8,3],"k":1,"f":"#aeb4b9"},{"t":"e","a":[0,0,44,34],"k":1,"f":"#c9cdd1"},{"t":"e","a":[0,-1,38,28],"f":"#a3a9ae"},{"t":"e","a":[0,0,35,25],"f":"#94522a"},{"t":"p","d":"M-26,-10 A32,22 0 0 1 2,-22","f":"none","s":"rgba(255,190,140,.45)","w":3,"lc":"round"},{"t":"g","ch":[{"t":"g","tr":[["r",-20,-18,-4]],"ch":[{"t":"e","a":[-18,-4,4,2.6]}]},{"t":"g","tr":[["r",30,-8,6]],"ch":[{"t":"e","a":[-8,6,4,2.6]}]},{"t":"g","tr":[["r",-40,4,-8]],"ch":[{"t":"e","a":[4,-8,4,2.6]}]},{"t":"g","tr":[["r",10,14,4]],"ch":[{"t":"e","a":[14,4,4,2.6]}]},{"t":"g","tr":[["r",50,-22,10]],"ch":[{"t":"e","a":[-22,10,4,2.6]}]},{"t":"g","tr":[["r",-10,22,-6]],"ch":[{"t":"e","a":[22,-6,4,2.6]}]},{"t":"g","tr":[["r",-30,2,14]],"ch":[{"t":"e","a":[2,14,4,2.6]}]},{"t":"g","tr":[["r",20,-4,-16]],"ch":[{"t":"e","a":[-4,-16,4,2.6]}]}],"f":"#efdcb8","s":"#3a1d0c","w":1.1},{"t":"g","ch":[{"t":"c","a":[-12,-10,2]},{"t":"c","a":[10,12,1.8]},{"t":"c","a":[18,-14,1.6]}],"f":"rgba(230,80,30,.6)"},{"t":"g","ch":[{"t":"r","a":[-3,-30,6,34,3],"k":1,"f":"#d6dbde"},{"t":"e","a":[0,8,7,10],"k":1,"f":"#c4cacf"}],"tr":[["t",14,-4],["r",-35]]}],"patka":[{"t":"r","a":[-46,-32,92,72,8],"f":"rgba(0,0,0,.22)"},{"t":"r","a":[-46,-36,92,72,8],"k":1,"f":"#2e2e34"},{"t":"p","d":"M-40,-20 l20,-8 M-14,24 l30,-10 M10,-28 l24,6","s":"rgba(255,255,255,.08)","w":2,"lc":"round"},{"t":"g","ch":[{"t":"p","d":"M-8,-18 Q0,-22 8,-18 L6,16 Q0,19 -6,16 Z","k":1,"f":"#eea488"},{"t":"p","d":"M-8,-18 Q0,-22 8,-18 L7.6,-12 Q0,-15 -7.6,-12 Z","f":"#7a2410"},{"t":"p","d":"M-3,-8 L-2,10","s":"rgba(255,240,230,.6)","w":1.6,"lc":"round"}],"tr":[["t",-32,-2],["r",14]]},{"t":"g","ch":[{"t":"p","d":"M-8,-18 Q0,-22 8,-18 L6,16 Q0,19 -6,16 Z","k":1,"f":"#eea488"},{"t":"p","d":"M-8,-18 Q0,-22 8,-18 L7.6,-12 Q0,-15 -7.6,-12 Z","f":"#7a2410"},{"t":"p","d":"M-3,-8 L-2,10","s":"rgba(255,240,230,.6)","w":1.6,"lc":"round"}],"tr":[["t",-21,0],["r",14]]},{"t":"g","ch":[{"t":"p","d":"M-8,-18 Q0,-22 8,-18 L6,16 Q0,19 -6,16 Z","k":1,"f":"#eea488"},{"t":"p","d":"M-8,-18 Q0,-22 8,-18 L7.6,-12 Q0,-15 -7.6,-12 Z","f":"#7a2410"},{"t":"p","d":"M-3,-8 L-2,10","s":"rgba(255,240,230,.6)","w":1.6,"lc":"round"}],"tr":[["t",-10,2],["r",14]]},{"t":"g","ch":[{"t":"p","d":"M-8,-18 Q0,-22 8,-18 L6,16 Q0,19 -6,16 Z","k":1,"f":"#eea488"},{"t":"p","d":"M-8,-18 Q0,-22 8,-18 L7.6,-12 Q0,-15 -7.6,-12 Z","f":"#7a2410"},{"t":"p","d":"M-3,-8 L-2,10","s":"rgba(255,240,230,.6)","w":1.6,"lc":"round"}],"tr":[["t",1,4],["r",14]]},{"t":"g","ch":[{"t":"r","a":[-12,-6,24,12,6],"k":1,"f":"#f6dea0"}],"tr":[["t",28,-14],["r",20]]},{"t":"g","ch":[{"t":"r","a":[-12,-6,24,12,6],"k":1,"f":"#f6dea0"}],"tr":[["t",30,6],["r",20]]},{"t":"p","d":"M20,24 c-2,-6 6,-9 10,-6 c4,-1 8,4 5,8 c-2,5 -13,5 -15,-2 Z","k":1,"f":"#fffaf0"},{"t":"g","ch":[{"t":"c","a":[-32,22,2.4]},{"t":"c","a":[-26,27,1.8]}],"f":"#6a2a7a"},{"t":"g","ch":[],"f":"#f2c94a"}]};
+function shapes45(c,L,P){
+  for(const e of L){ const f=e.f!==undefined?e.f:P.f, s=e.s!==undefined?e.s:P.s, w=e.w!==undefined?e.w:P.w;
+    if(e.t==='g'){ c.save(); for(const q of e.tr||[]){ if(q[0]==='t') c.translate(q[1],q[2]||0); else if(q[0]==='s') c.scale(q[1],q.length>2?q[2]:q[1]);
+        else if(q.length>2){ c.translate(q[2],q[3]); c.rotate(q[1]*Math.PI/180); c.translate(-q[2],-q[3]); } else c.rotate(q[1]*Math.PI/180); }
+      shapes45(c,e.ch,{f,s,w}); c.restore(); continue; }
+    const a=e.a, fill=f===undefined?'#000':f; let p=null;
+    if(e.t==='p') p=pS(e.d); else { c.beginPath(); if(e.t==='c') c.arc(a[0],a[1],a[2],0,Math.PI*2); else if(e.t==='e') c.ellipse(a[0],a[1],a[2],a[3],0,0,Math.PI*2); else c.roundRect(a[0],a[1],a[2],a[3],a[4]); }
+    if(fill!=='none'){ c.fillStyle=fill; p?c.fill(p):c.fill(); }
+    if(e.k||(s&&s!=='none')){ c.strokeStyle=e.k?INKF:s; c.lineWidth=e.k?Math.max(2.6,w||0):(w===undefined?1:w); c.lineCap=e.lc||'round'; if(e.da) c.setLineDash(e.da); p?c.stroke(p):c.stroke(); if(e.da) c.setLineDash([]); } } }
 function coneArt(c,fl){
   c.save(); c.beginPath(); c.moveTo(-21,12); c.lineTo(21,12); c.lineTo(2,49); c.lineTo(-2,49); c.closePath(); fs(c,lg(c,-21,0,21,0,'#f2c27c','#c4823c'),'#86501c',2.5);
   c.clip(); c.strokeStyle='rgba(130,75,25,.55)'; c.lineWidth=2; c.beginPath(); for(let i=-4;i<=4;i++){ c.moveTo(i*9-20,10); c.lineTo(i*9+20,52); c.moveTo(i*9+20,10); c.lineTo(i*9-20,52); } c.stroke(); c.restore();
@@ -9388,6 +9446,7 @@ const SUVENIRDZIJA={tag:'#555',skin:'#e6b088',shirt:'#f5f0e6',vest:'#3a5a2a',tri
 (function(){
   const _ing=drawIngIcon; drawIngIcon=function(c,key){ const t=key.slice(0,2); if(ICE_COL[t]) return scoopBall(c,0,2,32,t); return _ing(c,key); };
   const _dish=dishArt; dishArt=function(c,id){ const R=RECIPES[id]; if(R&&R.ice) return coneArt(c,R.parts.map(k=>k.slice(0,2))); return _dish(c,id); };
+  const _d45=dishArt; dishArt=function(c,id){ const L=DISH45[id]; if(L) return shapes45(c,L,{}); return _d45(c,id); };
   const _plate=drawPlateIcon; drawPlateIcon=function(c,item,L){ if(L&&L.plate==='cone') return coneArt(c,item.c.map(k=>k.slice(0,2))); return _plate(c,item,L); };
   const _look=lookFor; lookFor=function(id,ct){
     if(!['tur','tum','tus','sho','loc'].includes(ct)) return _look(id,ct);
@@ -10048,8 +10107,9 @@ function hydrateIcon(cnv){
   cnv.width=Math.round(size*d); cnv.height=cnv.width; cnv.style.width=cnv.style.height=size+'px';
   const c=cnv.getContext('2d'); c.scale(d,d); c.lineJoin='round'; c.lineCap='round';
   if(kind==='char'){ portrait(c,size,+arg,cnv.dataset.dim==='1'); return; }
-  c.translate(size/2,size/2); c.scale(size*.9/100,size*.9/100);
+  inkIcon(c,cnv.width,a=>{ a.scale(d,d); a.translate(size/2,size/2); a.scale(size*.9/100,size*.9/100); },c=>{
   if(kind==='cone') coneArt(c,[]); else if(kind==='dish') dishArt(c,arg); else if(kind==='ing') drawIngIcon(c,arg); else if(kind==='pot') iPotIcon(c); else if(kind==='kotlic') iKotlicIcon(c); else if(kind==='kazan') iKazanIcon(c); else if(STICON[kind]) STICON[kind](c); else if(kind==='tray') iOvenIcon(c);
+  },size*.9,size*.9*d/100);
 }
 const starsHTML=n=>[0,1,2].map(i=>`<span class="${i<n?'on':''}">★</span>`).join('');
 /* бирач нивоа: наруџбенице на шини, по три на шини. Од закључаних нивоа види се име само првог; даљи су окренути наличјем. */
