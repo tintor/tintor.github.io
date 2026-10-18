@@ -4321,6 +4321,8 @@ const NPC_HELLO={band:'Трубачи су у кухињи!',squad:'Строј �
 // пандуру и тајкуну се склања свако: не чекају их и не заустављају их
 const partsNpcs=p=>{ const c=p.ch|0; return c===PANDUR||c===TAJKUN; };
 const npcBlocked=(x,y)=>S.players.some(p=>!partsNpcs(p)&&Math.hypot(x-p.x,y-p.y)<PR+NPC_R+.03);
+// строј и трубачи: члан не корача у онога испред себе (кад први стане због кувара, остали стану за њим, не збију се)
+const MARCH=['squad','band'], npcCrowded=(n,x,y,fx,fy)=>S.npcs.some(m=>m!==n&&!m.gone&&m.kind===n.kind&&Math.hypot(x-m.x,y-m.y)<NPC_R*2&&(m.x-n.x)*fx+(m.y-n.y)*fy>0);
 // тачка на трагу вође, need иза (x,y): [x,y,fx,fy]
 const TRAIL_GAP=.9;
 function trailAt(tr,x,y,need){ let ax=x, ay=y;
@@ -4344,11 +4346,16 @@ function updateNpcs(dt){
     if(!m){ n.pause=n.path[n.wp][2]||0; n.wp=(n.wp+1)%n.path.length; continue; }
     const [nx,ny,fx,fy]=m; n.fx=fx; n.fy=fy;
     if(npcBlocked(nx,ny)) continue;
+    if(MARCH.includes(n.kind)&&npcCrowded(n,nx,ny,fx,fy)) continue;
     // вођа змаја стаје и кад неко стоји на путу онима иза њега
     if(n.fol&&n.fol.some(i=>{ const q=trailAt(n.trail,nx,ny,S.npcs[i].gap); return npcBlocked(q[0],q[1]); })) continue;
     n.x=nx; n.y=ny;
     if(n.trail){ const tl=n.trail[n.trail.length-1]; if(!tl||Math.hypot(n.x-tl.x,n.y-tl.y)>.05) n.trail.push({x:n.x,y:n.y}); if(n.trail.length>120) n.trail.shift(); }
   }
+  // ко је ипак ушао у другог (кувар га гурнуо у строј) одмакне се: сваки од пара по пола преклапања
+  for(const n of S.npcs){ if(!MARCH.includes(n.kind)||n.gone) continue;
+    for(const m of S.npcs){ if(m===n||m.kind!==n.kind||m.gone) continue; const dx=n.x-m.x, dy=n.y-m.y, d=Math.hypot(dx,dy)||1e-3, min=NPC_R*1.8;
+      if(d<min){ const k=Math.min(.05,(min-d)/2), ux=d>1e-3?dx/d:1, uy=d>1e-3?dy/d:0; if(npcFree(n.x+ux*k,n.y+uy*k)){ n.x+=ux*k; n.y+=uy*k; } } } }
 }
 function simStep(dt){
   S.time+=dt; if(!S.L.tutorial) S.timeLeft-=dt; S.goT=Math.max(0,S.goT-dt);
