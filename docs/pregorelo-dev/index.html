@@ -4252,7 +4252,7 @@ function buildGrid(o,L){
       if(L.kinds&&L.kinds[ch]) t.deco=true; // украс улице: чврст, али се не користи
       if(FK[ch]){ if(FK[ch]==='cow') t.kind='cow'; else { t.kind='bed'; t.crop=FK[ch]; t.grow=1; } }
       if(t.kind==='pot'||t.kind==='kotlic'||t.kind==='kazan'||t.kind==='sac'||t.kind==='wok'||t.kind==='marin') t.v=mkVessel(t.kind);
-      if(t.kind==='steam'){ t.st={b:[null,null,null],w:1,dry:0}; o.steam=true; }
+      if(t.kind==='steam'){ t.st={b:[null],w:1,dry:0}; o.steam=true; }
       if(ch==='Q') t.officer=true;
       if(t.kind==='plates'){ t.count=L.plates; o.plateTile=t; o.plateTiles.push(t); }
       if(t.kind==='trays') t.count=L.trays;
@@ -5429,7 +5429,7 @@ function onSnap(s){
   for(const [x,y,c] of s.t||[]){ const t=tileAt(V,x,y); if(!t) continue;
     switch(t.kind){ case 'counter': case 'board': case 'grill': case 'oven': case 'roaster': case 'pan': case 'griddle': case 'spit': t.item=dec(c); break;
       case 'pot': case 'kotlic': case 'kazan': case 'sac': case 'wok': case 'marin': Object.assign(t.v,dec(c,t.kind),{kind:t.kind,k:'t'}); break;
-      case 'steam': t.st={w:c[1]/99,dry:c[2]/10,b:[dec(c[3]),dec(c[4]),dec(c[5])]}; break;
+      case 'steam': t.st={w:c[1]/99,dry:c[2]/10,b:c.slice(3).map(x=>dec(x))}; break;
       case 'plates': case 'trays': case 'dirtyret': t.count=+c||0; break;
       case 'sink': t.dirty=c[0]; t.prog=c[1]/99; break;
       case 'hotpot': Object.assign(t.hp,{oid:c[1]|0,eat:(c[2]|0)/10,coal:(c[3]|0)/99,dirty:c[4]|0,gid:c[5]|0}); break; } }
@@ -7040,7 +7040,7 @@ function drawCup(t,cx,cy,s){
   else if(v.ph==='b'){ for(let k=0;k<4;k++){ const ph=(G_anim+k*.25)%1; circ(ctx,cx+(k-1.5)*s*.08,cy-s*.3-ph*s*.22,s*.03); ctx.fillStyle=`rgba(140,200,60,${.9-ph*.8})`; ctx.fill(); } }
 }
 /* парњача: три бамбусове корпе на лонцу са водом */
-const STEAM_POS=[[-.17,-.08],[.17,-.08],[0,.17]];
+const STEAM_POS=[[0,0]]; // једна корпа по парњачи
 function drawSteamer(t,cx,cy,s,lw){
   const st=t.st, act=st.w>0&&st.b.some(x=>x&&(x.s==='C'||x.s==='K'));
   circ(ctx,cx,cy+s*.04,s*.4); ctx.fillStyle='#24282b'; ctx.fill(); circ(ctx,cx,cy+s*.04,s*.35); ctx.fillStyle=st.w>0?`rgba(90,160,220,${.35+.5*st.w})`:'#3a2a20'; ctx.fill();
