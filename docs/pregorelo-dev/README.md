@@ -55,6 +55,21 @@ The waiting room shows how each player is connected:
 - **директна веза**: direct connection (no TURN needed)
 - **преко TURN сервера**: relayed through your TURN server
 
+### Network panel
+
+In multiplayer, a panel in the bottom-right corner shows each step of connecting. **⧉** copies its text, so a friend who can't join can send it to you. During a level it shrinks to one line with the round-trip time to each player.
+
+| Line | Meaning |
+|---|---|
+| `Nostr: 6/6 релеја` | Signalling relays connected (they only introduce players to each other). The relay list is `NOSTR_RELAYS` in `index.html`. `0/6` means no internet, or something blocks WebSockets. |
+| `Домаћин: тражим… / пронађен` | Guest only: whether the host has answered yet. |
+| `<name>: директно srflx/srflx udp · 182 ms` | Connected: route, local/remote ICE candidate types, protocol and round-trip time. |
+| `ICE: 1 checking · неуспело: 1` | Connections whose offer and answer were exchanged, by ICE state, and how many failed. **A failure here means the two networks can't connect directly: set up TURN (above).** |
+| `NAT: обичан / симетричан` | This player's NAT, from a test connection to two STUN servers. Symmetric NAT (common on mobile data and carrier-grade NAT) rarely connects directly without TURN. `STUN не одговара` means UDP is blocked. |
+| `TURN: …` | Not configured, loading, works (the test connection got a relay address), or the error. |
+
+When a guest gives up after 25 seconds, the message says which step failed: no relays, host never answered, or host found but no direct connection.
+
 ### Step 1: Create a TURN key
 
 In the Cloudflare dashboard, go to **Realtime → TURN Server → Create**. Copy the **Turn Token ID** and the **API Token**. Menu names may differ slightly as Cloudflare updates its dashboard.
@@ -111,7 +126,9 @@ That key is visible to anyone who opens the page, so restrict it in your Metered
 
 - **Solo:** open the page and pick a level.
 - **Controls:** keyboard, touch, or a gamepad. On a gamepad, the left stick or d-pad moves, **A** grabs, **X** works (chop, wash, stir, flip), **B** or **RB** dashes, and **Start** opens the game menu. In menus, the d-pad moves between buttons and **A** presses one. Phones and tablets show a note that the game plays best with a keyboard or controller.
-- **Multiplayer:** the host creates a game and shares the invite link, which looks like `…/pregorelo/#igra=abc123`. Friends open the link, or paste it into the join field. Up to 4 players. The host's browser runs the game, so if the host leaves, the game ends for everyone.
+- **Multiplayer:** the host creates a game and gets a six-digit code and an invite link, e.g. `tintor.net/pregorelo-dev/123456`. Friends open the link, or type the code (or paste the link) into the join field. Up to 4 players. The host's browser runs the game, so if the host leaves, the game ends for everyone.
+
+  The short link works because `404.html` at the site root (`docs/404.html` in this repo) turns `/pregorelo/123456` and `/pregorelo-dev/123456` into `…/#igra=123456`; GitHub Pages has no other way to rewrite paths. If you deploy the game somewhere without that page, links of the form `…/pregorelo-dev/#igra=123456` still work.
 - **Language:** Serbian by default. The **Српски / English** switch at the top of the main menu changes it, and the browser remembers the choice. In English, Serbian dish names stay in parentheses after the English name, e.g. *Cabbage rolls (Sarma)*. In multiplayer, each player sees the game in their own language.
 
 ## Credits

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Not found</title>
+<script>
+/* GitHub Pages has no rewrites, so it serves this page for every missing path.
+   Short Прегорело invites, /pregorelo/123456 and /pregorelo-dev/123456, go to the game with that code. */
+(function(){
+  var m=location.pathname.match(/^\/(pregorelo(?:-dev)?)\/(\d{6})\/?$/);
+  if(m) location.replace('/'+m[1]+'/#igra='+m[2]);
+})();
+</script>
+<style>
+body{margin:0; min-height:100vh; display:grid; place-items:center; font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:#fffdf8; color:#33200f}
+@media (prefers-color-scheme: dark){ body{background:#2a1d14; color:#f6e9d4} a{color:#f0b8a0} }
+</style>
+</head>
+<body>
+<p>This page does not exist. <a href="/">Go to the home page</a>.</p>
+</body>
+</html>
