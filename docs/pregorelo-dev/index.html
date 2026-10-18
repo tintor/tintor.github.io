@@ -5455,8 +5455,8 @@ const onFloor45=t=>ext45(t)&&FREE.has(t.kind);
 // самостојеће станице стоје у задњем делу своје плочице (подигнуте за ZH), да им пулт испред не заклони ватру и отвор
 const zl45=t=>onFloor45(t)?ZH:0;
 // врх станице изнад њеног места (траке и иконе стања) и површина на коју се ствари стављају (честице, бачене ствари), у плочицама
-const TOP45={pot:.46,wok:.46,marin:.5,kotlic:.74,oven:.78,kazan:.36,sac:.04,spit:.4,roaster:.32,trash:.14};
-const SURF45={grill:.36,pot:.64,wok:.6,pan:.45,griddle:.38,marin:.76,board:.41,steam:.4,kazan:.3,kotlic:.58,sac:.12,spit:.66,roaster:.5,oven:-.3,trash:.28};
+const TOP45={pot:.46,wok:.46,marin:.5,kotlic:.74,oven:.78,kazan:.36,sac:.04,spit:.4,roaster:.32,trash:0};
+const SURF45={grill:.36,pot:.64,wok:.6,pan:.45,griddle:.38,marin:.76,board:.41,steam:.4,kazan:.3,kotlic:.58,sac:.12,spit:.66,roaster:.5,oven:-.3,trash:.2};
 const top45=t=>ext45(t)?(TOP45[t.kind]===undefined?ZH:TOP45[t.kind])+zl45(t):0;
 const surf45=t=>ext45(t)?(SURF45[t.kind]===undefined?ZH:SURF45[t.kind])+zl45(t):0;
 const liftAt=(x,y)=>V&&V.grid?surf45(tileAt(V,Math.floor(x),Math.floor(y))):0;
@@ -5618,9 +5618,13 @@ const BASE45={
   spit(c){ kP(c,pR(6,34,88,56,6),'#2e2a28'); fP(c,pR(7.3,35.3,85.4,46,5),'#5a5450'); fP(c,pR(14,40,72,36,4),'#1e1a18'); fP(c,pR(14,40,72,7,3),'#3a3432');
     dots45(c,[[26,64,3],[46,68,2.6],[66,62,3],[78,68,2.4]],'#5a2412'); kP(c,pR(2,-24,8,88,2),'#7a726c'); kP(c,pR(90,-24,8,88,2),'#7a726c'); },
   roaster(c){ kP(c,pR(12,52,76,40,4),'#24201e'); fP(c,pR(13.3,53.3,73.4,28,3),'#3a3634'); dots45(c,[[26,66,2],[40,66,2],[54,66,2],[68,66,2]],'#1e1a18'); },
-  trash(c){ kP(c,pS('M16,22 A34,34 0 0 1 84,22 L84,62 A34,34 0 0 1 16,62 Z'),'#5b6368');
-    sP(c,pS('M28,58 V88 M39,60 V93 M50,60 V95 M61,60 V93 M72,58 V88'),'rgba(0,0,0,.2)',1.6);
-    kP(c,pC(50,22,34),'#7d878d'); fP(c,pC(50,22,27),'#1b1f22'); sP(c,pS('M30,10 A24,24 0 0 1 44,-2'),'rgba(255,255,255,.25)',3); kP(c,pR(40,92,20,6,3),'#2a2a2a'); },
+  // ниска поцинкована канта: обод је испод плоче пулта (-34), да не вири изнад кухиње
+  trash(c){ kP(c,pS('M22,30 A28,28 0 0 1 78,30 L78,64 A28,28 0 0 1 22,64 Z'),'#5b6368');
+    sP(c,pS('M31,62 V86 M40,63 V90 M50,63 V92 M60,63 V90 M69,62 V86'),'rgba(0,0,0,.2)',1.6); sP(c,pS('M22,48 A28,28 0 0 0 78,48'),'rgba(255,255,255,.18)',2);
+    kP(c,pR(13,26,11,7,3),'#7d878d'); kP(c,pR(76,26,11,7,3),'#7d878d');
+    kP(c,pC(50,30,28),'#7d878d'); fP(c,pC(50,30,22),'#1b1f22');
+    fP(c,pS('M38,36 Q44,24 52,30 Q48,40 38,36 Z'),'#e8d27a'); fP(c,pS('M54,26 L66,24 L64,34 L55,35 Z'),'#e9e4d8');
+    sP(c,pS('M34,18 A20,20 0 0 1 46,10'),'rgba(255,255,255,.25)',3); kP(c,pR(42,90,16,5,2.5),'#2a2a2a'); },
   oven(c){ kP(c,pS('M4,40 L4,-26 Q4,-72 50,-72 Q96,-72 96,-26 L96,40 Z'),'#c56d4c'); sP(c,pS('M16,-40 Q30,-62 50,-62'),'rgba(255,220,190,.4)',4);
     kP(c,pR(64,-92,14,30,2),'#8d3f25'); kP(c,pS('M4,100 L4,36 Q4,4 50,4 Q96,4 96,36 L96,100 Z'),'#a8502f');
     sP(c,pS('M6,52 H94 M5,68 H95 M5,84 H95 M28,36 V52 M72,36 V52 M16,52 V68 M50,52 V68 M84,52 V68 M28,68 V84 M72,68 V84 M16,84 V100 M84,84 V100'),'rgba(70,25,10,.35)',1);
@@ -5628,7 +5632,7 @@ const BASE45={
 };
 function base45(c,t,th){ if(!FREE.has(t.kind)) blockBase45(c,t,th); const f=BASE45[t.kind]; if(f) f(c,t); }
 // сенка самостојеће станице на поду (у позадини)
-const SHD45={kazan:[56,98,48,10],oven:[56,102,50,8],kotlic:[56,96,46,10],sac:[56,100,46,9],spit:[56,96,52,9],roaster:[56,98,50,8],trash:[56,98,40,9]};
+const SHD45={kazan:[56,98,48,10],oven:[56,102,50,8],kotlic:[56,96,46,10],sac:[56,100,46,9],spit:[56,96,52,9],roaster:[56,98,50,8],trash:[55,93,34,8]};
 
 /* ---- траке редова ---- */
 const ROW45=[];
@@ -5801,7 +5805,7 @@ const DYN45={
     const off=((spin*5)%8+8)%8; c.strokeStyle='#8a847e'; c.lineWidth=3.2; c.beginPath(); for(let y=-28+off;y<=26;y+=8){ if(y<-24) continue; c.moveTo(19,y); c.lineTo(81,y); } c.stroke();
     kP(c,pE(16,0,5,27),'#2a2624'); kP(c,pE(84,0,5,27),'#2a2624');
     c.lineCap='round'; line45(c,97,0,97+Math.sin(spin)*14,-Math.cos(spin)*14,'#d6dde0',2.4); fP(c,pC(97+Math.sin(spin)*15,-Math.cos(spin)*15,3),'#6a4a2a'); },
-  trash(c,t){ const b=FX.bins.get(t.x+','+t.y); if(b>0){ const k=1-b/.35; c.globalAlpha=.9*(1-k); sP(c,pC(50,22,20+12*k),'rgba(220,220,210,1)',3); c.globalAlpha=1; } },
+  trash(c,t){ const b=FX.bins.get(t.x+','+t.y); if(b>0){ const k=1-b/.35; c.globalAlpha=.9*(1-k); sP(c,pC(50,30,16+10*k),'rgba(220,220,210,1)',3); c.globalAlpha=1; } },
   oven(c,t){ const tr=t.item, hot=tr&&tr.ph==='c';
     if(tr){ c.globalAlpha=hot?glow45():.5; fP(c,pE(50,106,34,8),'rgba(255,150,60,.55)'); c.globalAlpha=1;
       fP(c,pS('M30,100 L30,66 Q30,46 50,46 Q70,46 70,66 L70,100 Z'),hot?gFire(c,30,46,40,54):gR45(c,30,46,40,54,.5,.85,[[0,'#c8501a'],[1,'#2a1208']]));
@@ -6834,7 +6838,7 @@ function drawTarget(t){
   if(!t||Game.phase!=='play') return;
   const s=ts, x=ox+t.x*s, y=oy+t.y*s, h=s-(frontOf(t)?s*.18:0), a=.55+.3*Math.sin(G_anim*7);
   if(ext45(t)){ const u=s/100, fr=FREE.has(t.kind); ctx.save(); ctx.translate(x,y-zl45(t)*s); ctx.scale(u,u); ctx.strokeStyle=`rgba(255,255,255,${a})`; ctx.lineWidth=7;
-    rr(ctx,4,fr?-26:-30,92,fr?122:92,12); ctx.stroke(); ctx.restore(); return; }
+    const tb=t.kind==='trash'?-4:fr?-26:-30; rr(ctx,4,tb,92,fr?96-tb:92,12); ctx.stroke(); ctx.restore(); return; }
   ctx.save(); ctx.strokeStyle=`rgba(255,255,255,${a})`; ctx.lineWidth=Math.max(2,s*.07); rr(ctx,x+s*.04,y+s*.04,s*.92,h-s*.08,s*.12); ctx.stroke(); ctx.restore();
 }
 
