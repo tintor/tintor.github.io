@@ -5723,7 +5723,9 @@ function buildDisplay(dt){
     DP.push(d);
   }
   for(const n of V.npcs||[]){ if(n.dx===undefined){ n.dx=n.x; n.dy=n.y; } const ox_=n.dx, oy_=n.dy; n.dx+=(n.x-n.dx)*k; n.dy+=(n.y-n.dy)*k; n.walk=(n.walk||0)+Math.hypot(n.dx-ox_,n.dy-oy_)*13; DN.push(n); }
-  for(const g of V.guards||[]){ if(g.dx===undefined){ g.dx=g.x; g.dy=g.y; } const ox_=g.dx, oy_=g.dy; g.dx+=(g.x-g.dx)*k; g.dy+=(g.y-g.dy)*k; g.walk=(g.walk||0)+Math.hypot(g.dx-ox_,g.dy-oy_)*13; DN.push(Object.assign(g,{kind:'guard'})); }
+  /* телохранитељи корачају спорије од тајкуна: играч пређе 13/SPEED корака по пољу, они 60% од тога */
+  for(const g of V.guards||[]){ if(g.dx===undefined){ g.dx=g.x; g.dy=g.y; } const ox_=g.dx, oy_=g.dy; g.dx+=(g.x-g.dx)*k; g.dy+=(g.y-g.dy)*k;
+    const mv=Math.hypot(g.dx-ox_,g.dy-oy_); if(mv>.002) g.walk=(g.walk||0)+mv*13/SPEED*.6; else g.walk=(g.walk||0)*.8; DN.push(Object.assign(g,{kind:'guard'})); }
 }
 function render(dt){
   G_anim+=dt;
