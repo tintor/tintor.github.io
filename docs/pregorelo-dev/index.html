@@ -148,6 +148,14 @@ body.padnav #ov :focus{outline:3px solid var(--brass); outline-offset:2px}
 .slot canvas{display:block; margin:0 auto 2px}
 .slot b{display:block; font-size:15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .slot small{display:block; color:var(--muted); font-size:12px; line-height:1.35}
+.slot{position:relative; min-width:0}
+.slot small.off{color:var(--red); font-weight:700}
+.slot .cpick{display:flex; align-items:center; justify-content:center; gap:4px; margin-top:4px}
+.slot .cpick small{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink); font-weight:800}
+.cbtn{flex:none; font:inherit; font-weight:900; font-size:15px; line-height:1; width:24px; height:24px; padding:0; border-radius:50%; border:1px solid var(--chip-edge); background:var(--chip); color:var(--ink); cursor:pointer}
+.cbtn.cx{position:absolute; top:3px; right:3px; border:0; background:transparent; color:var(--muted); font-size:18px}
+.cbtn:focus-visible{outline:3px solid var(--brass); outline-offset:1px}
+.couch-keys div{white-space:normal; flex-wrap:wrap}
 .wait{color:var(--muted); display:flex; align-items:center; gap:10px; margin:4px 0 14px}
 .wait::before{content:""; flex:none; width:10px; height:10px; border-radius:50%; background:var(--red); animation:blink 1s infinite}
 @keyframes blink{50%{opacity:.25}}
@@ -606,12 +614,17 @@ const EN={
   // екрани
   'Прегорело':'Pregorelo','Прегорело — хаос у српској кухињи':'Pregorelo — chaos in a Serbian kitchen','Кухиња — поље за игру':'Kitchen — play area',
   'Мени игре':'Game menu','Ради':'Work','Трк':'Dash','Узми':'Grab',
-  'Кафанска кухиња, гладни гости и до четири кувара.':'A kafana kitchen, hungry guests and up to four cooks.','Начин игре':'Game mode','Сам':'Solo','Са друштвом':'With friends',
+  'Кафанска кухиња, гладни гости и до четири кувара.':'A kafana kitchen, hungry guests and up to four cooks.','Начин игре':'Game mode','Сам':'Solo','Заједно':'Couch','Онлајн':'Online',
   'Твој кувар':'Your cook','Изабери кувара':'Choose your cook','заузет':'taken','Играј':'Play','Закључано. Освоји бар једну звездицу на претходном нивоу.':'Locked. Earn at least one star on the previous level.',
   'или стрелице: кретање':'or arrow keys: move','Размак':'Space','узми или спусти':'pick up or put down','сецкај или пери':'chop or wash','трк':'dash','мени игре':'game menu',
   'На телефону: превуци палцем по левој страни екрана за кретање, дугмад су десно. Најбоље игра у положеном положају.':'On a phone: drag your thumb on the left side of the screen to move; the buttons are on the right. Best played in landscape.',
   '🎮 Најбоље се игра на уређају са тастатуром или уз гејмпад.':'🎮 Plays best on a device with a keyboard or a game controller.',
   'Гејмпад:':'Controller:','узми':'grab','ради':'work','мени':'menu',
+  'Заједно, за једним рачунаром':'Couch co-op on one computer',
+  'Притисни „узми“ на свом уређају да уђеш у кухињу: A на гејмпаду, Размак на левој страни тастатуре или тачку на десној. До четири кувара.':'Press “grab” on your own device to join the kitchen: A on a controller, Space on the left side of the keyboard or the period key on the right. Up to four cooks.',
+  'На свом уређају лево и десно бираш кувара, а B на гејмпаду или × на картици излази из кухиње.':'On your own device, left and right pick your cook; B on a controller or × on the card leaves the kitchen.',
+  'Тастатура лево:':'Keyboard, left:','Тастатура десно:':'Keyboard, right:','стрелице':'arrow keys','Сам на тастатури? Ради цела тастатура.':'Alone on the keyboard? The whole keyboard works.',
+  'Тастатура: WASD':'Keyboard: WASD','Тастатура: стрелице':'Keyboard: arrows','Изађи из кухиње':'Leave the kitchen','Претходни кувар':'Previous cook','Следећи кувар':'Next cook',
   'Звук':'Sound','Музика':'Music','Све откључано':'All unlocked','Откључај све':'Unlock all',
   'Игра са друштвом':'Play with friends','Мрежни део игре није успео да се учита у овом прегледачу.':'Online play failed to load in this browser.',
   'Учитавам мрежни део…':'Loading online play…','Нова игра':'New game','Направи игру':'Create game','Имаш позивницу?':'Got an invite?',
@@ -626,7 +639,7 @@ const EN={
   'Чекаоница':'Lobby','Слободно':'Free','место за кувара':'a spot for a cook','преко TURN сервера':'via TURN server','директна веза':'direct connection',
   'повезивање…':'connecting…','преко сервера':'via server',
   'Пошаљи позивницу друштву у поруци или им реци код. Ко отвори линк, улази у твоју кухињу.':'Send the invite to your friends in a message, or tell them the code. Whoever opens the link joins your kitchen.',
-  'Пошаљи друштву линк или код. Игра им се појављује и у менију „Са друштвом“.':'Send your friends the link or the code. The game also shows up in their “With friends” menu.',
+  'Пошаљи друштву линк или код. Игра им се појављује и у менију „Онлајн“.':'Send your friends the link or the code. The game also shows up in their “Online” menu.',
   'У игри си. Домаћин бира ниво.':'You’re in. The host picks the level.','Копирај':'Copy','Пошаљи':'Send',
   'Резервни сервер за везу (TURN) је спреман.':'The backup connection server (TURN) is ready.',
   'Резервни сервер за везу (TURN) није доступан. Игра ради, али неки играчи можда неће моћи да се повежу.':'The backup connection server (TURN) is unavailable. The game works, but some players may not be able to connect.',
@@ -753,7 +766,9 @@ const EN_RE=[
   [/^Сви нивои су пређени! (.+)$/,(m,v)=>'All levels cleared! '+tr(v)],
   [/^(.+) на тањир$/,(m,n)=>tr(n)+' on the plate'],
   [/^(\d+) нити$/,(m,n)=>n+' strands'],
-  [/^Савршено! (\d+) нити$/,(m,n)=>'Perfect! '+n+' strands']
+  [/^Савршено! (\d+) нити$/,(m,n)=>'Perfect! '+n+' strands'],
+  [/^Играч (\d)$/,(m,n)=>'Player '+n],
+  [/^Гејмпад (\d)( \(искључен\))?$/,(m,n,o)=>'Controller '+n+(o?' (disconnected)':'')]
 ];
 const CYR=/[\u0400-\u04FF]/;
 function tr(s){
@@ -1400,7 +1415,9 @@ const STICON={pot:c=>iPotIcon(c),kotlic:c=>iKotlicIcon(c),kazan:c=>iKazanIcon(c)
 /* ======================= СТАЊЕ ======================= */
 let S=null;   // симулација (домаћин / сам)
 let V=null;   // оно што се црта (код домаћина V===S, код госта стање из снимка)
-const Game={role:'solo', phase:'menu', li:0, mySlot:0, prevPhase:'play', rs:0, evId:0, snapSeq:0, result:null, notice:null, localMenu:false, mode:save.mode||'solo'};
+const Game={role:save.mode==='couch'?'couch':'solo', phase:'menu', li:0, mySlot:0, prevPhase:'play', rs:0, evId:0, snapSeq:0, result:null, notice:null, localMenu:false, mode:save.mode||'solo'};
+/* заједно за једним рачунаром: до 4 кувара, сваки са својим уређајем (kbL = WASD, kbR = стрелице, p0…p3 = гејмпад по индексу) */
+const Couch={players:[]}; // {slot,ch,dev}
 const FX={parts:[],floats:[],toast:null,shake:0,scorePulse:0,hx:new Map(),warnT:new Map(),chopT:new Map(),lastTl:0};
 
 const mkIng=(t,s)=>({k:'i',t,s:s||'R',n:0,b:0});
@@ -2167,7 +2184,7 @@ function diagCompact(){
 function diagMode(){
   if(!Net.standalone) return 0;
   if(Game.notice&&DIAG.snap) return 3;
-  if(Game.role!=='solo'){ if(['countdown','play','ending'].includes(Game.phase)&&!overlayKind()) return TOUCH&&!pad.on?0:1; return 2; }
+  if(Game.role==='host'||Game.role==='client'){ if(['countdown','play','ending'].includes(Game.phase)&&!overlayKind()) return TOUCH&&!pad.on?0:1; return 2; }
   return Game.phase==='menu'&&Game.mode==='mp'?2:0;
 }
 function diagTick(dt){
@@ -2198,14 +2215,15 @@ const code6=()=>String(100000+crypto.getRandomValues(new Uint32Array(1))[0]%9000
 function hashCode(){ const m=(location.hash+' '+location.search).match(/igra=([a-z0-9]{4,16})/i)||location.pathname.match(/\/(\d{6})$/); return m?m[1].toLowerCase():null; }
 /* позивница у адресној траци у краћем облику, …/pregorelo/123456 */
 function showCodeUrl(c){ if(/^\d{6}$/.test(c)&&/^https?:$/.test(location.protocol)) try{ history.replaceState(null,'',gameBase()+c); }catch(e){} }
+const canJoin=()=>Game.role==='solo'||(Game.role==='couch'&&Game.phase==='menu');
 async function netInit(){
   if(!(window.claude&&typeof window.claude.use==='function')){
     Net.standalone=true; Net.avail='pending'; uiDirty();
     try{ const T=await loadTrystero(); if(T.getRelaySockets) DIAG.relays=T.getRelaySockets; Net.room={join:async n=>trRoom(T,n,await loadTurn()), presence:()=>Promise.resolve(), peers:()=>[], onPeers:()=>()=>{}}; Net.avail=true; loadTurn(); }
     catch(e){ console.error(e); Net.avail=false; }
     uiDirty();
-    const c=hashCode(); if(c&&Net.avail===true&&Game.role==='solo'){ showCodeUrl(c); joinGame(c); }
-    addEventListener('hashchange',()=>{ const c=hashCode(); if(c&&Net.avail===true&&Game.role==='solo') joinGame(c); });
+    const c=hashCode(); if(c&&Net.avail===true&&canJoin()){ showCodeUrl(c); joinGame(c); }
+    addEventListener('hashchange',()=>{ const c=hashCode(); if(c&&Net.avail===true&&canJoin()) joinGame(c); });
     return;
   }
   Net.avail='pending'; uiDirty();
@@ -2220,7 +2238,7 @@ async function netInit(){
     Net.adverts=ads; resolveNames(ads.map(a=>a.by)); uiDirty();
   },()=>{});
   const m=hashCode();
-  if(m&&/^\d{4}$/.test(m)&&Game.role==='solo') joinGame(m);
+  if(m&&/^\d{4}$/.test(m)&&canJoin()) joinGame(m);
 }
 function resolveNames(ids){
   ids=ids.filter(id=>id&&!(id in Net.names)); if(!ids.length||!Net.user) return;
@@ -2391,7 +2409,8 @@ function netTick(dt){
 
 /* -------- гост -------- */
 async function joinGame(code){
-  code=String(code||'').toLowerCase(); if(!Net.room||!/^[a-z0-9]{4,16}$/.test(code)||Game.role!=='solo') return;
+  code=String(code||'').toLowerCase(); if(!Net.room||!/^[a-z0-9]{4,16}$/.test(code)||!canJoin()) return;
+  if(Game.role==='couch') Game.mode='mp';
   diagReset(); Game.role='client'; Net.code=code; Net.joining=true; Net.joinT0=now(); Net.hostSeen=false; Net.hostPeer=null; Net.lastF=0; Net.lastEv=0; Net.lastSnapAt=0;
   Net.dcOpen=false; Net.appliedOid=null; Net.rtcState=''; Game.mySlot=-1; Game.phase='lobby'; S=null; Net.inSeq=0; Net.g=0; Net.w=0; uiDirty();
   let chan=null; try{ chan=await Net.room.join('kb-'+code); }catch(e){ chan=null; }
@@ -2595,10 +2614,11 @@ function musicSync(){
 }
 
 /* ======================= ЕФЕКТИ ======================= */
+const isLocalSlot=slot=>Game.role==='couch'||slot===Game.mySlot;
 function playEvent(e){
   const ty=e[1];
-  if(ty==='s'){ const who=e[3]; if(who===undefined||who<0||who===Game.mySlot) sfx(e[2]); }
-  else if(ty==='f'){ if(e[6]<0||e[6]===Game.mySlot) FX.floats.push({x:e[4],y:e[5],text:tr(String(e[2])),color:String(e[3]),t:0,life:e[7]?1.15:1.5,small:!!e[7]}); }
+  if(ty==='s'){ const who=e[3]; if(who===undefined||who<0||isLocalSlot(who)) sfx(e[2]); }
+  else if(ty==='f'){ if(e[6]<0||isLocalSlot(e[6])) FX.floats.push({x:e[4],y:e[5],text:tr(String(e[2])),color:String(e[3]),t:0,life:e[7]?1.15:1.5,small:!!e[7]}); }
   else if(ty==='b') burst(e[2],e[3],e[4]);
   else if(ty==='k') FX.shake=.35;
   else if(ty==='o') FX.toast={text:tr(String(e[2])),t:2.4};
@@ -2647,32 +2667,78 @@ function ambient(dt){
 const keys=new Set();
 const UP=['KeyW','ArrowUp'], DOWN=['KeyS','ArrowDown'], LEFT=['KeyA','ArrowLeft'], RIGHT=['KeyD','ArrowRight'];
 const MOVE=new Set([...UP,...DOWN,...LEFT,...RIGHT]);
+const KEY_ACT={Space:'grab',KeyJ:'grab',Enter:'grab',Period:'grab',KeyE:'work',KeyF:'work',KeyK:'work',Comma:'work',ShiftLeft:'dash',ShiftRight:'dash',KeyL:'dash'};
+/* двоје на тастатури деле је по половинама; кад је на тастатури само један кувар, ради цела (KB_ALL и KEY_ACT) */
+const KB_ALL={up:UP,down:DOWN,left:LEFT,right:RIGHT};
+const KB={kbL:{up:['KeyW'],down:['KeyS'],left:['KeyA'],right:['KeyD'],grab:['Space'],work:['KeyE','KeyF'],dash:['ShiftLeft']},
+  kbR:{up:['ArrowUp'],down:['ArrowDown'],left:['ArrowLeft'],right:['ArrowRight'],grab:['Period','Enter'],work:['Comma'],dash:['ShiftRight']}};
+const kbHalf=code=>Object.keys(KB).find(d=>Object.values(KB[d]).some(a=>a.includes(code)))||null;
 const anyKey=a=>a.some(k=>keys.has(k));
+const keyVec=m=>{ let x=0,y=0; if(anyKey(m.up)) y-=1; if(anyKey(m.down)) y+=1; if(anyKey(m.left)) x-=1; if(anyKey(m.right)) x+=1; return {x,y}; };
 const inPlay=()=>['countdown','play','ending'].includes(Game.phase)&&!Game.localMenu&&!Game.notice&&!(Game.role==='client'&&Game.mySlot<0);
-function readInput(){ if(!inPlay()) return {x:0,y:0}; let x=0,y=0; if(anyKey(UP)) y-=1; if(anyKey(DOWN)) y+=1; if(anyKey(LEFT)) x-=1; if(anyKey(RIGHT)) x+=1; if(stick.active){ x+=stick.x; y+=stick.y; } x+=pad.x; y+=pad.y; return {x,y}; }
+function readInput(){ if(!inPlay()) return {x:0,y:0}; let {x,y}=keyVec(KB_ALL); if(stick.active){ x+=stick.x; y+=stick.y; } x+=pad.x; y+=pad.y; return {x,y}; }
 const localActor=()=>S?S.players.find(p=>p.slot===Game.mySlot):null;
-function doAction(kind){
+const localPlayers=()=>!S?[]:Game.role==='couch'?S.players:S.players.filter(p=>p.slot===Game.mySlot);
+const couchBy=dev=>Couch.players.find(c=>c.dev===dev);
+const couchKb=()=>Couch.players.filter(c=>c.dev[0]==='k');
+function couchKbPlayer(code){ const kb=couchKb(); if(kb.length===1) return kb[0]; const d=kbHalf(code); return d?couchBy(d):null; }
+function couchInput(slot){
+  const c=Couch.players.find(q=>q.slot===slot); if(!c||!inPlay()) return {x:0,y:0};
+  if(c.dev[0]==='k') return keyVec(couchKb().length===1?KB_ALL:KB[c.dev]);
+  const st=pads.get(+c.dev.slice(1)); return st?{x:st.x,y:st.y}:{x:0,y:0};
+}
+const inputFor=p=>Game.role==='couch'?couchInput(p.slot):readInput();
+const couchJoinable=()=>Game.role==='couch'&&['menu','intro','end'].includes(Game.phase);
+const chefFree=(i,slot)=>chefOpen(i)&&!Couch.players.some(c=>c.slot!==slot&&c.ch===i);
+function couchSaveCh(slot,ch){ save.cch=Object.assign([0,1,2,3],save.cch); save.cch[slot]=ch; persist(); }
+function couchJoin(dev){
+  if(couchBy(dev)||Couch.players.length>=4) return;
+  let slot=0; while(Couch.players.some(c=>c.slot===slot)) slot++;
+  const ch=[(save.cch||[])[slot],slot===0?myPrefCh():-1,...CHARS.keys()].find(i=>Number.isInteger(i)&&chefFree(i,slot));
+  Couch.players.push({slot,ch,dev}); Couch.players.sort((a,b)=>a.slot-b.slot); couchSaveCh(slot,ch); sfx('order'); uiDirty();
+}
+function couchLeave(slot){ const n=Couch.players.length; Couch.players=Couch.players.filter(c=>c.slot!==slot); if(Couch.players.length<n){ sfx('drop'); uiDirty(); } }
+function couchCycle(slot,d){
+  const c=Couch.players.find(q=>q.slot===slot), L=CHARS.length; if(!c) return;
+  for(let k=1;k<L;k++){ const i=((c.ch+d*k)%L+L)%L; if(chefFree(i,slot)){ c.ch=i; couchSaveCh(slot,i); sfx('pick'); uiDirty(); return; } }
+}
+function doAction(kind,slot){
   if(Game.phase!=='play'||!inPlay()) return;
   if(Game.role==='client'){ if(kind==='dash'){ if(me&&me.dashCd<=0){ me.dashT=.15; me.dashCd=.5; sfx('dash'); } } else clientAction(kind); return; }
-  const p=localActor(); if(!p) return;
+  const p=slot===undefined?localActor():S&&S.players.find(q=>q.slot===slot); if(!p) return;
   if(kind==='grab') simGrab(p); else if(kind==='work') simWork(p); else if(p.dashCd<=0){ p.dashT=.15; p.dashCd=.5; sfx('dash'); }
 }
 function menuKey(){ if(Game.role==='client'){ Game.localMenu=!Game.localMenu; uiDirty(); } else if(Game.phase==='pause') resumeGame(); else pauseGame(); }
+/* мени игре заједно: „узми“ слободне половине тастатуре улази у кухињу; њен кувар онда лево–десно бира кувара, горе–доле дугме, „узми“ га притиска */
+function couchMenuKey(e){
+  if(!couchJoinable()||Game.notice||e.ctrlKey||e.metaKey||e.altKey) return false;
+  const t=e.target; if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA')) return false;
+  const dev=kbHalf(e.code); if(!dev) return false;
+  const m=KB[dev], c=couchBy(dev);
+  if(!c){ if(e.code!==m.grab[0]) return false; e.preventDefault(); if(!e.repeat) couchJoin(dev); return true; }
+  if(m.grab.includes(e.code)){ const f=document.activeElement;
+    if((e.code==='Space'||e.code==='Enter')&&f&&ov.contains(f)&&f.tagName==='BUTTON') return false; // прегледач сам притиска дугме
+    e.preventDefault(); if(!e.repeat) padPress(); return true; }
+  if(m.left.includes(e.code)||m.right.includes(e.code)){ e.preventDefault(); couchCycle(c.slot,m.left.includes(e.code)?-1:1); return true; }
+  if(m.up.includes(e.code)||m.down.includes(e.code)){ e.preventDefault(); padNav(m.up.includes(e.code)?-1:1); return true; }
+  return false;
+}
 addEventListener('keydown',e=>{
   audioInit();
   if(e.code==='Escape'||e.code==='KeyP'){
     if(['countdown','play','ending','pause'].includes(Game.phase)&&!Game.notice){ e.preventDefault(); menuKey(); return; }
     if(e.code==='Escape'&&Game.phase==='intro'&&Game.role!=='client'){ act('back'); return; }
   }
+  if(couchMenuKey(e)) return;
   if(!inPlay()) return;
   if(MOVE.has(e.code)){ keys.add(e.code); e.preventDefault(); return; }
-  if(e.code==='Space'||e.code==='KeyJ'||e.code==='Enter'){ e.preventDefault(); if(!e.repeat) doAction('grab'); return; }
-  if(e.code==='KeyE'||e.code==='KeyF'||e.code==='KeyK'){ e.preventDefault(); if(!e.repeat) doAction('work'); return; }
-  if(e.code==='ShiftLeft'||e.code==='ShiftRight'||e.code==='KeyL'){ e.preventDefault(); if(!e.repeat) doAction('dash'); }
+  const kind=KEY_ACT[e.code]; if(!kind) return;
+  e.preventDefault(); if(e.repeat) return;
+  if(Game.role!=='couch') doAction(kind); else { const c=couchKbPlayer(e.code); if(c) doAction(kind,c.slot); }
 });
 addEventListener('keyup',e=>keys.delete(e.code));
 addEventListener('pointerdown',audioInit,{passive:true});
-addEventListener('blur',()=>{ keys.clear(); if(Game.role==='solo'&&Game.phase==='play') pauseGame(); });
+addEventListener('blur',()=>{ keys.clear(); if((Game.role==='solo'||Game.role==='couch')&&Game.phase==='play') pauseGame(); });
 document.addEventListener('visibilitychange',()=>{ if(document.hidden&&Game.role!=='client'&&Game.phase==='play') pauseGame(); });
 const stick={active:false,id:null,x:0,y:0,cx:0,cy:0};
 const zone=$('#stickZone'), base=$('#stickBase'), knob=$('#stickKnob');
@@ -2688,21 +2754,29 @@ document.querySelectorAll('.tb').forEach(b=>{
 });
 const TOUCH=(window.matchMedia&&matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window);
 const NOKB=!!(window.matchMedia&&matchMedia('(hover: none) and (pointer: coarse)').matches); // телефон или таблет, без тастатуре
-/* гејмпад: лева палица или крстић за кретање, A узми, X ради, B или RB трк, Start мени; у менијима крстић бира дугме, A га притиска */
-const pad={x:0,y:0,on:false,prev:[],held:false,navT:0};
-function padFocusables(){ return [...ov.querySelectorAll('button:not([disabled]),input:not([readonly])')].filter(e=>e.offsetParent!==null); }
+/* гејмпад: лева палица или крстић за кретање, A узми, X ради, B или RB трк, Start мени; у менијима крстић бира дугме, A га притиска.
+   У игри заједно сваки гејмпад води свог кувара; у менију A на слободном гејмпаду улази у кухињу, а њен кувар лево–десно бира кувара, B излази. */
+const pad={x:0,y:0,on:false,prev:[],held:false,navT:0,sig:''};
+const pads=new Map(); // по индексу гејмпада: {x,y,down,hit,prev,held,navT}
+function padFocusables(){ return [...ov.querySelectorAll('button:not([disabled]):not(.cbtn),input:not([readonly])')].filter(e=>e.offsetParent!==null); }
 function padNav(d){ const l=padFocusables(); if(!l.length) return; const i=l.indexOf(document.activeElement); const f=l[i<0?0:(i+d+l.length)%l.length]; try{ f.focus(); f.scrollIntoView({block:'nearest'}); }catch(e){} }
 function padPress(){ const f=document.activeElement, b=f&&ov.contains(f)&&f.tagName==='BUTTON'&&!f.disabled?f:ov.querySelector('[data-primary]:not([disabled])'); if(b) b.click(); }
 function pollPad(dt){
   const ps=navigator.getGamepads?[...navigator.getGamepads()].filter(g=>g&&g.connected!==false):[];
-  const down=[]; let x=0,y=0;
+  const down=[]; let x=0,y=0; const seen=new Set();
   for(const g of ps){ const b=i=>!!(g.buttons[i]&&g.buttons[i].pressed), ax=g.axes[0]||0, ay=g.axes[1]||0;
-    if(Math.hypot(ax,ay)>.25){ x+=ax; y+=ay; }
-    if(b(12)) y-=1; if(b(13)) y+=1; if(b(14)) x-=1; if(b(15)) x+=1;
-    for(const i of [0,1,2,5,9]) down[i]=down[i]||b(i); }
+    let gx=0, gy=0; if(Math.hypot(ax,ay)>.25){ gx=ax; gy=ay; }
+    if(b(12)) gy-=1; if(b(13)) gy+=1; if(b(14)) gx-=1; if(b(15)) gx+=1;
+    let st=pads.get(g.index); if(!st){ st={prev:[],held:false,navT:0}; pads.set(g.index,st); } seen.add(g.index);
+    st.x=clamp(gx,-1,1); st.y=clamp(gy,-1,1); st.down=[]; st.hit=[];
+    for(const i of [0,1,2,5,9]){ st.down[i]=b(i); st.hit[i]=st.down[i]&&!st.prev[i]; down[i]=down[i]||st.down[i]; }
+    st.prev=st.down; x+=gx; y+=gy; }
+  for(const i of [...pads.keys()]) if(!seen.has(i)){ pads.delete(i); if(Game.role==='couch'&&couchBy('p'+i)) pauseGame(); } // кувару је нестао гејмпад
+  const sig=[...seen].sort().join(); if(sig!==pad.sig){ pad.sig=sig; uiDirty(); }
   x=clamp(x,-1,1); y=clamp(y,-1,1);
   const prev=pad.prev, hit=i=>down[i]&&!prev[i]; pad.prev=down;
   if(!pad.on&&(down.some(Boolean)||x||y)){ pad.on=true; document.body.classList.add('padnav'); uiDirty(); }
+  if(Game.role==='couch'){ pad.x=pad.y=0; couchPads(dt); return; }
   const playing=inPlay(); pad.x=playing?x:0; pad.y=playing?y:0;
   if(!down.some(Boolean)&&!x&&!y){ pad.held=false; return; }
   audioInit();
@@ -2713,6 +2787,24 @@ function pollPad(dt){
   const d=Math.abs(y)>.5?Math.sign(y):Math.abs(x)>.5?Math.sign(x):0;
   if(!d){ pad.held=false; return; }
   if(!pad.held){ pad.held=true; pad.navT=.4; padNav(d); } else if((pad.navT-=dt)<=0){ pad.navT=.15; padNav(d); }
+}
+function couchPads(dt){
+  const playing=inPlay(), jn=couchJoinable()&&!Game.notice;
+  for(const [i,st] of pads){ const hit=k=>st.hit[k], c=couchBy('p'+i);
+    if(!st.down.some(Boolean)&&!st.x&&!st.y){ st.held=false; continue; }
+    audioInit();
+    if(hit(9)&&['countdown','play','ending','pause'].includes(Game.phase)&&!Game.notice){ menuKey(); return; }
+    if(playing){ if(c){ if(hit(0)) doAction('grab',c.slot); if(hit(2)) doAction('work',c.slot); if(hit(1)||hit(5)) doAction('dash',c.slot); } continue; }
+    if(ov.hidden) continue;
+    if(jn&&!c&&hit(0)){ couchJoin('p'+i); continue; }
+    if(jn&&c&&hit(1)){ couchLeave(c.slot); continue; }
+    if(hit(0)||hit(9)){ padPress(); continue; }
+    const h=Math.abs(st.x)>.5&&Math.abs(st.x)>=Math.abs(st.y)?Math.sign(st.x):0, v=h?0:Math.abs(st.y)>.5?Math.sign(st.y):0;
+    if(!h&&!v){ st.held=false; continue; }
+    if(st.held&&(st.navT-=dt)>0) continue;
+    st.navT=st.held?.15:.4; st.held=true;
+    if(h&&c&&jn) couchCycle(c.slot,h); else padNav(v||h);
+  }
 }
 if(TOUCH) document.body.classList.add('touch');
 $('#pauseBtn').addEventListener('click',e=>{ e.currentTarget.blur(); menuKey(); });
@@ -2749,15 +2841,15 @@ function shoveStep(o,a,slot,guards,dt){
 const PANDUR=5, nearNpc=(x,y)=>((V&&V.npcs)||[]).some(n=>n.kind!=='car'&&!n.gone&&Math.hypot(n.x-x,n.y-y)<PR+NPC_R+.08);
 function hostUpdate(dt){
   if(!S||V!==S) return;
-  const p=localActor();
+  const ps=localPlayers();
   if(Game.phase==='countdown'){
     const b=S.countdown; S.countdown-=dt;
     if(Math.ceil(b)!==Math.ceil(S.countdown)&&S.countdown>0) ev('s','count',-1);
     if(S.countdown<=0){ Game.phase='play'; S.goT=.9; ev('s','go',-1); spawnOrder(); if(S.guards.length) setTimeout(()=>{ if(Game.phase==='play'&&S) ev('o','Тајкун је у кухињи — са обезбеђењем!'); },2600); if(S.L.band) setTimeout(()=>{ if(Game.phase==='play'&&S) ev('o',NPC_HELLO[S.L.band[0].kind||'band']); },900); uiDirty(); }
-    if(p) p.target=findTarget(S,p); return;
+    for(const p of ps) p.target=findTarget(S,p); return;
   }
   if(Game.phase==='play'){
-    if(p){ const i=p.stun>0?{x:0,y:0}:readInput(), pc=(p.ch|0)===PANDUR, sl=pc&&nearNpc(p.x,p.y)?.78:1; stepMove(S,p,i.x*sl,i.y*sl,dt,othersFor(p,S.players,pc),chefSpeed(p.ch)); shoveStep(S,p,p.slot,S.guards,dt); p.target=findTarget(S,p); }
+    for(const p of ps){ const i=p.stun>0?{x:0,y:0}:inputFor(p), pc=(p.ch|0)===PANDUR, sl=pc&&nearNpc(p.x,p.y)?.78:1; stepMove(S,p,i.x*sl,i.y*sl,dt,othersFor(p,S.players,pc),chefSpeed(p.ch)); shoveStep(S,p,p.slot,S.guards,dt); p.target=findTarget(S,p); }
     simStep(dt); if(Game.phase==='ending') uiDirty(); return;
   }
   if(Game.phase==='ending'){ S.endT-=dt; if(S.endT<=0) finishLevel(); }
@@ -2772,8 +2864,9 @@ function clientUpdate(dt){
   }
 }
 function beginLevel(i){
+  if(Game.role==='couch'&&!Couch.players.length) return;
   audioInit();
-  const slots=Game.role==='host'?Net.slots.map(s=>({slot:s.slot,ch:s.ch,peer:s.peer})):[{slot:0,ch:myPrefCh(),peer:'me'}];
+  const slots=Game.role==='host'?Net.slots.map(s=>({slot:s.slot,ch:s.ch,peer:s.peer})):Game.role==='couch'?Couch.players.map(c=>({slot:c.slot,ch:c.ch,peer:'local'})):[{slot:0,ch:myPrefCh(),peer:'me'}];
   S=newSim(i,slots); V=S; Game.li=i; Game.phase='countdown'; Game.result=null; Game.reward=null; Game.localMenu=false;
   FX.parts.length=0; FX.floats.length=0; FX.toast=null; FX.hx.clear(); musicStop(); keys.clear();
   if(document.activeElement&&document.activeElement.blur) document.activeElement.blur();
@@ -2811,7 +2904,7 @@ const THEMES={
 const bg=document.createElement('canvas'); let bgKey='';
 function layout(){
   hs=clamp(Math.min(VW,VH)/12.5,30,60);
-  const L=V?V.L:LEVELS[0], n=Math.max(1,(Game.role==='solo'?1:Net.slots.length)||1);
+  const L=V?V.L:LEVELS[0], n=nPlayers();
   const maxN=Math.min(7,L.maxOrders+(n-1)), rightW=hs*2.9+64, avail=VW-rightW-20;
   tw=Math.max(44,Math.min(hs*2.4,(avail-(maxN-1)*8)/maxN)); th=Math.min(hs*2.15,tw*1.08);
   topH=10+Math.max(th,hs*.72*2+6)+8;
@@ -5493,7 +5586,7 @@ function buildDisplay(dt){
   const k=Math.min(1,dt*14);
   for(const p of V.players){
     let d;
-    if(Game.role!=='client'&&p.slot===Game.mySlot){ p.dx=p.x; p.dy=p.y; d={slot:p.slot,ch:p.ch,x:p.x,y:p.y,fx:p.fx,fy:p.fy,walk:p.walk,hold:p.hold,wk:wkCode(p.work),tx:p.target?p.target.x:-1,ty:p.target?p.target.y:-1,mv:!!p.moving,me:true}; }
+    if(Game.role!=='client'&&isLocalSlot(p.slot)){ p.dx=p.x; p.dy=p.y; d={slot:p.slot,ch:p.ch,x:p.x,y:p.y,fx:p.fx,fy:p.fy,walk:p.walk,hold:p.hold,wk:wkCode(p.work),tx:p.target?p.target.x:-1,ty:p.target?p.target.y:-1,mv:!!p.moving,me:true}; }
     else if(Game.role==='client'&&p.slot===Game.mySlot&&me){ d={slot:p.slot,ch:p.ch,x:me.x,y:me.y,fx:me.fx,fy:me.fy,walk:me.walk,hold:p.hold,wk:p.wk,tx:me.target?me.target.x:-1,ty:me.target?me.target.y:-1,mv:!!me.moving,me:true}; }
     else { const ox_=p.dx, oy_=p.dy; if(p.dx===undefined||Math.hypot(p.x-p.dx,p.y-p.dy)>2.5){ p.dx=p.x; p.dy=p.y; } else { p.dx+=(p.x-p.dx)*k; p.dy+=(p.y-p.dy)*k; }
       const mv=Math.hypot(p.dx-(ox_||p.dx),p.dy-(oy_||p.dy)); p.walk=(p.walk||0)+(mv>.002?mv*13*3:0); if(mv<=.002) p.walk*=.8;
@@ -5511,21 +5604,21 @@ function render(dt){
   if(!V||!V.grid) return;
   layout(); sceneLayout(); buildBg();
   const live=['countdown','play','pause','ending','end'].includes(Game.phase)&&V.rs!==-1;
-  const mine=DP.find(p=>p.me);
-  G_ready=!!(live&&mine&&mine.hold&&mine.hold.k==='p'&&(()=>{ const d=plateDishOf(V.L,mine.hold.c); return d&&V.orders.some(o=>o.r===d); })());
+  const mine=DP.filter(p=>p.me);
+  G_ready=live&&mine.some(m=>m.hold&&m.hold.k==='p'&&(()=>{ const d=plateDishOf(V.L,m.hold.c); return d&&V.orders.some(o=>o.r===d); })());
   ctx.save();
   if(FX.shake>0) ctx.translate((Math.random()-.5)*7*FX.shake,(Math.random()-.5)*7*FX.shake);
   ctx.drawImage(bg,0,0,VW,VH);
   drawScene();
   for(const row of V.grid) for(const t of row) if(t.solid) drawTileDyn(t);
   if(live){
-    if(mine) drawTarget(tileAt(V,mine.tx,mine.ty));
+    for(const m of mine) drawTarget(tileAt(V,m.tx,m.ty));
     const ents=[...DP.map(p=>({p,y:p.y})),...DN.map(n=>({n,y:n.y}))].sort((a,b)=>a.y-b.y);
-    const multi=Game.role!=='solo';
+    const multi=Game.role==='couch'?DP.length>1:Game.role!=='solo';
     for(const e of ents){
       if(e.p){ const p=e.p, s=ts, hx=p.hold;
         drawChar(ctx,ox+p.x*ts,oy+p.y*ts,s,p.fx,p.fy,p.walk,CHARS[p.ch]||CHARS[0],{pose:(CHARS[p.ch]||CHARS[0]).gun&&p.mv&&!hx&&!(p.wk===1||p.wk===2)?'gunrun':undefined,holding:!!hx,working:p.wk===1||p.wk===2,knife:p.wk===1?(FX.chopT.get('w'+p.slot)||0)/.2:undefined,
-          drawHold:hx?((x,y)=>drawItemAt(ctx,hx,x,y,s*.52)):null,label:multi?tr(p.me?'Ти':slotName(p.slot)):null}); }
+          drawHold:hx?((x,y)=>drawItemAt(ctx,hx,x,y,s*.52)):null,label:multi?tr(Game.role==='couch'?'Играч '+(p.slot+1):p.me?'Ти':slotName(p.slot)):null}); }
       else { const n=e.n; if(n.kind==='car'){ if(!n.gone) topCar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts*1.15,'#c8202b',Math.atan2(n.fy||0,n.fx||-1)); } else if(n.kind==='squad') drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk*1.4,SQUAD,{}); else if(n.kind==='robot') drawRobot(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n); else if(n.kind==='guard') drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk,GUARD,{}); else drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk,BAND,{trumpet:true,holding:true}); }
     }
     drawHangers(); drawKitchenFx();
@@ -5552,22 +5645,22 @@ function overlayKind(){
   }
   return {menu:'menu',lobby:'lobby',intro:'intro',pause:'pause',end:'end'}[Game.phase]||null;
 }
-function nPlayers(){ return Game.role==='solo'?1:Math.max(1,Net.slots.length); }
+function nPlayers(){ return Game.role==='solo'?1:Math.max(1,(Game.role==='couch'?Couch.players:Net.slots).length); }
 function scaledStars(L){ const n=nPlayers(); return L.stars.map(v=>Math.round(v*(1+.35*(n-1))/50)*50); }
 function sigFor(k){
   switch(k){
-    case 'menu': return [pad.on,Game.mode,Net.avail,Net.standalone,JSON.stringify(Net.adverts.map(a=>[a.code,a.n,a.ph,Net.names[a.by]||''])),save.stars.join(),save.best.join(),save.sound,save.music,chefSig()].join('|');
+    case 'menu': return [pad.on,couchSig(),Game.mode,Net.avail,Net.standalone,JSON.stringify(Net.adverts.map(a=>[a.code,a.n,a.ph,Net.names[a.by]||''])),save.stars.join(),save.best.join(),save.sound,save.music,chefSig()].join('|');
     case 'lobby': return [chefSig(),Game.role,Net.code,Game.li,JSON.stringify(Net.slots.map(s=>[s.slot,s.ch,s.peer===Net.myPeer||s.peer==='me',slotName(s.slot),Game.role==='host'&&s.peer!=='me'?!!(Net.conns.get(s.peer)||{}).dcOpen:''])),Net.rtcState,save.stars.join(),JSON.stringify(Net.routes),TURN.state].join('|');
-    case 'intro': return [Game.role,Game.li,nPlayers(),chefSig()].join('|');
+    case 'intro': return [Game.role,Game.li,nPlayers(),chefSig(),couchSig()].join('|');
     case 'pause': return Game.role+'|'+save.sound+save.music;
-    case 'end': return Game.role+'|'+JSON.stringify(Game.result)+'|'+chefSig();
+    case 'end': return Game.role+'|'+JSON.stringify(Game.result)+'|'+chefSig()+'|'+couchSig();
     case 'notice': return Game.notice;
     default: return Net.code||'';
   }
 }
 function ui(){
   const k=overlayKind(), playing=['countdown','play','ending'].includes(Game.phase)&&(!k||k==='cmenu');
-  $('#pauseBtn').hidden=!(playing&&!k); $('#touch').hidden=!(playing&&!k&&TOUCH&&!pad.on);
+  $('#pauseBtn').hidden=!(playing&&!k); $('#touch').hidden=!(playing&&!k&&TOUCH&&!pad.on&&Game.role!=='couch');
   if(!uiForce) return; uiForce=false;
   const sig=k+'#'+LANG+'#'+sigFor(k); if(sig===uiSig) return; uiSig=sig;
   if(!k){ ov.hidden=true; ov.innerHTML=''; try{ cv.focus({preventScroll:true}); }catch(e){} return; }
@@ -5588,18 +5681,37 @@ function hydrateIcon(cnv){
   if(kind==='dish') dishArt(c,arg); else if(kind==='ing') drawIngIcon(c,arg); else if(kind==='pot') iPotIcon(c); else if(kind==='kotlic') iKotlicIcon(c); else if(kind==='kazan') iKazanIcon(c); else if(STICON[kind]) STICON[kind](c); else if(kind==='tray') iOvenIcon(c);
 }
 const starsHTML=n=>[0,1,2].map(i=>`<span class="${i<n?'on':''}">★</span>`).join('');
-function levelList(){
+function levelList(noPlay){
   return `<ol class="menu-list">${LEVELS.map((L,i)=>{ const open=levelOpen(i);
     return `<li class="menu-item${open?'':' locked'}"><span class="n">${i+1}.</span><span class="title"><b>${esc(L.name)}</b><span class="dots"></span></span>
       <span class="stars" aria-label="Звездице: ${save.stars[i]} од 3">${starsHTML(save.stars[i])}</span>
       <span class="desc">${open?esc(L.desc):'Закључано. Освоји бар једну звездицу на претходном нивоу.'}</span>
-      <button class="btn small act" data-act="pick" data-li="${i}" ${open?'':'disabled'} ${i===0?'data-primary':''}>Играј</button>
+      <button class="btn small act" data-act="pick" data-li="${i}" ${open&&!noPlay?'':'disabled'} ${i===0&&!noPlay?'data-primary':''}>Играј</button>
       ${save.best[i]?`<span class="best">Рекорд: ${fmt(save.best[i])} дин.</span>`:''}</li>`; }).join('')}</ol>`;
 }
 const howto=()=>`<div class="howto"><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> или стрелице: кретање</div><div><kbd>Размак</kbd> узми или спусти</div>
   <div><kbd>E</kbd> сецкај или пери</div><div><kbd>Shift</kbd> трк</div><div><kbd>Esc</kbd> мени игре</div><div>Гејмпад: <kbd>A</kbd> узми <kbd>X</kbd> ради <kbd>B</kbd> трк <kbd>Start</kbd> мени</div></div>
   <p class="touch-note">На телефону: превуци палцем по левој страни екрана за кретање, дугмад су десно. Најбоље игра у положеном положају.</p>`;
 const toggles=(withUnlock)=>`<div class="row toggles"><button class="chip" data-act="toggle" data-k="sound" aria-pressed="${save.sound}">Звук</button><button class="chip" data-act="toggle" data-k="music" aria-pressed="${save.music}">Музика</button>${withUnlock?`<button class="ghost-unlock" data-act="unlockall" ${save.allOpen?'disabled':''}>${save.allOpen?'Све откључано':'Откључај све'}</button>`:''}</div>`;
+/* игра заједно: картице кувара на овом рачунару; сваки уређај бира свог кувара, мишем ‹ › и × */
+const couchSig=()=>Game.role==='couch'?JSON.stringify(Couch.players)+pad.sig:'';
+const couchEmpty=()=>Game.role==='couch'&&!Couch.players.length;
+const devName=d=>d==='kbL'?'Тастатура: WASD':d==='kbR'?'Тастатура: стрелице':'Гејмпад '+(+d.slice(1)+1);
+function couchSlots(size){
+  const fc=[0,1,2,3].filter(k=>!Couch.players.some(c=>c.ch===k));
+  return `<div class="slots">${[0,1,2,3].map(i=>{ const c=Couch.players.find(q=>q.slot===i);
+    if(!c) return `<div class="slot"><canvas data-icon="char:${fc[i%Math.max(1,fc.length)]??i}" data-size="${size}" data-dim="1"></canvas><b>Слободно</b><small>место за кувара</small></div>`;
+    const st=CHARS[c.ch], off=c.dev[0]==='p'&&!pads.has(+c.dev.slice(1));
+    return `<div class="slot on" style="border-color:${st.tag}"><button class="cbtn cx" data-act="cleave" data-slot="${i}" aria-label="Изађи из кухиње">×</button>
+      <canvas data-icon="char:${c.ch}" data-size="${size}"></canvas><b>Играч ${i+1}</b><small${off?' class="off"':''}>${devName(c.dev)}${off?' (искључен)':''}</small>
+      <div class="cpick"><button class="cbtn" data-act="cchef" data-slot="${i}" data-d="-1" aria-label="Претходни кувар">‹</button><small>${esc(st.name)}</small><button class="cbtn" data-act="cchef" data-slot="${i}" data-d="1" aria-label="Следећи кувар">›</button></div></div>`; }).join('')}</div>`;
+}
+const couchPanel=()=>`<div class="mp-block"><h3>Заједно, за једним рачунаром</h3><p class="lede">Притисни „узми“ на свом уређају да уђеш у кухињу: A на гејмпаду, Размак на левој страни тастатуре или тачку на десној. До четири кувара.</p>
+  ${couchSlots(56)}<p class="hint">На свом уређају лево и десно бираш кувара, а B на гејмпаду или × на картици излази из кухиње.</p></div>${levelList(couchEmpty())}`;
+const couchHowto=()=>`<div class="howto couch-keys"><div><b>Тастатура лево:</b><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>Размак</kbd> узми <kbd>E</kbd> ради <kbd>Shift</kbd> трк</div>
+  <div><b>Тастатура десно:</b> стрелице <kbd>.</kbd> узми <kbd>,</kbd> ради <kbd>Shift</kbd> трк</div>
+  <div><b>Гејмпад:</b><kbd>A</kbd> узми <kbd>X</kbd> ради <kbd>B</kbd> трк <kbd>Start</kbd> мени</div>
+  <div>Сам на тастатури? Ради цела тастатура.</div><div><kbd>Esc</kbd> мени игре</div></div>`;
 function mpPanel(){
   if(Net.standalone){
     if(Net.avail===false) return `<div class="mp-block"><h3>Игра са друштвом</h3><p class="lede">Мрежни део игре није успео да се учита у овом прегледачу.</p></div>`;
@@ -5627,17 +5739,17 @@ function chefPicker(size,label){
     return `<button class="chef${open?'':' locked'}" data-act="chef" data-ch="${i}" aria-pressed="${mine===i}" ${!open||owner?'disabled':''} style="--chef:${c.tag}" aria-label="${esc(c.full||c.name)}${!open?', закључан: '+CHEF_REQ[i].how:owner?', заузет':''}"><canvas data-icon="char:${i}" data-size="${size}"${!open||owner?' data-dim="1"':''}></canvas>${open?'':'<span class="lock" aria-hidden="true">🔒</span>'}<small>${esc(c.name)}</small>${cap?`<em>${esc(cap)}</em>`:''}</button>`; }).join('')}</div>`;
 }
 function rewardCard(){
-  const r=Game.reward, res=Game.result; if(!r||!res||r.li!==res.li) return ''; const c=CHARS[r.ch], picked=myCh()===r.ch;
+  const r=Game.reward, res=Game.result; if(!r||!res||r.li!==res.li) return ''; const c=CHARS[r.ch], couch=Game.role==='couch', picked=!couch&&myCh()===r.ch;
   return `<div class="reward" role="status"><div class="rw-rays" aria-hidden="true"></div><div class="rw-card" style="--chef:${c.tag}">
     <div class="rw-title">Нови кувар откључан!</div><canvas class="rw-pic" data-icon="char:${r.ch}" data-size="96"></canvas><div class="rw-name">${esc(c.full||c.name)}</div>
-    ${picked?'<div class="rw-note">Сад куваш ти!</div>':chefTaken(r.ch)?'<div class="rw-note">Заузет — неко други кува као он.</div>':`<button class="btn small" data-act="chef" data-ch="${r.ch}">Изабери</button>`}</div></div>`;
+    ${picked?'<div class="rw-note">Сад куваш ти!</div>':couch?'':chefTaken(r.ch)?'<div class="rw-note">Заузет — неко други кува као он.</div>':`<button class="btn small" data-act="chef" data-ch="${r.ch}">Изабери</button>`}</div></div>`;
 }
 const chefSig=()=>[myCh(),save.ch|0,save.stars.join(''),save.allOpen?1:0,JSON.stringify(Net.slots.map(s=>[s.slot,s.ch])),Game.reward?Game.reward.ch:''].join(';');
 const BUILD={
-  menu:()=>{ const solo=Game.mode!=='mp';
+  menu:()=>{ const m=Game.mode==='mp'?'mp':Game.mode==='couch'?'couch':'solo';
     return `<div class="sheet"><div class="cloth"></div><div class="sheet-body"><div class="langsel"><div class="seg" role="group" aria-label="Језик / Language"><button data-act="lang" data-l="sr" lang="sr" aria-pressed="${LANG==='sr'}">Српски</button><button data-act="lang" data-l="en" lang="en" aria-pressed="${LANG==='en'}">English</button></div></div><h1 class="logo">Прегорело</h1><p class="tagline">Кафанска кухиња, гладни гости и до четири кувара.</p>${NOKB&&!pad.on?'<p class="touch-tip" role="note">🎮 Најбоље се игра на уређају са тастатуром или уз гејмпад.</p>':''}<div class="kilim"></div>
-    <div class="seg" role="group" aria-label="Начин игре"><button data-act="mode" data-m="solo" aria-pressed="${solo}">Сам</button><button data-act="mode" data-m="mp" aria-pressed="${!solo}">Са друштвом</button></div>
-    ${chefPicker()}${solo?levelList():mpPanel()}${howto()}${toggles(true)}</div></div>`; },
+    <div class="seg" role="group" aria-label="Начин игре"><button data-act="mode" data-m="solo" aria-pressed="${m==='solo'}">Сам</button><button data-act="mode" data-m="couch" aria-pressed="${m==='couch'}">Заједно</button><button data-act="mode" data-m="mp" aria-pressed="${m==='mp'}">Онлајн</button></div>
+    ${m==='couch'?couchPanel()+couchHowto():chefPicker()+(m==='solo'?levelList():mpPanel())+howto()}${toggles(true)}</div></div>`; },
   lobby:()=>{ const host=Game.role==='host', link=inviteLink();
     const slots=[0,1,2,3].map(i=>{ const s=Net.slots.find(x=>x.slot===i);
       if(!s){ const fc=[0,1,2,3].filter(c=>!Net.slots.some(x=>x.ch===c)), ci=fc[(i-Net.slots.length+fc.length)%Math.max(1,fc.length)]??i; return `<div class="slot"><canvas data-icon="char:${ci}" data-size="72" data-dim="1"></canvas><b>Слободно</b><small>место за кувара</small></div>`; }
@@ -5647,7 +5759,7 @@ const BUILD={
       else if(!host&&self) tr=Net.rtcState==='p2p'?'директна веза':Net.rtcState==='connecting'?'повезивање…':'преко сервера';
       return `<div class="slot on" style="border-color:${CHARS[s.ch].tag}"><canvas data-icon="char:${s.ch}" data-size="72"></canvas><b>${esc(nm)}</b><small>${esc(CHARS[s.ch].name)}, ${s.slot===0?'домаћин':'кувар'}</small>${tr?`<small>${tr}</small>`:''}</div>`; }).join('');
     return `<div class="sheet"><div class="cloth thin"></div><div class="sheet-body"><h2>Чекаоница</h2>
-      <p class="lede">${host?(Net.standalone?'Пошаљи позивницу друштву у поруци или им реци код. Ко отвори линк, улази у твоју кухињу.':'Пошаљи друштву линк или код. Игра им се појављује и у менију „Са друштвом“.'):'У игри си. Домаћин бира ниво.'}</p>
+      <p class="lede">${host?(Net.standalone?'Пошаљи позивницу друштву у поруци или им реци код. Ко отвори линк, улази у твоју кухињу.':'Пошаљи друштву линк или код. Игра им се појављује и у менију „Онлајн“.'):'У игри си. Домаћин бира ниво.'}</p>
       <div class="code" aria-label="Код игре">${esc(Net.code)}</div>
       ${host?`<div class="linkbox"><input id="linkIn" readonly value="${esc(link)}" aria-label="Позивница"><button class="btn small quiet" data-act="copy">Копирај</button>${Net.standalone&&navigator.share?'<button class="btn small" data-act="share">Пошаљи</button>':''}</div><p class="hint" id="copyHint"></p>${Net.standalone&&TURN.state==='ok'?'<p class="hint">Резервни сервер за везу (TURN) је спреман.</p>':''}${Net.standalone&&TURN.state==='fail'?'<p class="hint">Резервни сервер за везу (TURN) није доступан. Игра ради, али неки играчи можда неће моћи да се повежу.</p>':''}`:''}
       ${Net.standalone?`<div class="codein" style="margin:6px 0 0"><label for="nameIn" class="hint" style="margin:0">Твоје име</label><input id="nameIn" maxlength="16" autocomplete="off" placeholder="${esc(CHARS[myCh()].name)}" value="${esc(save.name||'')}" style="width:12em;letter-spacing:0;font-size:15px;text-align:left"></div>`:''}
@@ -5668,8 +5780,8 @@ const BUILD={
     return `<div class="sheet"><div class="cloth thin"></div><div class="sheet-body"><div class="intro-head"><span class="lvl">Ниво ${Game.li+1}</span><h2>${esc(L.name)}</h2></div>
       <p class="lede">${esc(L.desc)}</p><div class="novo">${esc(L.novo)}</div><div class="recipes">${recs}</div>
       <div class="goals">${thr.map((s,k)=>`<span><b>${'★'.repeat(k+1)}</b> ${fmt(s)} дин.</span>`).join('')}${nPlayers()>1?`<span>за ${nPlayers()} кувара</span>`:''}</div>
-      ${chefPicker(44)}
-      ${host?`<div class="row end"><button class="btn quiet" data-act="back">Назад</button><button class="btn" data-act="go" data-primary>Крени!</button></div>`
+      ${Game.role==='couch'?couchSlots(44):chefPicker(44)}
+      ${host?`<div class="row end"><button class="btn quiet" data-act="back">Назад</button><button class="btn" data-act="go" data-primary ${couchEmpty()?'disabled':''}>Крени!</button></div>`
            :`<p class="wait">Чека се да домаћин крене…</p><div class="row end"><button class="btn quiet" data-act="leave">Напусти игру</button></div>`}</div></div>`; },
   pause:()=>{ const host=Game.role!=='client';
     return `<div class="sheet narrow"><div class="cloth thin"></div><div class="sheet-body"><h2>Пауза</h2>
@@ -5684,8 +5796,8 @@ const BUILD={
       ${th==='kasarna'?'<p class="verdict">Саопштење Министарства: Војници добијају разноврсне оброке.</p>':''}
       <p class="record">${host&&r.rec?'Нови рекорд!':''}</p>
       <div class="goals row mid">${(r.thr||[]).map((s,k)=>`<span><b>${'★'.repeat(k+1)}</b> ${fmt(s)} дин.</span>`).join('')}</div>
-      ${rewardCard()}${chefPicker(44,'Кувар за следећу смену')}
-      ${host?`<div class="row mid"><button class="btn quiet" data-act="tobase">${Game.role==='host'?'Чекаоница':'Мени'}</button><button class="btn quiet" data-act="retry" ${r.st<1||last?'data-primary':''}>Поново</button>${last?'':`<button class="btn" data-act="next" ${r.st<1&&!levelOpen(r.li+1)?'disabled':(r.st>=1?'data-primary':'')}>Следећи ниво</button>`}</div>`
+      ${rewardCard()}${Game.role==='couch'?couchSlots(44):chefPicker(44,'Кувар за следећу смену')}
+      ${host?`<div class="row mid"><button class="btn quiet" data-act="tobase">${Game.role==='host'?'Чекаоница':'Мени'}</button><button class="btn quiet" data-act="retry" ${r.st<1||last?'data-primary':''} ${couchEmpty()?'disabled':''}>Поново</button>${last?'':`<button class="btn" data-act="next" ${r.st<1&&!levelOpen(r.li+1)?'disabled':(r.st>=1?'data-primary':'')}>Следећи ниво</button>`}</div>`
             :`<p class="wait">Домаћин бира шта даље…</p><div class="row mid"><button class="btn quiet" data-act="leave">Напусти игру</button></div>`}</div></div>`; },
   notice:()=>`<div class="sheet narrow"><div class="cloth thin"></div><div class="sheet-body"><h2>Обавештење</h2><p class="lede">${esc(Game.notice)}</p><div class="row end"><button class="btn" data-act="ok" data-primary>У реду</button></div></div></div>`,
   joining:()=>`<div class="sheet narrow"><div class="cloth thin"></div><div class="sheet-body"><h2>${Net.standalone?'Улазак у игру':'Улазак у игру '+esc(Net.code||'')}</h2><p class="wait">Тражим домаћина…${Net.standalone?' Ово може да потраје неколико секунди.':''}</p><div class="row end"><button class="btn quiet" data-act="leave" data-primary>Одустани</button></div></div></div>`,
@@ -5705,7 +5817,9 @@ function act(a,b){
     case 'chef': setMyChef(+b.dataset.ch); break;
     case 'unlockall': if(!save.allOpen){ save.allOpen=true; persist(); sfx('unlock'); uiDirty(); } break;
     case 'lang': setLang(b.dataset.l); break;
-    case 'mode': Game.mode=b.dataset.m; save.mode=Game.mode; persist(); uiDirty(); break;
+    case 'mode': Game.mode=b.dataset.m; save.mode=Game.mode; if(Game.role==='solo'||Game.role==='couch') Game.role=Game.mode==='couch'?'couch':'solo'; persist(); uiDirty(); break;
+    case 'cchef': couchCycle(+b.dataset.slot,+b.dataset.d); break;
+    case 'cleave': couchLeave(+b.dataset.slot); break;
     case 'pick': openIntro(+b.dataset.li); break;
     case 'go': beginLevel(Game.li); break;
     case 'back': toBase(); break;
@@ -5747,7 +5861,7 @@ V=viewForLevel(0); resize(); applyLang();
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ bgKey=''; iconCache.clear(); });
 netInit();
 requestAnimationFrame(frame);
-window.__kb={tr,setLang,SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,simStep,enc,dec,buildSnap,onHostPeers,setMyChef,onSnap,shoveStep,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
+window.__kb={tr,setLang,SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,Couch,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,simStep,enc,dec,buildSnap,onHostPeers,setMyChef,onSnap,shoveStep,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
 })();
 </script>
 </body>

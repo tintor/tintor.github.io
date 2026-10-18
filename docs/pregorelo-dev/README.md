@@ -1,6 +1,6 @@
 # Прегорело
 
-A co-op cooking game set in Serbian restaurants, inspired by Overcooked 2. Three levels (a kafana, a bakery at dawn and a wedding on a salaš) and online multiplayer for up to 4 players through invite links.
+A co-op cooking game set in Serbian restaurants, inspired by Overcooked 2. Three levels (a kafana, a bakery at dawn and a wedding on a salaš) and multiplayer for up to 4 players: online through invite links, or couch co-op on one computer.
 
 The whole game is a single file, `index.html`, with no build step.
 
@@ -126,9 +126,10 @@ That key is visible to anyone who opens the page, so restrict it in your Metered
 
 - **Solo:** open the page and pick a level.
 - **Controls:** keyboard, touch, or a gamepad. On a gamepad, the left stick or d-pad moves, **A** grabs, **X** works (chop, wash, stir, flip), **B** or **RB** dashes, and **Start** opens the game menu. In menus, the d-pad moves between buttons and **A** presses one. Phones and tablets show a note that the game plays best with a keyboard or controller.
-- **Multiplayer:** the host creates a game and gets a six-digit code and an invite link, e.g. `tintor.net/pregorelo-dev/123456`. Friends open the link, or type the code (or paste the link) into the join field. Up to 4 players. The host's browser runs the game, so if the host leaves, the game ends for everyone.
+- **Online multiplayer** (the **Онлајн** tab): the host creates a game and gets a six-digit code and an invite link, e.g. `tintor.net/pregorelo-dev/123456`. Friends open the link, or type the code (or paste the link) into the join field. Up to 4 players. The host's browser runs the game, so if the host leaves, the game ends for everyone.
 
   The short link works because `404.html` at the site root (`docs/404.html` in this repo) turns `/pregorelo/123456` and `/pregorelo-dev/123456` into `…/#igra=123456`; GitHub Pages has no other way to rewrite paths. If you deploy the game somewhere without that page, links of the form `…/pregorelo-dev/#igra=123456` still work.
+- **Couch co-op** (the **Заједно** tab): up to 4 players on one computer, each with their own device. Two can share the keyboard: the left player moves with **WASD**, grabs with **Space**, works with **E** and dashes with **left Shift**; the right player moves with the **arrow keys**, grabs with **.** (or **Enter**), works with **,** and dashes with **right Shift**. A player alone on the keyboard can use all of it. Everyone else plays on a gamepad. To join, press grab on your device (**A**, **Space** or **.**); then left and right pick your cook, and **B** on a gamepad (or **×** on your card) leaves. Any **Start** or **Esc** pauses, and unplugging a player's gamepad pauses the level.
 - **Language:** Serbian by default. The **Српски / English** switch at the top of the main menu changes it, and the browser remembers the choice. In English, Serbian dish names stay in parentheses after the English name, e.g. *Cabbage rolls (Sarma)*. In multiplayer, each player sees the game in their own language.
 
 ## Credits
