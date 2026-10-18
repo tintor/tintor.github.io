@@ -195,6 +195,10 @@ body.padnav #ov :focus{outline:3px solid var(--brass); outline-offset:2px}
 #pauseBtn{position:absolute; top:10px; right:10px; z-index:8; width:42px; height:42px; border-radius:50%;
   border:2px solid rgba(255,255,255,.65); background:rgba(43,26,16,.78); color:#fff; font:800 15px var(--font); cursor:pointer}
 #pauseBtn[hidden]{display:none}
+#helpBtn{position:absolute; z-index:8; width:34px; height:34px; border-radius:50%; padding:0; display:grid; place-items:center;
+  border:2px solid rgba(255,255,255,.65); background:rgba(43,26,16,.78); color:#fff; cursor:pointer}
+#helpBtn[aria-pressed="true"]{background:#7a1018; border-color:#ffd34d}
+#helpBtn[hidden]{display:none}
 #netdiag{position:absolute; right:8px; bottom:calc(8px + env(safe-area-inset-bottom,0px)); z-index:30; width:max-content; max-width:min(290px,calc(100% - 16px));
   padding:5px 8px 7px; border-radius:8px; background:rgba(24,14,8,.86); color:#f6e9d4; font:11px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   box-shadow:0 4px 14px rgba(0,0,0,.35); -webkit-user-select:text; user-select:text}
@@ -236,6 +240,7 @@ body.padnav #ov :focus{outline:3px solid var(--brass); outline-offset:2px}
 <div id="app">
   <canvas id="cv" tabindex="0" aria-label="Кухиња — поље за игру"></canvas>
   <button id="pauseBtn" hidden aria-label="Мени игре">❚❚</button>
+  <button id="helpBtn" hidden aria-label="Рецепти" aria-pressed="true"><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5c3-1.4 6-1.4 9 .6 3-2 6-2 9-.6v14c-3-1.4-6-1.4-9 .6-3-2-6-2-9-.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 5.6v14" stroke="currentColor" stroke-width="2"/></svg></button>
   <div id="touch" hidden aria-hidden="true">
     <div id="stickZone"><div id="stickBase"><div id="stickKnob"></div></div></div>
     <div id="tbtns">
@@ -343,15 +348,15 @@ Object.assign(RECIPES,{
   misic:{n:'Пилетина генерала Мишића', cook:'wok', in:['plC','kkR','ljC'], out:'gm', parts:['gmK'], price:1900, flambe:1,
     card:['plR','kkR','ljR','@wok','rkR'], steps:[['i','plR','исеци'],'+',['i','kkR'],'+',['i','ljR','сецкај'],'→',['s','wok','у вок, протреси!'],'→',['i','rkR','фламбирај!']]},
   dimsum:{n:'Сарма-димсам', parts:['dmK','kaR','rkR'], price:1800, pat:15,
-    card:['kpR','meR','piR','@steam','kaR','rkR'], steps:[['i','kpR'],'+',['i','meR'],'+',['i','piR'],'→',['s','board','на даску, савиј (E)'],'→',['s','steam','у парњачу'],'+',['i','kaR'],'+',['i','rkR','кап']]},
+    card:['kpR','meR','piR','@steam','kaR','rkR'], steps:[['i','kpR'],'+',['i','meR'],'+',['i','piR'],'→',['s','board','на даску, савиј (E)','савиј (E)'],'→',['s','steam','у парњачу'],'+',['i','kaR'],'+',['i','rkR','кап']]},
   patka:{n:'Пекиншка патка с кајмаком', parts:['pkC','teG','kaR'], price:2800, pat:40,
-    card:['pkR','slR','@marin','@spit','teR','kaR'], steps:[['i','pkR'],'+',['i','slR'],'→',['s','marin','у ћуп'],'→',['s','spit','на ражањ, окрећи'],'→',['s','board','исеци'],'+',['i','teR','палачинка'],'+',['i','kaR']]},
+    card:['pkR','slR','@marin','@spit','teR','kaR'], steps:[['i','pkR'],'+',['i','slR'],'→',['s','marin','у ћуп'],'→',['s','spit','на ражањ, окрећи'],'→',['s','board','исеци','исеци (E)'],'+',['i','teR','палачинка'],'+',['i','kaR']]},
   lanzou:{n:'Ланџоу резанци бабе Милеве', parts:['rvK','guK'], price:2200, pat:30,
     card:['tzR','@pull','@pot','guK'], steps:[['i','tzR'],'→',['s','pull','развлачи (E) до 64 нити'],'→',['s','pot','у лонац'],'+',['i','guK'],'/',['t','Гулаш, 4 порције:'],['i','meR'],'+',['i','luR','сецкај'],'+',['i','ljR','сецкај'],'→',['s','kazan','у казан, мешај!']]},
   saran:{n:'Шаран у шљивовом сосу', cook:'wok', in:['snC'], out:'sp', parts:['spK','ssK'], price:2400, pat:20,
     card:['snR','@wok','ssK'], steps:[['i','snR','зарежи'],'→',['s','wok','у вок, протреси!'],'+',['i','ssK'],'/',['t','Шљивов сос, 4 порције:'],['i','slR'],'+',['i','slR'],'+',['i','ljR','сецкај'],'→',['s','kazan','у казан, мешај!']]},
   knedle:{n:'Кнедле са шљивама', parts:['knK','mrR'], price:1600, pat:15,
-    card:['tzR','slR','@steam','mrR'], steps:[['i','tzR'],'+',['i','slR'],'→',['s','board','на даску, обликуј (E)'],'→',['s','steam','у парњачу'],'+',['i','mrR']]}
+    card:['tzR','slR','@steam','mrR'], steps:[['i','tzR'],'+',['i','slR'],'→',['s','board','на даску, обликуј (E)','обликуј (E)'],'→',['s','steam','у парњачу'],'+',['i','mrR']]}
 });
 const RKEYS=Object.keys(RECIPES);
 const CRATE={p:'pa',k:'kr',s:'si',l:'lu',m:'me',h:'le',j:'ka',f:'ko',y:'jo',e:'ja',c:'ku',r:'ri',a:'ap',u:'kp',i:'pi',q:'pr',t:'km'};
@@ -718,7 +723,8 @@ const EN={
   'Сад ракија — фламбирај!':'Now the rakija — flambé!','Нестало воде у парњачи!':'The steamer ran dry!','Распарило се!':'Oversteamed!','Загорело! Парњача без воде!':'Burnt! The steamer ran dry!',
   'Укиселило се!':'It went sour!','Загорело! Фламбирај на време!':'Burnt! Flambé in time!','На ражањ иде само патка!':'Only the duck goes on the spit!',
   'Регрут':'Recruit','Регрут на одслужењу':'Recruit doing military service','Тек брат':'Tech Bro','Тек брат из стартапа':'Tech bro from a startup','Тајкун':'Tycoon','Тајкун са обезбеђењем':'Tycoon with bodyguards','Тајкун је у кухињи — са обезбеђењем!':'The tycoon is in the kitchen — with bodyguards!',
-  'Не прилази шефу!':'Stay away from the boss!','Без фотографисања!':'No photos!','Шеф не даје аутограме.':'The boss doesn’t sign autographs.','Склони се, брате!':'Out of the way, bro!','Полако, полако…':'Easy, easy…','Ко те звао?':'Who invited you?','Заузет — неко други кува као он.':'Taken — someone else is cooking as this chef.','★★★ у касарни':'★★★ in the barracks','★★★ у „Змају“':'★★★ at the “Dragon”',
+  'Не прилази шефу!':'Stay away from the boss!','Без фотографисања!':'No photos!','Шеф не даје аутограме.':'The boss doesn’t sign autographs.','Склони се, брате!':'Out of the way, bro!','Полако, полако…':'Easy, easy…','Ко те звао?':'Who invited you?','Заузет — неко други кува као он.':'Taken — someone else is cooking as this chef.',
+  'Рецепти':'Recipes','H — сала':'H — dining room','савиј (E)':'fold (E)','исеци (E)':'slice (E)','обликуј (E)':'shape (E)','даска':'board','пари':'steam','глазирај':'glaze','окрећи (E)':'turn (E)','64 нити (E)':'64 strands (E)','кувај':'boil','мешај (E)':'stir (E)','протреси (E)':'toss (E)','★★★ у касарни':'★★★ in the barracks','★★★ у „Змају“':'★★★ at the “Dragon”',
   // касарна и фјужн: поруке у кухињи
   'Вода иде у пасуљ!':'Water goes into the beans!','Довољно је злата!':'That’s enough gold!','Прво испеци прасе на ражњу!':'Roast the pig on the spit first!','То иде под сач!':'That goes under the sač!','То иде у вок!':'That goes in the wok!',
   'Прво скувај пасуљ!':'Cook the beans first!','Доста воде, ово је већ чај!':'Enough water, this is tea already!','Развучено! +2 порције':'Stretched! +2 portions','Сач је пун!':'The sač is full!','Вок је пун!':'The wok is full!',
@@ -790,6 +796,7 @@ const EN_RE=[
   [/^Сви нивои су пређени! (.+)$/,(m,v)=>'All levels cleared! '+tr(v)],
   [/^(.+) на тањир$/,(m,n)=>tr(n)+' on the plate'],
   [/^(\d+) нити$/,(m,n)=>n+' strands'],
+  [/^од (\d+:\d\d)$/,(m,t)=>'from '+t],
   [/^Савршено! (\d+) нити$/,(m,n)=>'Perfect! '+n+' strands'],
   [/^Играч (\d)$/,(m,n)=>'Player '+n],
   [/^Гејмпад (\d)( \(искључен\))?$/,(m,n,o)=>'Controller '+n+(o?' (disconnected)':'')]
@@ -813,7 +820,7 @@ function applyLang(){
   document.documentElement.lang=LANG==='en'?'en':'sr-Cyrl-RS';
   document.title=tr('Прегорело — хаос у српској кухињи');
   cv.setAttribute('aria-label',tr('Кухиња — поље за игру'));
-  $('#pauseBtn').setAttribute('aria-label',tr('Мени игре'));
+  $('#pauseBtn').setAttribute('aria-label',tr('Мени игре')); $('#helpBtn').setAttribute('aria-label',tr('Рецепти'));
   document.querySelectorAll('#tbtns .tb').forEach(b=>{ b.textContent=tr({work:'Ради',dash:'Трк',grab:'Узми'}[b.dataset.act]); });
   bgKey=''; iconCache.clear(); uiForce=true; uiSig='';
 }
@@ -2757,6 +2764,7 @@ addEventListener('keydown',e=>{
   if(couchMenuKey(e)) return;
   if(!inPlay()) return;
   if(MOVE.has(e.code)){ keys.add(e.code); e.preventDefault(); return; }
+  if(e.code==='KeyH'&&!e.repeat&&helpLevel(V&&V.L)){ e.preventDefault(); toggleHelp(); return; }
   const kind=KEY_ACT[e.code]; if(!kind) return;
   e.preventDefault(); if(e.repeat) return;
   if(Game.role!=='couch') doAction(kind); else { const c=couchKbPlayer(e.code); if(c) doAction(kind,c.slot); }
@@ -2833,6 +2841,7 @@ function couchPads(dt){
 }
 if(TOUCH) document.body.classList.add('touch');
 $('#pauseBtn').addEventListener('click',e=>{ e.currentTarget.blur(); menuKey(); });
+$('#helpBtn').addEventListener('click',e=>{ e.currentTarget.blur(); toggleHelp(); });
 
 /* ======================= ТОК ИГРЕ ======================= */
 function othersFor(a,list,pushNpc){ const o=[]; for(const p of list) if(p!==a) o.push({x:p.x,y:p.y,r:PR}); for(const n of (V&&V.npcs)||[]){ if(n.gone) continue; if(n.kind==='car'||!pushNpc) o.push({x:n.x,y:n.y,r:n.r||NPC_R}); } return o; }
@@ -4774,9 +4783,61 @@ function drawBubble(b){
   ctx.beginPath(); ctx.moveTo(e.x-fz*.3,y+h-.5); ctx.lineTo(e.x,y+h+fz*.45); ctx.lineTo(e.x+fz*.3,y+h-.5); ctx.closePath(); ctx.fillStyle='#fffdf6'; ctx.fill();
   ctx.fillStyle='#33200f'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(b.text,x,y+h/2+.5); ctx.restore();
 }
+/* рецепти на екрану (ниво са сложеним јелима): уместо сале, сви кораци за свако јело.
+   Јела која се сад наручују су истакнута, а она која тек стижу на мени избледела. */
+const helpLevel=L=>!!L&&L.recipes.some(r=>RECIPES[r].steps);
+const helpOn=()=>!!V&&helpLevel(V.L)&&save.help!==false&&SCN.panels.length>0;
+function toggleHelp(){ save.help=save.help===false; persist(); uiDirty(); }
+/* дугме за рецепте стоји у горњем десном углу панела са салом/рецептима */
+function placeHelpBtn(show){ const b=$('#helpBtn'), P=SCN.panels[0]; b.hidden=!(show&&helpLevel(V&&V.L)&&P);
+  if(b.hidden) return; b.style.left=Math.round(P.x+P.w-38)+'px'; b.style.top=Math.round(P.y+4)+'px'; b.setAttribute('aria-pressed',String(save.help!==false)); }
+const STEP_CAP={board:'даска',steam:'пари',marin:'глазирај',spit:'окрећи (E)',pull:'64 нити (E)',pot:'кувај',kazan:'мешај (E)',wok:'протреси (E)'};
+function layoutSteps(steps,iu,maxW){
+  const items=[], cf=Math.max(7,Math.round(iu*.36)); let x=0, line=0;
+  for(const st of steps){
+    if(st==='/'){ line++; x=0; continue; }
+    let it;
+    if(st==='+'||st==='→') it={k:'sep',s:st,w:iu*.5};
+    else if(st[0]==='t'){ ctx.font=`800 ${cf+1}px Rubik, system-ui, sans-serif`; const t=tr(st[1]); it={k:'txt',s:t,w:ctx.measureText(t).width+6}; }
+    else { const cap=tr(st[0]==='s'?(st[3]||STEP_CAP[st[1]]||''):(st[2]||'')); ctx.font=`700 ${cf}px Rubik, system-ui, sans-serif`; it={k:st[0],key:st[1],cap,w:Math.max(iu*1.08,cap?ctx.measureText(cap).width+5:0)}; }
+    if(x+it.w>maxW&&x>0){ line++; x=0; }
+    it.x=x; it.line=line; items.push(it); x+=it.w;
+  }
+  return {items,lines:line+1,cf};
+}
+function drawHelpRow(rid,x,y,w,h,nOrd,from){
+  const rc=RECIPES[rid]; ctx.save(); if(from>=0) ctx.globalAlpha=.4;
+  rr(ctx,x,y,w,h,8); ctx.fillStyle=nOrd?'#fff1c2':'#fffdf8'; ctx.fill(); ctx.strokeStyle=nOrd?'#d9a21b':'rgba(120,80,40,.25)'; ctx.lineWidth=nOrd?2:1; ctx.stroke();
+  const di=Math.min(h*.7,w*.16,56); drawFnAt(ctx,'dish:'+rid,cc=>dishArt(cc,rid),x+5+di/2,y+h/2,di);
+  const tx=x+di+11, tw=x+w-tx-5; let iu=Math.min(26,h*.32), lay, nf;
+  for(let k=0;k<10;k++){ nf=Math.max(8,Math.round(iu*.5)); lay=layoutSteps(rc.steps,iu,tw); if(nf+6+lay.lines*iu*1.4<=h-4) break; iu*=.9; }
+  let name=tr(rc.n); ctx.font=`800 ${nf}px Rubik, system-ui, sans-serif`; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillStyle='#2a1a0e';
+  const tag=from>=0?tr('од '+Math.floor(from/60)+':'+String(from%60).padStart(2,'0')):nOrd?'×'+nOrd:'', tagW=tag?ctx.measureText(tag).width+8:0;
+  while(name.length>4&&ctx.measureText(name).width>tw-tagW) name=name.slice(0,-2)+'…';
+  ctx.fillText(name,tx,y+4); if(tag){ ctx.textAlign='right'; ctx.fillStyle=nOrd?'#b5121b':'#7a5a3a'; ctx.fillText(tag,x+w-6,y+4); }
+  const y0=y+nf+7;
+  for(const it of lay.items){ const cx=tx+it.x+it.w/2, cy=y0+it.line*iu*1.4+iu*.45;
+    if(it.k==='sep'){ ctx.fillStyle='#a08060'; ctx.font=`800 ${Math.round(iu*.5)}px Rubik, system-ui, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(it.s,cx,cy); continue; }
+    if(it.k==='txt'){ ctx.fillStyle='#2a1a0e'; ctx.font=`800 ${lay.cf+1}px Rubik, system-ui, sans-serif`; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText(it.s,tx+it.x,cy); continue; }
+    if(it.k==='s') drawFnAt(ctx,'st:'+it.key,STICON[it.key]||iOvenIcon,cx,cy,iu*.86); else drawKeyAt(ctx,it.key,cx,cy,iu*.92);
+    if(it.cap){ ctx.fillStyle=it.k==='s'?'#6a4a2a':'#b5121b'; ctx.font=`700 ${lay.cf}px Rubik, system-ui, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillText(it.cap,cx,cy+iu*.46); } }
+  ctx.restore();
+}
+function drawRecipeHelp(P){
+  const L=V.L, rs=L.recipes, el=L.time-V.timeLeft, ord={}; for(const o of V.orders) ord[o.r]=(ord[o.r]||0)+1;
+  const fromT=r=>{ const wv=(L.waves||[]).find(w=>w[1].includes(r)); return wv?wv[0]:0; };
+  ctx.fillStyle='#f3e9d6'; ctx.fillRect(P.x,P.y,P.w,P.h);
+  const pad=7, hh=Math.round(Math.max(26,Math.min(34,P.h*.055)));
+  ctx.fillStyle='#7a1018'; ctx.fillRect(P.x,P.y,P.w,hh); ctx.fillStyle='#d9a21b'; ctx.fillRect(P.x,P.y+hh-2,P.w,2);
+  ctx.fillStyle='#ffe8a8'; ctx.font=`800 ${Math.round(hh*.55)}px Rubik, system-ui, sans-serif`; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText(tr('Рецепти'),P.x+pad+2,P.y+hh/2);
+  if(!TOUCH){ ctx.textAlign='right'; ctx.font=`600 ${Math.round(hh*.42)}px Rubik, system-ui, sans-serif`; ctx.fillText(tr('H — сала'),P.x+P.w-44,P.y+hh/2); }
+  const top=P.y+hh+pad, cols=P.w>P.h*1.15?2:1, per=Math.ceil(rs.length/cols), cw=(P.w-pad*(cols+1))/cols, rh=(P.y+P.h-top-pad+5)/per;
+  rs.forEach((r,i)=>{ const c=Math.floor(i/per), row=i%per, f=fromT(r); drawHelpRow(r,P.x+pad+c*(cw+pad),top+row*rh,cw,rh-5,ord[r]|0,el<f?f:-1); });
+}
 function drawScene(){
   if(!SCN.panels.length||!V||!V.grid) return;
   const th=V.L.theme, sc=SCN.sc;
+  if(helpOn()){ ctx.save(); for(const P of SCN.panels){ rr(ctx,P.x,P.y,P.w,P.h,10); ctx.clip(); drawRecipeHelp(P); } ctx.restore(); return; }
   ctx.save(); ctx.beginPath(); for(const p of SCN.panels){ const r=10; ctx.moveTo(p.x+r,p.y); ctx.arcTo(p.x+p.w,p.y,p.x+p.w,p.y+p.h,r); ctx.arcTo(p.x+p.w,p.y+p.h,p.x,p.y+p.h,r); ctx.arcTo(p.x,p.y+p.h,p.x,p.y,r); ctx.arcTo(p.x,p.y,p.x+p.w,p.y,r); ctx.closePath(); } ctx.clip();
   if(th==='pekara') drawSky(); else if(isQ(th)) drawStandBackdrop(th); else if(th==='fusion') drawRiverView();
   const ents=[];
@@ -5687,7 +5748,7 @@ function sigFor(k){
 }
 function ui(){
   const k=overlayKind(), playing=['countdown','play','ending'].includes(Game.phase)&&(!k||k==='cmenu');
-  $('#pauseBtn').hidden=!(playing&&!k); $('#touch').hidden=!(playing&&!k&&TOUCH&&!pad.on&&Game.role!=='couch');
+  $('#pauseBtn').hidden=!(playing&&!k); placeHelpBtn(playing&&!k); $('#touch').hidden=!(playing&&!k&&TOUCH&&!pad.on&&Game.role!=='couch');
   if(!uiForce) return; uiForce=false;
   const sig=k+'#'+LANG+'#'+sigFor(k); if(sig===uiSig) return; uiSig=sig;
   if(!k){ ov.hidden=true; ov.innerHTML=''; try{ cv.focus({preventScroll:true}); }catch(e){} return; }
