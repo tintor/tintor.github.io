@@ -56,7 +56,7 @@ h3{font-size:17px; margin:0 0 4px; font-weight:800}
 .lede{color:var(--muted); margin:0 0 14px; font-size:15px; line-height:1.45; max-width:62ch}
 .center{text-align:center}
 
-.seg{display:flex; width:max-content; margin:0 auto 18px; background:var(--chip); border:1px solid var(--chip-edge); border-radius:999px; padding:3px; gap:2px}
+.seg{display:flex; width:max-content; max-width:100%; margin:0 auto 18px; background:var(--chip); border:1px solid var(--chip-edge); border-radius:999px; padding:3px; gap:2px}
 .seg button{font:inherit; font-weight:800; font-size:15px; border:0; background:transparent; color:var(--muted); padding:8px 18px; border-radius:999px; cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--red); color:#fff}
 .seg button:focus-visible{outline:3px solid var(--brass); outline-offset:1px}
@@ -614,7 +614,7 @@ const EN={
   // екрани
   'Прегорело':'Pregorelo','Прегорело — хаос у српској кухињи':'Pregorelo — chaos in a Serbian kitchen','Кухиња — поље за игру':'Kitchen — play area',
   'Мени игре':'Game menu','Ради':'Work','Трк':'Dash','Узми':'Grab',
-  'Кафанска кухиња, гладни гости и до четири кувара.':'A kafana kitchen, hungry guests and up to four cooks.','Начин игре':'Game mode','Сам':'Solo','Заједно':'Couch','Онлајн':'Online',
+  'Кафанска кухиња, гладни гости и до четири кувара.':'A kafana kitchen, hungry guests and up to four cooks.','Начин игре':'Game mode','Сам':'Solo','Заједно':'Couch','Онлајн са друштвом':'Online with friends',
   'Твој кувар':'Your cook','Изабери кувара':'Choose your cook','заузет':'taken','Играј':'Play','Закључано. Освоји бар једну звездицу на претходном нивоу.':'Locked. Earn at least one star on the previous level.',
   'или стрелице: кретање':'or arrow keys: move','Размак':'Space','узми или спусти':'pick up or put down','сецкај или пери':'chop or wash','трк':'dash','мени игре':'game menu',
   'На телефону: превуци палцем по левој страни екрана за кретање, дугмад су десно. Најбоље игра у положеном положају.':'On a phone: drag your thumb on the left side of the screen to move; the buttons are on the right. Best played in landscape.',
@@ -639,7 +639,7 @@ const EN={
   'Чекаоница':'Lobby','Слободно':'Free','место за кувара':'a spot for a cook','преко TURN сервера':'via TURN server','директна веза':'direct connection',
   'повезивање…':'connecting…','преко сервера':'via server',
   'Пошаљи позивницу друштву у поруци или им реци код. Ко отвори линк, улази у твоју кухињу.':'Send the invite to your friends in a message, or tell them the code. Whoever opens the link joins your kitchen.',
-  'Пошаљи друштву линк или код. Игра им се појављује и у менију „Онлајн“.':'Send your friends the link or the code. The game also shows up in their “Online” menu.',
+  'Пошаљи друштву линк или код. Игра им се појављује и у менију „Онлајн са друштвом“.':'Send your friends the link or the code. The game also shows up in their “Online with friends” menu.',
   'У игри си. Домаћин бира ниво.':'You’re in. The host picks the level.','Копирај':'Copy','Пошаљи':'Send',
   'Резервни сервер за везу (TURN) је спреман.':'The backup connection server (TURN) is ready.',
   'Резервни сервер за везу (TURN) није доступан. Игра ради, али неки играчи можда неће моћи да се повежу.':'The backup connection server (TURN) is unavailable. The game works, but some players may not be able to connect.',
@@ -5748,7 +5748,7 @@ const chefSig=()=>[myCh(),save.ch|0,save.stars.join(''),save.allOpen?1:0,JSON.st
 const BUILD={
   menu:()=>{ const m=Game.mode==='mp'?'mp':Game.mode==='couch'?'couch':'solo';
     return `<div class="sheet"><div class="cloth"></div><div class="sheet-body"><div class="langsel"><div class="seg" role="group" aria-label="Језик / Language"><button data-act="lang" data-l="sr" lang="sr" aria-pressed="${LANG==='sr'}">Српски</button><button data-act="lang" data-l="en" lang="en" aria-pressed="${LANG==='en'}">English</button></div></div><h1 class="logo">Прегорело</h1><p class="tagline">Кафанска кухиња, гладни гости и до четири кувара.</p>${NOKB&&!pad.on?'<p class="touch-tip" role="note">🎮 Најбоље се игра на уређају са тастатуром или уз гејмпад.</p>':''}<div class="kilim"></div>
-    <div class="seg" role="group" aria-label="Начин игре"><button data-act="mode" data-m="solo" aria-pressed="${m==='solo'}">Сам</button><button data-act="mode" data-m="couch" aria-pressed="${m==='couch'}">Заједно</button><button data-act="mode" data-m="mp" aria-pressed="${m==='mp'}">Онлајн</button></div>
+    <div class="seg" role="group" aria-label="Начин игре"><button data-act="mode" data-m="solo" aria-pressed="${m==='solo'}">Сам</button><button data-act="mode" data-m="couch" aria-pressed="${m==='couch'}">Заједно</button><button data-act="mode" data-m="mp" aria-pressed="${m==='mp'}">Онлајн са друштвом</button></div>
     ${m==='couch'?couchPanel()+couchHowto():chefPicker()+(m==='solo'?levelList():mpPanel())+howto()}${toggles(true)}</div></div>`; },
   lobby:()=>{ const host=Game.role==='host', link=inviteLink();
     const slots=[0,1,2,3].map(i=>{ const s=Net.slots.find(x=>x.slot===i);
@@ -5759,7 +5759,7 @@ const BUILD={
       else if(!host&&self) tr=Net.rtcState==='p2p'?'директна веза':Net.rtcState==='connecting'?'повезивање…':'преко сервера';
       return `<div class="slot on" style="border-color:${CHARS[s.ch].tag}"><canvas data-icon="char:${s.ch}" data-size="72"></canvas><b>${esc(nm)}</b><small>${esc(CHARS[s.ch].name)}, ${s.slot===0?'домаћин':'кувар'}</small>${tr?`<small>${tr}</small>`:''}</div>`; }).join('');
     return `<div class="sheet"><div class="cloth thin"></div><div class="sheet-body"><h2>Чекаоница</h2>
-      <p class="lede">${host?(Net.standalone?'Пошаљи позивницу друштву у поруци или им реци код. Ко отвори линк, улази у твоју кухињу.':'Пошаљи друштву линк или код. Игра им се појављује и у менију „Онлајн“.'):'У игри си. Домаћин бира ниво.'}</p>
+      <p class="lede">${host?(Net.standalone?'Пошаљи позивницу друштву у поруци или им реци код. Ко отвори линк, улази у твоју кухињу.':'Пошаљи друштву линк или код. Игра им се појављује и у менију „Онлајн са друштвом“.'):'У игри си. Домаћин бира ниво.'}</p>
       <div class="code" aria-label="Код игре">${esc(Net.code)}</div>
       ${host?`<div class="linkbox"><input id="linkIn" readonly value="${esc(link)}" aria-label="Позивница"><button class="btn small quiet" data-act="copy">Копирај</button>${Net.standalone&&navigator.share?'<button class="btn small" data-act="share">Пошаљи</button>':''}</div><p class="hint" id="copyHint"></p>${Net.standalone&&TURN.state==='ok'?'<p class="hint">Резервни сервер за везу (TURN) је спреман.</p>':''}${Net.standalone&&TURN.state==='fail'?'<p class="hint">Резервни сервер за везу (TURN) није доступан. Игра ради, али неки играчи можда неће моћи да се повежу.</p>':''}`:''}
       ${Net.standalone?`<div class="codein" style="margin:6px 0 0"><label for="nameIn" class="hint" style="margin:0">Твоје име</label><input id="nameIn" maxlength="16" autocomplete="off" placeholder="${esc(CHARS[myCh()].name)}" value="${esc(save.name||'')}" style="width:12em;letter-spacing:0;font-size:15px;text-align:left"></div>`:''}
