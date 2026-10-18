@@ -63,7 +63,7 @@ h3{font-size:17px; margin:0 0 4px; font-weight:800}
 .seg button:focus-visible{outline:3px solid var(--brass); outline-offset:1px}
 .langsel{display:flex; justify-content:center; margin:-8px 0 2px}
 .langsel .seg{margin:0}
-.langsel .seg button{font-size:13px; padding:5px 12px}
+.langsel .seg button{font-size:13px; padding:5px 9px}
 .langsel .langs{flex-wrap:wrap; justify-content:center; border-radius:18px}
 
 .pass{background-color:#3b2416; background-image:repeating-linear-gradient(0deg,transparent 0 30px,rgba(0,0,0,.18) 30px 32px),repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.14) 46px 48px); border-radius:14px; padding:16px clamp(10px,2.4vw,20px) 20px; display:flex; flex-direction:column; gap:18px}
@@ -560,12 +560,12 @@ const CHARS=[
   {name:'Горан', tag:'#2e8b4a', skin:'#e6b088', shirt:'#f3ece0', vest:'#6b4226', trim:'#d9a21b', apron:'#f2ece0', hat:'subara', hatC:'#221c18', hair:'#221c18', stache:'walrus', beard:true, belt:'#d9a21b', pants:'#3a2c22', b:{hip:.21,belly:.25,chest:.25,sh:.215,th:.33,hw:.14,hh:.15,jaw:1,nose:1.35,brow:1.5,armW:1.2}},
   {name:'Марија', tag:'#d9a21b', skin:'#f4cfae', shirt:'#fffaf2', vest:'#7a1630', trim:'#f0c040', apron:'#ffffff', hat:'venac', hatC:'#e85a7a', hair:'#7a4a22', blush:true, braids:true, skirt:'#2a2846', hem:'#d8323a', legs:'#f3e8dc', lashes:true, rolled:false, cuff:'#fffaf2', b:{hip:.19,belly:.15,chest:.16,sh:.14,th:.3,leg:.11,hw:.125,hh:.14,jaw:.7,nose:.65}},
   {name:'Евро Тетка', full:'Тетка из Беча', tag:'#c8944a', skin:'#f0c29a', shirt:'#c99550', vest:null, sleeve:'#c99550', trim:'#d9a21b', apron:null, hat:'perm', hatC:'#e8c070', hair:'#e8c070', blush:true, leopard:true, chain:true, earrings:true, shadesUp:true, lips:true, noBelt:true, skirt:'#1d1a20', legs:'#ecbf98', shoe:'heel', b:{hip:.2,belly:.165,chest:.205,sh:.15,th:.3,hw:.13,hh:.145,jaw:.75,nose:.8}},
-  {name:'Пандур', full:'Интервентни пандур', tag:'#2c4a6e', skin:'#e6b088', shirt:'#2c3c52', vest:'#1e2a3a', sleeve:'#2c3c52', trim:'#141c28', apron:'#e8ecf0', hat:'riot', hatC:'#1e2a3a', hair:'#2b1a10', stache:'walrus', belt:'#141c28', pants:'#1e2a3a', b:{hip:.2,belly:.22,chest:.27,sh:.26,th:.34,hw:.135,hh:.145,jaw:1.1,nose:1.1,armW:1.15}},
+  {name:'Пандур', full:'Интервентни пандур', tag:'#2c4a6e', skin:'#e6b088', shirt:'#2c3c52', vest:'#1e2a3a', sleeve:'#2c3c52', trim:'#141c28', apron:null, hat:'riot', hatC:'#1e2a3a', hair:'#2b1a10', stache:'walrus', belt:'#141c28', pants:'#1e2a3a', b:{hip:.2,belly:.22,chest:.27,sh:.26,th:.34,hw:.135,hh:.145,jaw:1.1,nose:1.1,armW:1.15}},
   {name:'Трубач', full:'Трубач', tag:'#b3122e', skin:'#efc19a', shirt:'#f5f0e6', vest:'#a3121c', trim:'#e0b23a', apron:'#f5efe2', hat:'sajkaca', hatC:'#24211f', hair:'#1f1a17', stache:true, money:3, trumpetBack:true, pants:'#2a2420', b:{hip:.19,belly:.23,chest:.21,sh:.17,th:.31,hw:.135,hh:.15,jaw:.9,nose:1.2}},
   {name:'Председник Станара', full:'Председник кућног савета', tag:'#6f6a58', skin:'#efc19a', shirt:'#f2eee2', vest:'#7a7563', sleeve:'#7a7563', trim:'#8a2a2a', apron:'#f2ece0', hat:'bald', hatC:'#9a9a9a', hair:'#a8a8a8', stache:true, glasses:true, tie:'#8a2a2a', pants:'#4a463a', b:{hip:.17,belly:.21,chest:.17,sh:.15,th:.33,hw:.14,hh:.155,jaw:.8,nose:1.3}},
   {name:'Ник Слотер', full:'Ник Слотер, приватни детектив', tag:'#1f6fc8', skin:'#e2a070', shirt:'#e2a070', vest:'#1f6fc8', sleeve:'#1f6fc8', trim:'#8ccaf5', apron:null, hat:'ponytail', hatC:'#16121a', hair:'#16121a', noBelt:true, hawaii:true, rolled:true, chestHair:true, muscles:true, stubble:true, cleft:true, gun:true, face0:'cool', brow:'#120e14', pants:'#d8c8a0', b:{hip:.15,belly:.18,chest:.25,sh:.27,th:.35,hw:.118,hh:.158,jaw:1.32,nose:1.15,brow:1.75,eye:.8,armW:1.25}},
   {name:'Деда Мраз', full:'Деда Мраз', tag:'#c8102e', skin:'#f0c29a', shirt:'#c8102e', vest:'#c8102e', sleeve:'#c8102e', trim:'#ffffff', apron:'#ffffff', hat:'santa', hatC:'#c8102e', hair:'#f4f4f4', stache:'santa', beard:true, longBeard:true, redNose:true, beardC:'#f6f4f0', stacheC:'#ffffff', cuff:'#f6f2ea', pants:'#c8102e', b:{hip:.2,belly:.29,chest:.24,sh:.17,th:.31,hw:.135,hh:.145,jaw:.85,nose:1.15}},
-  {name:'Регрут', full:'Регрут на одслужењу', tag:'#5a6a3a', skin:'#efc19a', shirt:'#6a7a4a', vest:'#56643a', sleeve:'#6a7a4a', trim:'#3a4a2a', apron:'#e8e4d0', hat:'army', hatC:'#56643a', hair:'#3a2a1a', blush:true, bigHelmet:true, b:{hip:.17,belly:.17,chest:.18,sh:.16,th:.3,hw:.13,hh:.145,jaw:.75,nose:.9}},
+  {name:'Генерал', full:'Генерал', tag:'#5a6a3a', skin:'#c98e64', shirt:'#5a6a3e', vest:'#4a5530', sleeve:'#5a6a3e', trim:'#d9a21b', apron:null, hat:'cap', hatC:'#4a5530', hair:'#a8743a', stache:'walrus', lashes:true, skirt:false, medals:true, epaulets:true, bulk:1.26, b:{hip:.19,belly:.16,chest:.17,sh:.14,th:.3,hw:.13,hh:.145,jaw:.7,nose:.65}}, // исти као генерал у касарни (lookFor(4242,'gen'))
   {name:'Тајкун', full:'Тајкун са обезбеђењем', tag:'#b8901e', skin:'#efc19a', shirt:'#26262a', vest:'#f4f1e8', sleeve:'#f4f1e8', trim:'#d9a21b', apron:null, hat:'swoop', hatC:'#2b1a10', hair:'#1e1610', swoopHi:'#5a4a3e', stache:'pencil', chain:true, shades:'aviator', cigar:true, scale:.9, noBelt:true, face0:'smug', pants:'#ebe6da', cuff:'#ffffff', lapels:true, b:{hip:.17,belly:.26,chest:.3,sh:.3,th:.36,leg:.11,hw:.115,hh:.13,jaw:1.1,nose:1,armW:1.25}}
 ];
 /* кувара откључавају три звездице на нивоу са датом темом; индекс нивоа се рачуна, јер нивои мењају место у LEVELS */
@@ -604,7 +604,7 @@ const ticketN=(L,n)=>L.feast?L.feast.length:Math.min(7,L.maxOrders+(n-1));
 /* ======================= ЈЕЗИК ======================= */
 /* Изворни текст је српски; tr() га преводи на језик играча при приказу: енглески из EN, остали из XL (што XL нема, остаје на енглеском).
    Домаћин шаље поруке на српском, па сваки играч види свој језик. */
-const LANGS=[['sr','Српски','sr-Cyrl-RS'],['en','English','en'],['es','Español','es'],['zh','中文','zh-Hans'],['hi','हिन्दी','hi'],['pt','Português','pt-BR'],['ja','日本語','ja'],['fr','Français','fr']]; // код, име на том језику, lang за HTML
+const LANGS=[['sr','Српски','sr-Cyrl-RS'],['en','English','en'],['es','Español','es'],['zh','中文','zh-Hans'],['hi','हिन्दी','hi'],['pt','Português','pt-BR'],['ja','日本語','ja'],['fr','Français','fr'],['it','Italiano','it']]; // код, име на том језику, lang за HTML
 const langOk=l=>LANGS.some(x=>x[0]===l);
 let LANG=langOk(save.lang)?save.lang:'sr';
 const EN={
@@ -878,7 +878,7 @@ const EN={
   'Још се пари…':'Still steaming…','Стави димсам или кнедлу.':'Put in dim sum or a dumpling.','Готово је — исеци је на дасци!':'Done — slice it on the board!','Стави патку на ражањ.':'Put the duck on the spit.',
   'Сад ракија — фламбирај!':'Now the rakija — flambé!','Нестало воде у парњачи!':'The steamer ran dry!','Распарило се!':'Oversteamed!','Загорело! Парњача без воде!':'Burnt! The steamer ran dry!',
   'Укиселило се!':'It went sour!','Загорело! Фламбирај на време!':'Burnt! Flambé in time!','На ражањ иде само патка!':'Only the duck goes on the spit!',
-  'Регрут':'Recruit','Регрут на одслужењу':'Recruit doing military service','Тек брат':'Tech Bro','Тек брат из стартапа':'Tech bro from a startup','Тајкун':'Tycoon','Тајкун са обезбеђењем':'Tycoon with bodyguards','Тајкун је у кухињи — са обезбеђењем!':'The tycoon is in the kitchen — with bodyguards!',
+  'Регрут':'Recruit','Регрут на одслужењу':'Recruit doing military service','Генерал':'General','Тек брат':'Tech Bro','Тек брат из стартапа':'Tech bro from a startup','Тајкун':'Tycoon','Тајкун са обезбеђењем':'Tycoon with bodyguards','Тајкун је у кухињи — са обезбеђењем!':'The tycoon is in the kitchen — with bodyguards!',
   'Не прилази шефу!':'Stay away from the boss!','Без фотографисања!':'No photos!','Шеф не даје аутограме.':'The boss doesn’t sign autographs.','Склони се, брате!':'Out of the way, bro!','Полако, полако…':'Easy, easy…','Ко те звао?':'Who invited you?','Заузет — неко други кува као он.':'Taken — someone else is cooking as this chef.',
   'Рецепти':'Recipes','H — сала':'H — dining room','савиј (E)':'fold (E)','исеци (E)':'slice (E)','обликуј (E)':'shape (E)','даска':'board','пари':'steam','глазирај':'glaze','окрећи (E)':'turn (E)','64 нити (E)':'64 strands (E)','кувај':'boil','мешај (E)':'stir (E)','протреси (E)':'toss (E)','★★★ у касарни':'★★★ in the barracks','★★★ у „Змају“':'★★★ at the “Dragon”',
   // касарна и фјужн: поруке у кухињи
@@ -1267,7 +1267,7 @@ XL.es={
   'Још се пари…':'Todavía se está cociendo al vapor…','Стави димсам или кнедлу.':'Pon dim sum o una bolita.','Готово је — исеци је на дасци!':'Está listo: ¡córtalo en la tabla!','Стави патку на ражањ.':'Pon el pato en el asador.',
   'Сад ракија — фламбирај!':'Ahora la rakija: ¡flambea!','Нестало воде у парњачи!':'¡La vaporera se quedó sin agua!','Распарило се!':'¡Se pasó de vapor!','Загорело! Парњача без воде!':'¡Quemado! ¡La vaporera se quedó sin agua!',
   'Укиселило се!':'¡Se agrió!','Загорело! Фламбирај на време!':'¡Quemado! ¡Flambea a tiempo!','На ражањ иде само патка!':'¡En el asador solo va el pato!',
-  'Регрут':'Recluta','Регрут на одслужењу':'Recluta en el servicio militar','Тек брат':'Tech Bro','Тек брат из стартапа':'Tech bro de una startup','Тајкун':'Magnate','Тајкун са обезбеђењем':'Magnate con guardaespaldas','Тајкун је у кухињи — са обезбеђењем!':'¡El magnate está en la cocina, con guardaespaldas!',
+  'Регрут':'Recluta','Регрут на одслужењу':'Recluta en el servicio militar','Генерал':'General','Тек брат':'Tech Bro','Тек брат из стартапа':'Tech bro de una startup','Тајкун':'Magnate','Тајкун са обезбеђењем':'Magnate con guardaespaldas','Тајкун је у кухињи — са обезбеђењем!':'¡El magnate está en la cocina, con guardaespaldas!',
   'Не прилази шефу!':'¡No te acerques al jefe!','Без фотографисања!':'¡Nada de fotos!','Шеф не даје аутограме.':'El jefe no firma autógrafos.','Склони се, брате!':'¡Apártate, hermano!','Полако, полако…':'Tranquilo, tranquilo…','Ко те звао?':'¿Y a ti quién te llamó?','Заузет — неко други кува као он.':'Ocupado — alguien más juega con este cocinero.',
   'Рецепти':'Recetas','H — сала':'H — comedor','савиј (E)':'dobla (E)','исеци (E)':'corta (E)','обликуј (E)':'dale forma (E)','даска':'tabla','пари':'al vapor','глазирај':'glasea','окрећи (E)':'gira (E)','64 нити (E)':'64 hebras (E)','кувај':'hierve','мешај (E)':'revuelve (E)','протреси (E)':'saltea (E)','★★★ у касарни':'★★★ en el cuartel','★★★ у „Змају“':'★★★ en el “Dragón”',
   // касарна и фјужн: поруке у кухињи
@@ -1623,7 +1623,7 @@ XL.zh={
   'Још се пари…':'还在蒸……','Стави димсам или кнедлу.':'放入点心或团子。','Готово је — исеци је на дасци!':'好了——在砧板上切片！','Стави патку на ражањ.':'把鸭子放上烤叉。',
   'Сад ракија — фламбирај!':'现在加 rakija——点火！','Нестало воде у парњачи!':'蒸笼里的水烧干了！','Распарило се!':'蒸过头了！','Загорело! Парњача без воде!':'烧焦了！蒸笼没水了！',
   'Укиселило се!':'变酸了！','Загорело! Фламбирај на време!':'烧焦了！要及时点火！','На ражањ иде само патка!':'烤叉上只能放鸭子！',
-  'Регрут':'新兵','Регрут на одслужењу':'服兵役的新兵','Тек брат':'科技哥','Тек брат из стартапа':'创业公司的科技哥','Тајкун':'大亨','Тајкун са обезбеђењем':'带保镖的大亨','Тајкун је у кухињи — са обезбеђењем!':'大亨进厨房了——还带着保镖！',
+  'Регрут':'新兵','Регрут на одслужењу':'服兵役的新兵','Генерал':'将军','Тек брат':'科技哥','Тек брат из стартапа':'创业公司的科技哥','Тајкун':'大亨','Тајкун са обезбеђењем':'带保镖的大亨','Тајкун је у кухињи — са обезбеђењем!':'大亨进厨房了——还带着保镖！',
   'Не прилази шефу!':'别靠近老板！','Без фотографисања!':'禁止拍照！','Шеф не даје аутограме.':'老板不签名。','Склони се, брате!':'让开，兄弟！','Полако, полако…':'慢点，慢点……','Ко те звао?':'谁叫你来的？','Заузет — неко други кува као он.':'已占用——别人正在用这位厨师。',
   'Рецепти':'食谱','H — сала':'H — 用餐区','савиј (E)':'包起 (E)','исеци (E)':'切片 (E)','обликуј (E)':'捏形 (E)','даска':'砧板','пари':'蒸','глазирај':'裹酱','окрећи (E)':'转动 (E)','64 нити (E)':'64 根 (E)','кувај':'煮','мешај (E)':'搅拌 (E)','протреси (E)':'颠锅 (E)','★★★ у касарни':'在军营获得 ★★★','★★★ у „Змају“':'在“龙与李子”获得 ★★★',
   // касарна и фјужн: поруке у кухињи
@@ -1979,7 +1979,7 @@ XL.hi={
   'Још се пари…':'अभी स्टीम हो रहा है…','Стави димсам или кнедлу.':'डिम सम या डंपलिंग रखो।','Готово је — исеци је на дасци!':'तैयार है — इसे बोर्ड पर स्लाइस करो!','Стави патку на ражањ.':'बत्तख को सीख पर लगाओ।',
   'Сад ракија — фламбирај!':'अब rakija — फ़्लैम्बे करो!','Нестало воде у парњачи!':'स्टीमर का पानी ख़त्म!','Распарило се!':'ज़्यादा स्टीम हो गया!','Загорело! Парњача без воде!':'जल गया! स्टीमर में पानी नहीं!',
   'Укиселило се!':'खट्टा हो गया!','Загорело! Фламбирај на време!':'जल गया! समय पर फ़्लैम्बे करो!','На ражањ иде само патка!':'सीख पर सिर्फ़ बत्तख जाती है!',
-  'Регрут':'रंगरूट','Регрут на одслужењу':'फ़ौजी सेवा में रंगरूट','Тек брат':'टेक ब्रो','Тек брат из стартапа':'स्टार्टअप वाला टेक ब्रो','Тајкун':'धन्नासेठ','Тајкун са обезбеђењем':'बॉडीगार्ड्स के साथ धन्नासेठ','Тајкун је у кухињи — са обезбеђењем!':'धन्नासेठ किचन में है — बॉडीगार्ड्स के साथ!',
+  'Регрут':'रंगरूट','Регрут на одслужењу':'फ़ौजी सेवा में रंगरूट','Генерал':'जनरल','Тек брат':'टेक ब्रो','Тек брат из стартапа':'स्टार्टअप वाला टेक ब्रो','Тајкун':'धन्नासेठ','Тајкун са обезбеђењем':'बॉडीगार्ड्स के साथ धन्नासेठ','Тајкун је у кухињи — са обезбеђењем!':'धन्नासेठ किचन में है — बॉडीगार्ड्स के साथ!',
   'Не прилази шефу!':'साहब के पास मत आओ!','Без фотографисања!':'फ़ोटो नहीं!','Шеф не даје аутограме.':'साहब ऑटोग्राफ़ नहीं देते।','Склони се, брате!':'हटो, भाई!','Полако, полако…':'आराम से, आराम से…','Ко те звао?':'तुम्हें किसने बुलाया?','Заузет — неко други кува као он.':'लिया जा चुका — कोई और इस शेफ़ के रूप में खेल रहा है।',
   'Рецепти':'रेसिपी','H — сала':'H — डाइनिंग हॉल','савиј (E)':'मोड़ो (E)','исеци (E)':'स्लाइस करो (E)','обликуј (E)':'आकार दो (E)','даска':'बोर्ड','пари':'स्टीम','глазирај':'ग्लेज़','окрећи (E)':'घुमाओ (E)','64 нити (E)':'64 तार (E)','кувај':'उबालो','мешај (E)':'चलाओ (E)','протреси (E)':'उछालो (E)','★★★ у касарни':'★★★ बैरक में','★★★ у „Змају“':'★★★ “ड्रैगन” में',
   // касарна и фјужн: поруке у кухињи
@@ -2335,7 +2335,7 @@ XL.pt={
   'Још се пари…':'Ainda no vapor…','Стави димсам или кнедлу.':'Coloque dim sum ou um bolinho.','Готово је — исеци је на дасци!':'Pronto — fatie na tábua!','Стави патку на ражањ.':'Ponha o pato no espeto.',
   'Сад ракија — фламбирај!':'Agora a rakija — flambe!','Нестало воде у парњачи!':'A vaporeira secou!','Распарило се!':'Passou do ponto no vapor!','Загорело! Парњача без воде!':'Queimou! A vaporeira secou!',
   'Укиселило се!':'Azedou!','Загорело! Фламбирај на време!':'Queimou! Flambe na hora certa!','На ражањ иде само патка!':'No espeto só vai o pato!',
-  'Регрут':'Recruta','Регрут на одслужењу':'Recruta no serviço militar','Тек брат':'Tech Bro','Тек брат из стартапа':'Tech bro de startup','Тајкун':'Magnata','Тајкун са обезбеђењем':'Magnata com seguranças','Тајкун је у кухињи — са обезбеђењем!':'O magnata está na cozinha — com seguranças!',
+  'Регрут':'Recruta','Регрут на одслужењу':'Recruta no serviço militar','Генерал':'General','Тек брат':'Tech Bro','Тек брат из стартапа':'Tech bro de startup','Тајкун':'Magnata','Тајкун са обезбеђењем':'Magnata com seguranças','Тајкун је у кухињи — са обезбеђењем!':'O magnata está na cozinha — com seguranças!',
   'Не прилази шефу!':'Não chegue perto do chefe!','Без фотографисања!':'Sem fotos!','Шеф не даје аутограме.':'O chefe não dá autógrafos.','Склони се, брате!':'Sai da frente, mano!','Полако, полако…':'Calma, calma…','Ко те звао?':'Quem te chamou?','Заузет — неко други кува као он.':'Ocupado — outra pessoa está jogando com este cozinheiro.',
   'Рецепти':'Receitas','H — сала':'H — salão','савиј (E)':'dobre (E)','исеци (E)':'fatie (E)','обликуј (E)':'modele (E)','даска':'tábua','пари':'vapor','глазирај':'glaceie','окрећи (E)':'gire (E)','64 нити (E)':'64 fios (E)','кувај':'ferva','мешај (E)':'mexa (E)','протреси (E)':'sacuda (E)','★★★ у касарни':'★★★ no quartel','★★★ у „Змају“':'★★★ no “Dragão”',
   // касарна и фјужн: поруке у кухињи
@@ -2691,7 +2691,7 @@ XL.ja={
   'Још се пари…':'まだ蒸しています…','Стави димсам или кнедлу.':'点心か団子を入れよう。','Готово је — исеци је на дасци!':'完成！まな板で切ろう！','Стави патку на ражањ.':'鴨を串に刺そう。',
   'Сад ракија — фламбирај!':'さあrakijaで、フランベ！','Нестало воде у парњачи!':'蒸し器の水が切れた！','Распарило се!':'蒸しすぎた！','Загорело! Парњача без воде!':'焦げた！蒸し器の水が空！',
   'Укиселило се!':'酸っぱくなった！','Загорело! Фламбирај на време!':'焦げた！タイミングよくフランベしよう！','На ражањ иде само патка!':'串に刺すのは鴨だけ！',
-  'Регрут':'新兵','Регрут на одслужењу':'兵役中の新兵','Тек брат':'テックブロ','Тек брат из стартапа':'スタートアップのテックブロ','Тајкун':'大富豪','Тајкун са обезбеђењем':'ボディガード付きの大富豪','Тајкун је у кухињи — са обезбеђењем!':'大富豪が厨房に！ボディガード付きで！',
+  'Регрут':'新兵','Регрут на одслужењу':'兵役中の新兵','Генерал':'将軍','Тек брат':'テックブロ','Тек брат из стартапа':'スタートアップのテックブロ','Тајкун':'大富豪','Тајкун са обезбеђењем':'ボディガード付きの大富豪','Тајкун је у кухињи — са обезбеђењем!':'大富豪が厨房に！ボディガード付きで！',
   'Не прилази шефу!':'ボスに近づくな！','Без фотографисања!':'撮影禁止！','Шеф не даје аутограме.':'ボスはサインをしない。','Склони се, брате!':'どいてくれ、兄弟！','Полако, полако…':'落ち着け、落ち着け…','Ко те звао?':'誰が呼んだんだよ？','Заузет — неко други кува као он.':'使用中：他の人がこのコックでプレイしています。',
   'Рецепти':'レシピ','H — сала':'H — 客席','савиј (E)':'包む(E)','исеци (E)':'切る(E)','обликуј (E)':'成形(E)','даска':'まな板','пари':'蒸す','глазирај':'照りづけ','окрећи (E)':'回す(E)','64 нити (E)':'64本(E)','кувај':'煮る','мешај (E)':'混ぜる(E)','протреси (E)':'あおる(E)','★★★ у касарни':'兵舎で★★★','★★★ у „Змају“':'「龍」で★★★',
   // касарна и фјужн: поруке у кухињи
@@ -3047,7 +3047,7 @@ XL.fr={
   'Још се пари…':'Cuisson vapeur en cours…','Стави димсам или кнедлу.':'Mets un dim sum ou une boulette.','Готово је — исеци је на дасци!':'C’est prêt — tranche-le sur la planche\u202f!','Стави патку на ражањ.':'Mets le canard à la broche.',
   'Сад ракија — фламбирај!':'Maintenant, la rakija — flambe\u202f!','Нестало воде у парњачи!':'Le cuiseur vapeur est à sec\u202f!','Распарило се!':'Trop cuit à la vapeur\u202f!','Загорело! Парњача без воде!':'Brûlé\u202f! Le cuiseur vapeur était à sec\u202f!',
   'Укиселило се!':'Ça a tourné\u202f!','Загорело! Фламбирај на време!':'Brûlé\u202f! Flambe à temps\u202f!','На ражањ иде само патка!':'Seul le canard va à la broche\u202f!',
-  'Регрут':'Recrue','Регрут на одслужењу':'Recrue en service militaire','Тек брат':'Tech bro','Тек брат из стартапа':'Tech bro d’une start-up','Тајкун':'Magnat','Тајкун са обезбеђењем':'Magnat et ses gardes du corps','Тајкун је у кухињи — са обезбеђењем!':'Le magnat est en cuisine — avec ses gardes du corps\u202f!',
+  'Регрут':'Recrue','Регрут на одслужењу':'Recrue en service militaire','Генерал':'Général','Тек брат':'Tech bro','Тек брат из стартапа':'Tech bro d’une start-up','Тајкун':'Magnat','Тајкун са обезбеђењем':'Magnat et ses gardes du corps','Тајкун је у кухињи — са обезбеђењем!':'Le magnat est en cuisine — avec ses gardes du corps\u202f!',
   'Не прилази шефу!':'N’approche pas du patron\u202f!','Без фотографисања!':'Pas de photos\u202f!','Шеф не даје аутограме.':'Le patron ne signe pas d’autographes.','Склони се, брате!':'Pousse-toi, frérot\u202f!','Полако, полако…':'Doucement, doucement…','Ко те звао?':'Qui t’a invité\u202f?','Заузет — неко други кува као он.':'Pris — quelqu’un d’autre joue déjà ce cuisinier.',
   'Рецепти':'Recettes','H — сала':'H — salle','савиј (E)':'plie (E)','исеци (E)':'tranche (E)','обликуј (E)':'façonne (E)','даска':'planche','пари':'vapeur','глазирај':'laque','окрећи (E)':'tourne (E)','64 нити (E)':'64 brins (E)','кувај':'fais cuire','мешај (E)':'remue (E)','протреси (E)':'fais sauter (E)','★★★ у касарни':'★★★ à la caserne','★★★ у „Змају“':'★★★ au «\u202fDragon\u202f»',
   // касарна и фјужн: поруке у кухињи
@@ -3132,6 +3132,362 @@ XL.fr={
   'проверавам…':'vérification…','STUN не одговара (UDP блокиран?)':'STUN injoignable (UDP bloqué\u202f?)','симетричан (P2P ретко пролази)':'symétrique (P2P passe rarement)','обичан (P2P обично пролази)':'cône (P2P passe en général)','није подешен (TURN_URL)':'non configuré (TURN_URL)','учитавам…':'chargement…','учитан, проверавам…':'chargé, vérification…','✓ ради':'✓ fonctionne','✗ сервери не одговарају':'✗ les serveurs ne répondent pas','Домаћин':'Hôte','Мрежа':'Réseau','домаћин':'hôte','гост':'invité','ван игре':'hors partie','НЕМА, искључен у прегледачу или додатку':'ABSENT, désactivé par le navigateur ou une extension',' релеја':' relais','Домаћин: ':'Hôte\u202f: ','пронађен':'trouvé','тражим… ':'recherche… ','директно':'direct','неуспело: ':'échec\u202f: ','Прикажи':'Afficher','Сакриј':'Masquer'
 };
 XT.fr={din:'{p}{n}\u00a0din.',best:'Record\u202f: {n}\u00a0din.',ticket:'N°\u00a0{n}',hidden:'Niveau caché {n}',earn:'Obtiens une ★ au niveau {n}',secret:'Secret {n}/3\u202f: {text}',of3:'{n} sur 3',tip2:'Pourboire +{n}\u00a0€ ×2',tip:'Pourboire +{n}',tipmusic:'Pourboire +{n} (musique\u202f!)',praise:'Félicitations +{n}',inspect:'Inspection réussie\u202f! +{n}',michelin:'Étoile Michelin\u202f! +{n}',exit:'EXIT\u202f! La start-up est rachetée\u202f: +{n}\u00a0din.',walked:'Un client est parti\u202f! −{n}',left:'{name} a quitté la cuisine',notfound:'Partie {code} introuvable.',joining:'Connexion à la partie {code}',stars:'Étoiles\u202f: {n} sur 3',level:'Niveau {n}',forcooks:'pour {n} cuisiniers',hosting:'{name} héberge une partie',code:'Code {code}, cuisiniers\u202f: {n} sur 4',codebusy:'Code {code}, cuisiniers\u202f: {n} sur 4, niveau en cours',host:'{name}, hôte',cook:'{name}, cuisinier',taken:'{name}, pris',allclear:'Tous les niveaux sont terminés\u202f! {text}',onplate:'{name} dans l’assiette',scoop1:'1 boule — {p}\u00a0din.',scoopN:'{n} boules — {p}\u00a0din.',strands:'{n} brins',perfect:'Parfait\u202f! {n} brins',from:'dès {t}',player:'Joueur {n}',pad:'Manette {n}',padoff:'Manette {n} (déconnectée)',icecream:'Glace\u202f: {list}',listsep:', '};
+XL.it={
+  // састојци и јела (српски назив јела остаје у загради)
+  'Парадајз':'Pomodoro','Краставац':'Cetriolo','Сир':'Formaggio','Лук':'Cipolla','Месо':'Carne','Лепиња':'Pane piatto (Lepinja)',
+  'Кајмак':'Panna densa (Kajmak)','Кора':'Pasta fillo (Kora)','Јогурт':'Yogurt','Јаја':'Uova','Кукурузно брашно':'Farina di mais','Риба':'Pesce',
+  'Алева паприка':'Paprika in polvere','Кисели купус':'Crauti','Пиринач':'Riso','Прасетина':'Maiale','Кромпир':'Patate',
+  'Бурек':'Sfoglia ripiena di carne (Burek)','Гибаница':'Sfoglia ripiena di formaggio (Gibanica)','Проја':'Pane di mais (Proja)','Рибља чорба':'Zuppa del pescatore (Riblja čorba)',
+  'Сарма':'Involtini di cavolo (Sarma)','Печење':'Arrosto di maiale (Pečenje)','Загорело':'Bruciato',
+  'Паприка':'Peperoni','Бели лук':'Aglio','Уље':'Olio','Карфиол':'Cavolfiore','Сирће':'Aceto','Тесто':'Pastella','Евро крем':'Crema spalmabile Evro Krem','ЕВРО КРЕМ':'EVRO KREM',
+  'Пекмез од кајсије':'Confettura di albicocche (Pekmez od kajsije)','Ораси':'Noci','Кулен':'Salame piccante (Kulen)','Качкаваљ':'Formaggio kashkaval (Kačkavalj)','Вино':'Vino','Цимет':'Cannella','Поморанџа':'Arancia',
+  'Шећер':'Zucchero','Ракија':'Acquavite (Rakija)','Кестени':'Castagne','Ајвар':'Crema di peperoni (Ajvar)','Пинђур':'Purea di peperoni e pomodori (Pinđur)',
+  'Кувано вино':'Vin brulé (Kuvano vino)','Шумадијски чај':'Grog all’acquavite (Šumadijski čaj)',
+  'Ћевапи':'Polpettine alla griglia (Ćevapi)','Пљескавица са кајмаком':'Hamburger con panna densa (Pljeskavica sa kajmakom)','Шопска салата':'Insalata shopska (Šopska salata)',
+  'Бурек са јогуртом':'Sfoglia ripiena di carne con yogurt (Burek sa jogurtom)','Проја са кајмаком':'Pane di mais con panna densa (Proja sa kajmakom)',
+  'Печење с кромпиром':'Arrosto di maiale con patate (Pečenje s krompirom)','Туршија':'Sottaceti (Turšija)',
+  'Палачинка с кремом и орасима':'Crêpe al cioccolato e noci (Palačinka s kremom i orasima)','Палачинка с кремом':'Crêpe al cioccolato (Palačinka s kremom)','Палачинка с пекмезом од кајсије':'Crêpe alla confettura di albicocche (Palačinka s pekmezom od kajsije)',
+  'Слана палачинка':'Crêpe salata (Slana palačinka)','Печени кестени':'Caldarroste (Pečeni kesteni)',
+  'мрви':'sbriciola','очисти':'pulisci','ољушти':'sbuccia','ренде':'grattugia','зарежи':'incidi','сецкај':'taglia','пеци':'griglia',
+  'у лонац':'nella pentola','у котлић':'nel paiolo','у казан, мешај!':'nel calderone, mescola!','тепсија у фуруну':'teglia in forno',
+  'УЉЕ':'OLIO','СИРЋЕ':'ACETO','КРЕМ':'CIOCCO','ПЕКМЕЗ':'ALBICOCCA','ВИНО':'VINO','РАКИЈА':'RAKIJA','АЈВАР':'AJVAR','ПИНЂУР':'PINĐUR',
+  // нивои
+  'Кафана „Златни котлић“':'Kafana «Il Paiolo d’Oro»',
+  'Мирно вече у кафани. Роштиљ ради, гости траже ћевапе, пљескавицу и шопску.':'Una serata tranquilla alla kafana, la taverna serba. La griglia è accesa e i clienti vogliono ćevapi, pljeskavica e insalata shopska.',
+  'Узми тањир, сложи састојке на њега и однеси јело на шалтер — црвено-бели пулт горе лево. Што брже послужиш, то већи бакшиш.':'Prendi un piatto, mettici sopra gli ingredienti e porta tutto al passe — il bancone rosso e bianco in alto a sinistra. Più servi in fretta, più ricca è la mancia.',
+  'Пекара „Зора“':'Panetteria L’Alba',
+  'Пет ујутру, а ред пред пекаром. Бурек, гибаница и проја — све из фуруне.':'Le cinque del mattino, e c’è già la fila davanti. Burek, gibanica e proja — tutto fresco di forno.',
+  'Ново: тепсија и фуруна. Узми тепсију, сложи у њу састојке, па је убаци у фуруну. Кад се испече, захвати јело тањиром. Пекара је подељена зидом, пролаз је на средини.':'Novità: la teglia e il forno. Prendi una teglia, mettici gli ingredienti e infornala. Quando è cotta, raccogli la pietanza con un piatto. Un muro divide in due la panetteria; il passaggio è al centro.',
+  'Свадба на салашу':'Matrimonio al salaš',
+  'Свадба у Војводини! Рибља чорба из котлића, сарма, печење — и трубачи усред кухиње.':'Un matrimonio in una fattoria della Vojvodina! Zuppa del pescatore nel paiolo, sarma, arrosto di maiale — e una fanfara in mezzo alla cucina.',
+  'Ново: котлић и лонац кувају сами чим убациш све састојке. Тањири се враћају прљави поред шалтера — опери их у судопери (E). Склањај се трубачима с пута!':'Novità: il paiolo e la pentola cuociono da soli appena ci metti tutti gli ingredienti. I piatti tornano sporchi accanto al passe — lavali nel lavello (E). Fai strada ai trombettisti!',
+  'Зимница у дворишту':'Conserve invernali in cortile',
+  'Цела зграда прави ајвар на паркингу. Паприке се пеку у бубњу, љуште док су вреле, а казан мора стално да се меша.':'Tutto il condominio prepara l’ajvar nel parcheggio. I peperoni si arrostiscono nel tamburo e si sbucciano ancora bollenti, e il calderone va mescolato di continuo.',
+  'Ново: бубањ за паприке, љуштење и казан. Испечене паприке ољушти на дасци (E) док су вруће — кад се охладе, иде споро. Казан мешај (E) док се кува, иначе загори! Јела се служе у теглама.':'Novità: il tamburo per peperoni, la sbucciatura e il calderone. Sbuccia i peperoni arrostiti sul tagliere (E) finché sono caldi — da freddi ci vuole molto di più. Mescola il calderone (E) durante la cottura, altrimenti brucia! I piatti si servono nei barattoli.',
+  'Палачинке на Ади':'Crêpes ad Ada',
+  'Летњи дан на Ади. Купачи, деца, скијаши на води, вејкбордери, бициклисти и ролери — сви хоће палачинке.':'Una giornata d’estate ad Ada, l’isola fluviale di Belgrado. Bagnanti, bambini, sciatori nautici, wakeboarder, ciclisti e pattinatori — tutti vogliono crêpes.',
+  'Ново: палачинкара. Сипај тесто, па кад се појави ↻ окрени палачинку (E) — ако закасниш, загори! Пази на галебове: краду палачинке оставене на пулту.':'Novità: la piastra per crêpes. Versa la pastella e, quando compare ↻, gira la crêpe (E) — se tardi, brucia! Occhio ai gabbiani: rubano le crêpes lasciate sul bancone.',
+  'Дочек на тргу':'Capodanno in piazza',
+  'Новогодишња ноћ на тргу. Кувано вино, шумадијски чај и печени кестени — све до поноћи!':'La notte di Capodanno in piazza. Vin brulé, grog all’acquavite e caldarroste — fino a mezzanotte!',
+  'Ново: пића се хладе! Кувано вино и чај послужи док се пуше — хладно пиће кошта упола. Кестене прво зарежи на дасци, па их испеци у тигању. Пази да вино не прокува!':'Novità: le bevande si raffreddano! Servi il vin brulé e il grog finché fumano — una bevanda fredda rende la metà. Prima incidi le castagne sul tagliere, poi arrostiscile in padella. Non far traboccare il vino!',
+  // кувари
+  'Мића':'Mića','Стана':'Stana','Горан':'Goran','Марија':'Marija','Евро Тетка':'Zia Euro','Тетка из Беча':'Zia di Vienna','Пандур':'Sbirro',
+  'Интервентни пандур':'Sbirro antisommossa','Трубач':'Trombettista','Председник Станара':'Presidente degli inquilini','Председник кућног савета':'Presidente del consiglio condominiale',
+  'Спасилац':'Bagnino','Спасилац са Аде':'Bagnino di Ada','Деда Мраз':'Deda Mraz',
+  '★★★ у кафани':'★★★ alla kafana','★★★ у пекари':'★★★ in panetteria','★★★ на свадби':'★★★ al matrimonio','★★★ на зимници':'★★★ alle conserve',
+  '★★★ на Ади':'★★★ ad Ada','★★★ на дочеку':'★★★ a Capodanno',
+  // поруке у кухињи
+  'Треба ти тањир!':'Ti serve un piatto!','Треба ти чаша!':'Ti serve una tazza!','Треба ти тегла!':'Ti serve un barattolo!',
+  'Сервирај на тањиру!':'Servilo in un piatto!','Сипај у чашу!':'Versalo in una tazza!','Сипај у теглу!':'Mettilo in un barattolo!',
+  'Тањир је празан!':'Il piatto è vuoto!','Чаша је празна!':'La tazza è vuota!','Тегла је празна!':'Il barattolo è vuoto!',
+  'Тањир је пун!':'Il piatto è pieno!','Чаша је пуна!':'La tazza è piena!','Тегла је пуна!':'Il barattolo è pieno!',
+  'Тањири се не бацају!':'I piatti non si buttano!','Чаше се не бацају!':'Le tazze non si buttano!','Тегле се не бацају!':'I barattoli non si buttano!',
+  'Тањир је већ празан.':'Il piatto è già vuoto.','Чаша је већ празна.':'La tazza è già vuota.','Тегла је већ празна.':'Il barattolo è già vuoto.',
+  'Нема чистих тањира!':'Niente piatti puliti!','Нема више чаша!':'Tazze finite!','Нема више тегли!':'Barattoli finiti!',
+  'Загорело! Баци у канту.':'Bruciato! Buttalo nel bidone.','Тако нешто нико не наручује! Баци у канту.':'Nessuno ordina una roba del genere! Buttala nel bidone.','Прво измрви сир!':'Prima sbriciola il formaggio!','Прво очисти рибу!':'Prima pulisci il pesce!',
+  'Прво исецкај!':'Prima taglialo!','Прво испеци на роштиљу!':'Prima passalo sulla griglia!','Прво испеци паприке у бубњу!':'Prima arrostisci i peperoni nel tamburo!',
+  'Прво ољушти паприку (E)!':'Prima sbuccia il peperone (E)!','Сад их испеци у тигању!':'Ora arrostiscile in padella!','Прво испеци палачинку!':'Prima cuoci la crêpe!',
+  'То иде у лонац!':'Va nella pentola!','То иде у котлић!':'Va nel paiolo!','То иде у тепсију!':'Va nella teglia!','То иде у казан!':'Va nel calderone!',
+  'То не иде заједно!':'Queste cose non vanno insieme!','То не иде у тепсију!':'Non va nella teglia!','То не иде ту!':'Non va lì!',
+  'Тепсија је пуна!':'La teglia è piena!','Котлић је пун!':'Il paiolo è pieno!','Казан је пун!':'Il calderone è pieno!','Лонац је пун!':'La pentola è piena!',
+  'Прво очисти тепсију!':'Prima pulisci la teglia!','Прво испразни!':'Prima svuotalo!','Још се пече…':'Sta ancora cuocendo…','Још се кува…':'Sta ancora bollendo…',
+  'Загорело!':'Bruciato!','Још нешто фали.':'Manca ancora qualcosa.','Празно је.':'È vuoto.','Нема места!':'Non c’è posto!','Руке су пуне!':'Hai le mani piene!',
+  'Окрени је (E)!':'Girala (E)!','Фали још састојака.':'Mancano ancora degli ingredienti.','Прво стави тепсију у фуруну!':'Prima metti una teglia in forno!',
+  'То не иде у фуруну!':'Non va nel forno!','Фуруна је заузета!':'Il forno è occupato!','Стави тепсију у фуруну.':'Metti una teglia in forno.',
+  'Опери прљаве тањире!':'Lava i piatti sporchi!','Нема слободних тепсија!':'Nessuna teglia libera!','Јело није готово!':'Il piatto non è pronto!',
+  'Нико то није наручио!':'Nessuno l’ha ordinato!','Тепсија је већ празна.':'La teglia è già vuota.','Тај тањир је чист.':'Quel piatto è pulito.',
+  'То не иде у судоперу!':'Non va nel lavello!','Прво спусти то што држиш!':'Prima posa quello che hai in mano!',
+  'Охладила се — споро се љушти!':'Si è raffreddato — si sbuccia a fatica!','Прво је испеци у бубњу!':'Prima arrostiscilo nel tamburo!','Већ је исецкано.':'È già tagliato.',
+  'То се не сецка.':'Questo non si taglia.','Стави нешто на даску.':'Metti qualcosa sul tagliere.','Нема прљавих тањира.':'Niente piatti sporchi.',
+  'Прво сипај тесто.':'Prima versa la pastella.','Још није време за окретање.':'Non è ancora ora di girarla.','Већ је окренута.':'È già girata.',
+  'Готово је — узми теглу!':'È pronto — prendi un barattolo!','Нема шта да се меша.':'Non c’è niente da mescolare.','Охладило се! Упола цене.':'Si è raffreddato! Metà prezzo.',
+  'За цео вод!':'Per tutto il plotone!','Мир у пекари +100':'Pace in panetteria +100','Стигло појачање — још студената!':'Arrivano i rinforzi — altri studenti!',
+  'Стигло појачање — још полиције!':'Arrivano i rinforzi — altri poliziotti!','Туча навијача! Обе наруџбине су пропале.':'Rissa tra tifosi! Entrambe le ordinazioni sono perse.',
+  'То не иде на роштиљ!':'Non va sulla griglia!','Роштиљ је заузет!':'La griglia è occupata!','Ова је већ испечена!':'Questa è già cotta!',
+  'У бубањ иду само паприке!':'Nel tamburo vanno solo i peperoni!','Бубањ је пун!':'Il tamburo è pieno!','Прво зарежи кестене!':'Prima incidi le castagne!',
+  'У тигањ иду кестени!':'In padella vanno le castagne!','Тигањ је пун!':'La padella è piena!','На палачинкару иде само тесто!':'Sulla piastra va solo la pastella!',
+  'Палачинкара је заузета!':'La piastra è occupata!','Прокувало!':'È traboccato!','Загорело! Мешај казан!':'Bruciato! Mescola il calderone!',
+  'Галеб украо палачинку!':'Un gabbiano ha rubato una crêpe!','Летња олуја! Сви беже под тенду!':'Temporale estivo! Tutti di corsa sotto il tendone!',
+  'Загорело! Окрећи на време!':'Bruciata! Girala in tempo!','„Померите тај казан, морам да изађем!“':'«Spostate quel calderone, devo uscire con la macchina!»',
+  'Бип-бип!':'Bip bip!','Полако, бре!':'Piano, oh!','Еј, свирам ја!':'Ehi, sto suonando!','Трубач свира — бакшиш +50%!':'Il trombettista suona — mance +50%!',
+  'Трубачи свирају — бакшиш +50%!':'I trombettisti suonano — mance +50%!','Још 30 секунди!':'Ancora 30 secondi!','Трубачи су у кухињи!':'I trombettisti sono in cucina!',
+  'Живели!':'Cin cin!','Свака част!':'Tanto di cappello!','Алал вера!':'Grandi!','Ко код маме!':'Come la faceva la mamma!','Мљац!':'Gnam!','Баш је фино!':'Che bontà!',
+  // натписи на зидовима и тезгама
+  'ВЕЧЕРАС':'STASERA','ДИЈАМАНТА':'DIJAMANTA','ДАНАС ЗА ПАРЕ,':'OGGI SI PAGA,','СУТРА НА ВЕРЕСИЈУ':'DOMANI SI FA CREDITO','ЗЗ „НАПРЕДАК“':'COOP «NAPREDAK»',
+  'ОКТОБАР':'OTTOBRE','МАРТ':'MARZO','КУЋНИ РЕД':'REGOLAMENTO','ПАЛАЧИНКЕ':'CRÊPES','крем • ораси':'cioccolato • noci','пекмез од кајсије':'confettura di albicocche','кулен • сир':'kulen • formaggio',
+  'Срећна Нова година!':'Buon anno!','Живели младенци!':'Viva gli sposi!','БУРЕК':'BUREK','дин':'din','УЖИВО':'IN DIRETTA',
+  'ВИЛА ДРАМА • УЖИВО 0-24 • ВЕЛИКА СВАЂА ЗБОГ ЧАШЕ ВОДЕ • ОН ЈЕ ЊОЈ РЕКАО, А ОНА ЊЕМУ… • ГЛАСАЈТЕ ПОРУКОМ • ':'VILLA DRAMA • IN DIRETTA 24 ORE SU 24 • LITE FURIBONDA PER UN BICCHIERE D’ACQUA • LUI LE HA DETTO, E LEI GLI HA DETTO… • VOTATE CON UN SMS • ',
+  'ПЕКАРА „ЗОРА“':'PANETTERIA L’ALBA','ТРАФИКА':'EDICOLA','ТРАС!':'CRAC!','БУМ!':'BUM!','ПАФ!':'PAF!','БАНГ!':'BANG!',
+  'ЗИМНИЦА • СТАНАРИ':'CONSERVE INVERNALI • INQUILINI','КУВАНО ВИНО • КЕСТЕНИ':'VIN BRULÉ • CASTAGNE',
+  'ХОЋУ БУРЕК СА СИРОМ':'VOGLIO UN BUREK AL FORMAGGIO','ДОЛЕ ХЛАДНА ПРОЈА':'ABBASSO LA PROJA FREDDA','ЈОГУРТ ЗА СВЕ!':'YOGURT PER TUTTI!',
+  'МИРНО ЧЕКАМ РЕД':'ASPETTO IL MIO TURNO IN PACE','И ЈА':'ANCH’IO',
+  'Број ':'N. ','Сто ':'Tavolo ','д':'d','Спремни…':'Ai vostri posti…','Позор…':'Pronti…','Крени!':'Via!','Крај смене!':'Fine turno!','Обука је завршена!':'Tutorial completato!','Ти':'Tu',
+  // гости
+  '♪ Ај, ја-ја-ја! ♪':'♪ Ai, ia-ia-ia! ♪','♪ Ој, ој, ој! ♪':'♪ Oi, oi, oi! ♪','♪ Ла-ла-ла-ла! ♪':'♪ La-la-la-la! ♪','♪ Ајде, ајде! ♪':'♪ Hajde, hajde! ♪',
+  'Јеси ли нормалан?!':'Ma sei matto?!','Ма немој, бре!':'Ma dai, sul serio?!','Спусти то одмах!':'Posalo subito!',
+  'Срамота!':'Che vergogna!','Е, баш вам хвала!':'Eh, grazie tante!','Идем ја код другог!':'Vado da un’altra parte!',
+  'Још дуго?':'Ci vuole ancora tanto?','Где је то јело?':'Dov’è il mio piatto?','Ало, кухињо?':'Pronto, cucina?',
+  'Ај’ брже мало, брате!':'Muoviti un po’, fra’!','Имам Голфа у другом реду, брате!':'Ho la Golf in doppia fila, fra’!','Брате, јел’ то тесто тек месиш?':'Fra’, stai ancora impastando?',
+  'Ајде, бре, к’о у пошти!':'Dai, sembra di stare alla posta!','Брате, нисам јео од синоћ!':'Fra’, non mangio da ieri sera!',
+  'Стрпљење је врлина…':'La pazienza è la virtù dei forti…','Бог је свет створио за шест дана…':'Dio ha creato il mondo in sei giorni…','Помолићу се за вашу пећ.':'Pregherò per il vostro forno.',
+  'Постим ја, ал’ не довека!':'Sto digiunando, ma non per sempre!','Господе, дај им снаге…':'Signore, dai loro la forza…',
+  'Захтевамо топао бурек!':'Esigiamo burek caldo!','Нећемо стати док не стигне бурек!':'Non molleremo finché non arriva il burek!','Штрајк глађу? Па већ га радим!':'Sciopero della fame? Ma se lo sto già facendo!',
+  'Пекару народу!':'La panetteria al popolo!','Ко не скаче, тај је сит!':'Chi non salta sazio è!',
+  'Централа, кашњење у пекари.':'Centrale, ritardo in panetteria.','Ово ће ићи у записник.':'Questo finisce a verbale.','Ово је последње упозорење!':'È l’ultimo avvertimento!',
+  'Шаљем вод на шалтер!':'Mando un plotone al passe!','Централа, бурек и даље није стигао.':'Centrale, il burek non è ancora arrivato.',
+  'Мир Божји, децо!':'La pace di Dio, figlioli!','Ево, у еврима! Нек се зна!':'Ecco, in euro! Che si sappia!','Документа, молим.':'Documenti, prego.',
+  'Имате ли ситно?':'Avete spiccioli?','Хвала, колега!':'Grazie, collega!','Поздрав за мајсторе!':'Un saluto ai maestri!','Бог благословио!':'Dio vi benedica!',
+  'Идем по друштво!':'Vado a chiamare la compagnia!','Зовем појачање!':'Chiamo i rinforzi!','Нема везе, брате.':'Tranquillo, fratello.','Опраштам вам.':'Vi perdono.',
+  'Идем ја назад у Беч!':'Io me ne torno a Vienna!','У Бечу би ово већ стигло!':'A Vienna sarebbe già arrivato!',
+  'Код нас у Бечу је јефтиније!':'Da noi a Vienna costa meno!','Пре је ово било пола цене!':'Una volta costava la metà!',
+  'За ове паре – бечка шницла!':'A questo prezzo, una cotoletta viennese!','Добро је… ал’ скупо!':'Buono… ma caro!',
+  'Централа, тражим појачање… гибанице.':'Centrale, richiedo rinforzi… di gibanica.','Једна проја. По службеној дужности.':'Una proja. Per dovere d’ufficio.',
+  'Примљено, један са месом.':'Ricevuto, uno con carne.','Бурек и јогурт, к’о и увек!':'Burek e yogurt, come sempre!','Брате, један бурек!':'Fratello, un burek!',
+  'Бог вам помогао!':'Che Dio vi aiuti!','Јао, што је све поскупело!':'Mamma mia, com’è aumentato tutto!','Десет у пола, с луком!':'Dieci in mezza lepinja, con cipolla!',
+  'Бу-рек! Бу-рек!':'Bu-rek! Bu-rek!','Ајмо, црно-бели!':'Forza bianconeri!','Ајмо, црвено-бели!':'Forza biancorossi!',
+  'Кхм, кхм!':'Ehm, ehm!','Ово је непушачки сто!':'Questo è un tavolo non fumatori!','Ко то пуши?!':'Chi è che fuma?!','Не види се ништа!':'Non si vede niente!',
+  'Па ја сам у пушачком!':'Ma io sono nella zona fumatori!','Опа!':'Opa!','Свирај, мајсторе!':'Suona, maestro!',
+  'Е, у моје време…':'Eh, ai miei tempi…','Ово гледа цела Србија?!':'Tutta la Serbia guarda ’sta roba?!','Срамота једна!':'Che vergogna!',
+  'Јао, шта ова ради!':'Mamma mia, ma che sta facendo quella!','Јадна њена мајка…':'Povera sua madre…','Немој да ми кажеш крај!':'Non dirmi come finisce!',
+  'Ај’ пребаци на утакмицу!':'Dai, metti la partita!','Они не раде ништа, а ја од пет!':'Loro non fanno niente, e io sono in piedi dalle cinque!',
+  'Ово је горе од испитног рока.':'È peggio della sessione d’esami.','Ово ми је за семинарски.':'Mi serve per la tesina.',
+  'Овај се возио код мене!':'Questo l’ho avuto in taxi!','Ово ми у таксију причају цео дан.':'In taxi me lo raccontano tutto il giorno.',
+  'Брате, боље од филма!':'Fratello, meglio di un film!','Брате, појачај то!':'Fratello, alza il volume!','Господе, опрости им…':'Signore, perdonali…',
+  'Ово је за покајање.':'Qui c’è da pentirsi.','Доле ријалити!':'Abbasso i reality!','Захтевамо документарац!':'Vogliamo un documentario!',
+  'Ово је горе од протеста.':'È peggio di una manifestazione.','Централа, неред на телевизији.':'Centrale, disordini in televisione.',
+  'Мирније него на нашем стадиону.':'Più tranquillo che nel nostro stadio.','Опет поскупело?!':'È aumentato di nuovo?!','Јуче је био јефтинији!':'Ieri costava meno!',
+  'Ово је пљачка!':'È una rapina!','Од моје пензије?!':'Con la mia pensione?!','Ооо, оле, оле!':'Ooh, olè, olè!',
+  'Шта?! Ко пуца?!':'Cosa?! Chi spara?!','Ко је то, бре?!':'Ma chi è, insomma?!','Јел’ стигла млада?!':'È arrivata la sposa?!',
+  'Само да пробам да л’ је печено…':'Assaggio solo per vedere se è cotto…','Још мало да пробам…':'Ancora un assaggino…','Ово мора да се провери!':'Bisogna controllare!',
+  'Мислим да је готово!':'Credo che sia cotto!','Хик!':'Hic!','♪ Ја вас све волим! ♪':'♪ Vi voglio bene a tutti! ♪','Бабо, ти си ми најлепша!':'Nonna, sei la più bella!',
+  'Бежи, пијанице!':'Vattene, ubriacone!','А кад ћеш ти да се удаш?':'E tu, quando ti sposi?','А кад ћеш ти да се жениш?':'E tu, quando ti sposi?',
+  'Тетка, молим те…':'Zia, ti prego…','Ускоро, ускоро…':'Presto, presto…','Чим стигне моје јело!':'Appena arriva il mio piatto!',
+  'Кум шкрт! Кум шкрт!':'Testimone tirchio! Testimone tirchio!','Ето вам, ето вам!':'Tenete, tenete!','Живео куме!':'Viva il testimone!',
+  'Држ’те га, то је за супу!':'Prendetelo, è per la zuppa!','Ееее!':'Ehiii!','Јао!':'Ahi!','Ау, глава!':'Ahi, la testa!','Опет кобасица!':'Di nuovo salsiccia!',
+  'Комшо, има ли ајвара?':'Vicino, c’è ancora ajvar?','Ја сам донео тегле!':'I barattoli li ho portati io!','Само да не загори као лане!':'Basta che non bruci come l’anno scorso!',
+  'Једну теглу за кућни савет!':'Un barattolo per il consiglio condominiale!','Једну палачинку, мокар сам!':'Una crêpe, sono fradicio!','Брзо, вода је хладна!':'Presto, l’acqua è fredda!',
+  'Ја хоћу палачинку!':'Voglio una crêpe!','Мама је рекла да могу!':'La mamma ha detto che posso!','После скијања — палачинка!':'Dopo lo sci, una crêpe!',
+  'Пет кругова на жичари!':'Cinque giri sullo skilift!','Брзо, у пролазу сам!':'Presto, sono di passaggio!','Добар дан. Палачинку, молим.':'Buongiorno. Una crêpe, per favore.',
+  'Прво мишићи, па палачинка!':'Prima i muscoli, poi la crêpe!','Ко ће да спасава без палачинке?':'Chi salva vite senza una crêpe?',
+  'Једно кувано, да се мало отопим!':'Un vin brulé, che mi scongelo un po’!','Није ми хладно, ја сам Снешко!':'Non ho freddo, sono un pupazzo di neve!',
+  'Срећна двадесет седма!':'Buon 2027!','ТУУУУ!':'TUUUUT!','Селфи са јелком!':'Selfie con l’albero!','Слика за Инстаграм!':'Una foto per Insta!',
+  'Брррр! Требало је да понесем јакну!':'Brrrr! Dovevo portarmi la giacca!','Хаљина је лепа, ал’ хладно!':'Bel vestito, ma che freddo!',
+  'Једно кувано за јелена!':'Un vin brulé per la renna!','Срећна Нова!':'Buon anno!','Види моју прскалицу!':'Guarda la mia stellina!',
+  'Комшо, ајде!':'Dai, vicino!','Смрзох се овде!':'Mi sto congelando qui!','Идем по своје тегле!':'Vado a prendere i miei barattoli!',
+  'Ово ћу изнети на састанку станара!':'Lo dirò alla riunione di condominio!','Записујем!':'Prendo nota!',
+  'Кућни савет ће о овоме одлучити!':'Deciderà il consiglio condominiale!','Цури ми вода из ушију…':'Mi esce l’acqua dalle orecchie…','Сунце пече!':'Il sole picchia!',
+  'Идем у воду па се враћам!':'Faccio un tuffo e torno!','Мамааа!':'Mammaaa!','Кад ће палачинка?!':'Quando arriva ’sta crêpe?!','Ја ћу да плачем!':'Mi metto a piangere!',
+  'Жичара ме чека!':'Lo skilift mi aspetta!','Брже, бре!':'Più veloce, dai!','Ово је спорије од жичаре!':'È più lento dello skilift!','Ај, ај, ај!':'Ahi, ahi, ahi!',
+  'Кочим, кочим!':'Freno, freno!','Не могу да стојим у месту!':'Non riesco a stare fermo!','Ово ћу записати.':'Me lo segno.',
+  'Где је то, колега?':'Allora, arriva, collega?','Морам у патролу!':'Devo andare di pattuglia!','Тииии!':'Priiiit!','Неко се дави, а ја чекам!':'C’è qualcuno che affoga e io aspetto!',
+  'Хитно!':'Urgente!','Хо… хо… кад?!':'Oh… oh… quando?!','Деда Мраз нема цело вече!':'Deda Mraz non ha tutta la notte!','Јелени ми се смрзавају!':'Le mie renne si congelano!',
+  'Почињем да се топим…':'Comincio a sciogliermi…','Шаргарепа ми се смрзла!':'Mi si è congelato il naso di carota!','Брже, бре, у Снешка!':'Più veloce, il pupazzo di neve aspetta!',
+  'Хоћу у 2027. сит!':'Voglio entrare nel 2027 a pancia piena!','Туу… туу…':'Tuut… tuut…','Још мало па Нова!':'Manca poco al nuovo anno!',
+  'Батерија ми је на три посто!':'Ho la batteria al tre per cento!','Само још један селфи…':'Solo un ultimo selfie…','Лајкујте ово!':'Mettete like!',
+  'Не осећам прсте!':'Non mi sento più le dita!','Брррр…':'Brrrr…','Цвокоћем!':'Batto i denti!','Рогови ми се леде!':'Mi si gelano le corna!',
+  'Мууу… то јест, брже!':'Muuu… cioè, più veloce!','Поноћ се ближи!':'Si avvicina la mezzanotte!','Прскалица ми се гаси!':'La mia stellina si sta spegnendo!','Хоћу кестене!':'Voglio le castagne!',
+  'Е, свака част, комшо!':'Complimenti, vicino!','Ко код моје баке!':'Come da mia nonna!','Ово иде у записник.':'Questo finisce a verbale.',
+  'Мљац! Идем у воду!':'Gnam! Vado a fare il bagno!','Јееее!':'Sììì!','Право на жичару!':'Dritto allo skilift!','Хвала, летим!':'Grazie, volo!',
+  'Хвала, колега.':'Grazie, collega.','Хвала, лепотице!':'Grazie, bella!','Ааах, топлије!':'Aaah, che calduccio!','ТУУУУУ!':'TUUUUUT!',
+  'Сликам кувано вино!':'Faccio una foto al vin brulé!','Ох, топло!':'Oh, che caldo!','Хо-хо-хо!':'Oh-oh-oh!',
+  'Идем ја код комшинице.':'Io vado dalla vicina.','Видећемо се на састанку станара!':'Ci vediamo alla riunione di condominio!',
+  'Идем у воду гладан.':'Vado a fare il bagno a stomaco vuoto.','Ааааа!':'Uèèèh!','Жичара не чека!':'Lo skilift non aspetta!','Ћао!':'Ciao!',
+  'Идем да спасавам гладан.':'Vado a salvare vite a stomaco vuoto.','Отопићу се од муке.':'Mi scioglierò dal dispiacere.','Дочекаћу је гладан!':'Festeggerò il Capodanno a stomaco vuoto!',
+  'Ово иде у сторије!':'Questo va nelle storie!','Идем кући по јакну!':'Torno a casa a prendere la giacca!','Хо… хо… ништа.':'Oh… oh… niente.',
+  'Идем на други штанд!':'Vado a un altro stand!','Хо-хо-хо! Једно кувано!':'Oh-oh-oh! Un vin brulé!','Хо-хо… хик! Још једно!':'Oh-oh… hic! Un altro!',
+  'Где су ми јелени?!':'Dove sono le mie renne?!','Вејкборд ме сасвим уморио!':'Il wakeboard mi ha distrutto!','Скочио сам преко рампе!':'Ho saltato la rampa!',
+  'Цин-цин! Једну палачинку!':'Drin drin! Una crêpe!','Обишао сам целу Аду!':'Ho fatto il giro di tutta Ada!','Цин-цин!':'Drin drin!',
+  'Нисам дошао бициклом да чекам!':'Non sono venuto in bici per aspettare!','Брже, имам још један круг!':'Presto, mi manca ancora un giro!','ТРОПСКА ВРУЋИНА':'CALDO TROPICALE','НИК СЛОТЕР':'NICK SLAUGHTER','Ник Слотер':'Nick Slaughter','Ник Слотер, приватни детектив':'Nick Slaughter, investigatore privato','ТРОПСКА':'CALDO','ВРУЋИНА':'TROPICALE','Хвала! Педалирам даље!':'Grazie! Riparto a pedalare!','Возим до Макиша!':'Pedalo fino a Makiš!',
+  'Колега! Шта ти радиш ту?':'Collega! Che ci fai qui?','У Бечу је ватромет бољи!':'A Vienna i fuochi d’artificio sono più belli!','Ово је хладно!':'È freddo!',
+  'Дим ми улази у веш!':'Il fumo mi entra nel bucato!','Опет ми смрди веш на паприку!':'Il bucato puzza di nuovo di peperoni!','Затворите тај бубањ!':'Chiudete quel cestello!',
+  'Један!':'Uno!','Два!':'Due!','Три!':'Tre!','Четири!':'Quattro!','Пет!':'Cinque!','Шест!':'Sei!','Седам!':'Sette!','Осам!':'Otto!','Девет!':'Nove!','Десет!':'Dieci!',
+  'Брррр!':'Brrrr!','Ко ми је дао да глумим витеза…':'Ma chi me l’ha fatto fare di fare il cavaliere…','Ко је звао снег?!':'Chi ha ordinato la neve?!',
+  '♪ Дијаманта, ла-ла-ла! ♪':'♪ Dijamanta, la-la-la! ♪','♪ Ова ноћ је наша! ♪':'♪ Questa notte è nostra! ♪','Ајмо коло!':'Tutti a ballare il kolo!',
+  'Изволи моју јакну, лепотице.':'Tieni la mia giacca, bella.','Ау, витез!':'Oh, un vero cavaliere!','Брр… шта ми је ово требало.':'Brr… proprio quello che mi ci voleva.',
+  'Еј!':'Ehi!','Ко то баца?!':'Chi è che tira?!','Ау!':'Ahi!','Сад ћеш да видиш!':'Adesso vedi!','Хахаха!':'Ahahah!',
+  'Десет! Девет! Осам!…':'Dieci! Nove! Otto!…','Није још поноћ, бре!':'Non è ancora mezzanotte!','Деда Мразе, где ми је поклон?':'Deda Mraz, dov’è il mio regalo?',
+  'Хо-хо… стиже из Беча, хик!':'Oh-oh… arriva da Vienna, hic!','ТУУУУУУ!':'TUUUUUUT!','Ау, уво!':'Ahi, l’orecchio!',
+  'Сви кажите: сааарма!':'Dite tutti: saaarma!','Сааарма!':'Saaarma!','Пст! Брада је лажна!':'Psst! La barba è finta!',
+  // екрани
+  'Прегорело':'Pregorelo','Прегорело — хаос у српској кухињи':'Pregorelo — caos in una cucina serba','Кухиња — поље за игру':'Cucina — area di gioco',
+  'Мени игре':'Menu di gioco','Језик':'Lingua','Ради':'Lavora','Трк':'Scatto','Узми':'Prendi',
+  'Српска кухиња, гладни гости и до четири кувара.':'Una cucina serba, clienti affamati e fino a quattro cuochi.','Начин игре':'Modalità di gioco','Сам':'Da solo','Заједно':'In locale','Онлајн са друштвом':'Online con gli amici',
+  'Твој кувар':'Il tuo cuoco','Изабери кувара':'Scegli il tuo cuoco','заузет':'occupato','Играј':'Gioca','Закључано. Освоји бар једну звездицу на претходном нивоу.':'Bloccato. Ottieni almeno una stella nel livello precedente.',
+  'или стрелице: кретање':'o frecce: movimento','Размак':'Spazio','узми или спусти':'prendi o posa','сецкај или пери':'taglia o lava','трк':'scatto','мени игре':'menu di gioco',
+  'На телефону: превуци палцем по левој страни екрана за кретање, дугмад су десно. Најбоље игра у положеном положају.':'Sul telefono: trascina il pollice sulla parte sinistra dello schermo per muoverti; i pulsanti sono a destra. Meglio in orizzontale.',
+  '🎮 Најбоље се игра на уређају са тастатуром или уз гејмпад.':'🎮 Si gioca meglio su un dispositivo con tastiera o con un gamepad.',
+  'узми':'prendi','ради':'lavora','мени':'menu',
+  'рецепти на екрану, где их има':'ricette a schermo, dove disponibili','лева палица или крстић: кретање':'levetta sinistra o croce direzionale: movimento','или':'o',
+  'У менијима: крстић или палица бира дугме, A потврђује, B враћа назад, десна палица помера страну.':'Nei menu: la croce direzionale o la levetta sceglie un pulsante, A conferma, B torna indietro, la levetta destra scorre la pagina.',
+  'Гејмпад је повезан: крстић бира, A потврђује, B враћа назад.':'Gamepad collegato: la croce direzionale sceglie, A conferma, B torna indietro.',
+  'Може и гејмпад: повежи га и притисни било које дугме.':'Hai un gamepad? Collegalo e premi un pulsante qualsiasi.',
+  'Заједно, за једним рачунаром':'In locale, su un solo computer',
+  'Притисни „узми“ на свом уређају да уђеш у кухињу: A на гејмпаду, Размак на левој страни тастатуре или тачку на десној. До четири кувара.':'Premi «prendi» sul tuo dispositivo per entrare in cucina: A sul gamepad, Spazio sulla parte sinistra della tastiera o il tasto punto sulla destra. Fino a quattro cuochi.',
+  'На свом уређају лево и десно бираш кувара, а B на гејмпаду или × на картици излази из кухиње.':'Sul tuo dispositivo, sinistra e destra scelgono il cuoco; B sul gamepad o × sulla scheda esce dalla cucina.',
+  'Лево:':'Sinistra:','Десно:':'Destra:','Тастатура':'Tastiera','Гејмпад':'Gamepad','стрелице':'frecce','Сам на тастатури? Ради цела тастатура.':'Da solo alla tastiera? Funziona tutta la tastiera.',
+  'Тастатура: WASD':'Tastiera: WASD','Тастатура: стрелице':'Tastiera: frecce','Изађи из кухиње':'Esci dalla cucina','Претходни кувар':'Cuoco precedente','Следећи кувар':'Cuoco successivo',
+  'Има више гејмпадова: изабери „Заједно“ и сваки добија свог кувара.':'Ci sono più gamepad: scegli «In locale» e ognuno avrà il suo cuoco.','притисни A':'premi A','За два кувара изабери „Заједно“ у менију.':'Per due cuochi, scegli «In locale» nel menu.','Овај гејмпад није у кухињи: уђи из менија.':'Questo gamepad non è in cucina: entra dal menu.',
+  'Звук':'Suoni','Музика':'Musica','Српска кухиња ↗':'Cucina serba ↗',
+  '♥ Подржи игру':'♥ Sostieni il gioco','♥ Хвала на подршци':'♥ Grazie per il sostegno','Подржи игру':'Sostieni il gioco',
+  'Прегорело је бесплатно. Ако ти се допада, части нас кафом: откључаћеш све нивое и све куваре.':'Pregorelo è gratis. Se ti piace, offrici un caffè: sbloccherai tutti i livelli e tutti i cuochi.',
+  'Картицом или PayPal-ом':'Con carta o PayPal','Преко Ko-fi, од':'Tramite Ko-fi, da','Отвори Ko-fi':'Apri Ko-fi',
+  'Из банке у Србији':'Da una banca in Serbia','Скенирај QR код апликацијом своје банке или копирај рачун.':'Scansiona il codice QR con l’app della tua banca o copia il numero di conto.',
+  'Прималац':'Beneficiario','Рачун':'Conto','Износ':'Importo','Сврха':'Causale','Копирај рачун':'Copia il numero di conto',
+  'Рачун је копиран.':'Numero di conto copiato.','Означи број рачуна и копирај га ручно.':'Seleziona il numero di conto e copialo a mano.',
+  'Уплату не проверавамо, верујемо ти на реч.':'Non controlliamo i pagamenti: ci fidiamo di te.',
+  'Уплаћено, откључај све':'Pagato, sblocca tutto','Све је откључано. Хвала!':'È tutto sbloccato. Grazie!',
+  'Игра са друштвом':'Gioca con gli amici','Мрежни део игре није успео да се учита у овом прегледачу.':'Il gioco online non è riuscito a caricarsi in questo browser.',
+  'Учитавам мрежни део…':'Caricamento del gioco online…','Нова игра':'Nuova partita','Направи игру':'Crea una partita','Имаш позивницу?':'Hai un invito?',
+  'Направи игру и пошаљи позивницу друштву у поруци (Вајбер, WhatsApp, Телеграм…). Ти си домаћин: бираш ниво и паузираш. До четири кувара.':'Crea una partita e manda l’invito ai tuoi amici per messaggio (Viber, WhatsApp, Telegram…). L’host sei tu: scegli il livello e puoi mettere in pausa. Fino a quattro cuochi.',
+  'Отвори линк који ти је послао домаћин или овде упиши његов код од шест цифара.':'Apri il link che ti ha mandato l’host, oppure inserisci qui il suo codice a sei cifre.',
+  'Код или линк':'Codice o link','Позивница':'Link d’invito','Уђи':'Entra',
+  'Ради само у објављеној верзији на claude.ai. Подели страницу с друштвом, свако је отвори пријављен, па један направи игру.':'Funziona solo nella versione pubblicata su claude.ai. Condividi la pagina con i tuoi amici, ognuno la apre dopo aver fatto l’accesso, e uno di voi crea una partita.',
+  'Повезивање са собом за игру…':'Connessione alla stanza di gioco…','Неко':'Qualcuno','Придружи се':'Unisciti',
+  'Ти си домаћин: бираш ниво и паузираш. Добићеш линк и код за друштво. До четири кувара.':'L’host sei tu: scegli il livello e puoi mettere in pausa. Riceverai un link e un codice per i tuoi amici. Fino a quattro cuochi.',
+  'Тренутно нема отворених игара.':'Al momento non ci sono partite aperte.','Код игре':'Codice partita','Уђи са кодом':'Entra con un codice',
+  'Нови кувар откључан!':'Nuovo cuoco sbloccato!','Сад куваш ти!':'Ora cucini tu!','Изабери':'Scegli',
+  'Чекаоница':'Sala d’attesa','Слободно':'Libero','место за кувара':'un posto per un cuoco','преко TURN сервера':'tramite server TURN','директна веза':'connessione diretta',
+  'повезивање…':'connessione…','преко сервера':'tramite server',
+  'Пошаљи позивницу друштву у поруци или им реци код. Ко отвори линк, улази у твоју кухињу.':'Manda l’invito ai tuoi amici per messaggio, o di’ loro il codice. Chi apre il link entra nella tua cucina.',
+  'Пошаљи друштву линк или код. Игра им се појављује и у менију „Онлајн са друштвом“.':'Manda il link o il codice ai tuoi amici. La partita compare anche nel loro menu «Online con gli amici».',
+  'У игри си. Домаћин бира ниво.':'Sei nella partita. L’host sceglie il livello.','Копирај':'Copia','Пошаљи':'Invia',
+  'Резервни сервер за везу (TURN) је спреман.':'Il server di connessione di riserva (TURN) è pronto.',
+  'Резервни сервер за везу (TURN) није доступан. Игра ради, али неки играчи можда неће моћи да се повежу.':'Il server di connessione di riserva (TURN) non è disponibile. Il gioco funziona, ma alcuni giocatori potrebbero non riuscire a connettersi.',
+  'Твоје име':'Il tuo nome','Домаћин бира ниво…':'L’host sta scegliendo il livello…','Затвори игру':'Chiudi la partita','Напусти игру':'Esci dalla partita',
+  'Назад':'Indietro','Чека се да домаћин крене…':'In attesa che l’host avvii la partita…',
+  'Пауза':'Pausa','Гости чекају, али време стоји.':'I clienti aspettano, ma il tempo si è fermato.','Настави':'Riprendi','Почни испочетка':'Ricomincia',
+  'Назад у чекаоницу':'Torna alla sala d’attesa','Главни мени':'Menu principale','Домаћин је паузирао игру.':'L’host ha messo in pausa la partita.',
+  'Газда није задовољан. Пробај поново!':'Il padrone non è contento. Riprova!','Није лоше, али може брже.':'Non male, ma puoi andare più veloce.',
+  'Браво! Гости су сити и задовољни.':'Bravo! I clienti sono sazi e contenti.','Свака част! Права кафанска легенда.':'Tanto di cappello! Una vera leggenda della kafana.',
+  'Смена је готова!':'Fine del turno!','Сви гости су добили сладолед. Спреман си за праву кухињу!':'Tutti i clienti hanno avuto il loro gelato. Sei pronto per una cucina vera!','Испоручено јела':'Piatti serviti','Гостију отишло гладно':'Clienti andati via a stomaco vuoto','Бакшиш':'Mance','Нови рекорд!':'Nuovo record!',
+  'Кувар за следећу смену':'Cuoco per il prossimo turno','Мени':'Menu','Поново':'Rigioca','Следећи ниво':'Livello successivo','Домаћин бира шта даље…':'L’host decide cosa fare…',
+  'Обавештење':'Avviso','У реду':'OK','Улазак у игру':'Ingresso nella partita','Тражим домаћина…':'Cerco l’host…',
+  'Тражим домаћина… Ово може да потраје неколико секунди.':'Cerco l’host… Potrebbe volerci qualche secondo.','Одустани':'Annulla',
+  'Само тренутак':'Un attimo','Ниво је у току или је кухиња пуна. Улазиш чим домаћин заврши ниво.':'C’è un livello in corso o la cucina è piena. Entrerai appena l’host finisce il livello.',
+  'Игра тече даље док си овде. Паузу може да укључи само домаћин.':'La partita va avanti mentre sei qui. Solo l’host può mettere in pausa.','Назад у кухињу':'Torna in cucina',
+  'Домаћин није пронађен. Провери да ли је игра још отворена. Ако јесте, пробај другу мрежу (на пример Wi‑Fi уместо мобилног интернета) — неке мреже не дозвољавају директну везу.':'Host non trovato. Controlla che la partita sia ancora aperta. Se lo è, prova un’altra rete (per esempio il Wi‑Fi invece dei dati mobili) — alcune reti bloccano le connessioni dirette.',
+  'Веза са домаћином је прекинута.':'Connessione con l’host interrotta.','Домаћин је напустио игру.':'L’host ha lasciato la partita.',
+  'Линк је копиран.':'Link copiato.','Означи линк и копирај га ручно.':'Seleziona il link e copialo a mano.',
+  'Код има шест цифара. Можеш да налепиш и цео линк.':'Il codice ha sei cifre. Puoi anche incollare il link intero.',
+  'Овај прегледач нема WebRTC (искључен је у подешавањима или га блокира додатак за приватност). Пробај Chrome, Edge или Firefox без таквих додатака.':'Questo browser non ha WebRTC (è disattivato nelle impostazioni o bloccato da un’estensione per la privacy). Prova Chrome, Edge o Firefox senza estensioni di questo tipo.',
+  'Нема везе са серверима за упознавање играча. Провери интернет и пробај поново.':'Impossibile raggiungere i server che mettono in contatto i giocatori. Controlla la connessione a Internet e riprova.',
+  'Домаћин је пронађен, али веза није успела ни преко TURN сервера. Пробајте другу мрежу (на пример хотспот са телефона).':'L’host è stato trovato, ma la connessione non è riuscita nemmeno tramite il server TURN. Provate un’altra rete (per esempio l’hotspot di un telefono).',
+  'Домаћин је пронађен, али ваше мреже не дозвољавају директну везу. Пробајте другу мрежу (на пример хотспот са телефона), или нека домаћин подеси TURN сервер.':'L’host è stato trovato, ma le vostre reti non permettono una connessione diretta. Provate un’altra rete (per esempio l’hotspot di un telefono), oppure chiedete all’host di configurare un server TURN.','Код има четири цифре.':'Il codice ha quattro cifre.',
+  'Дођи да кувамо заједно у „Прегорело“':'Vieni a cucinare con me in «Pregorelo»',
+  // касарна и „Змај и Шљива“: састојци, јела, нивои, кувари
+  'Пасуљ':'Fagioli','Вода':'Acqua','Корбаст пасуљ':'Zuppa di fagioli (Korbast pasulj)','Прасе':'Maialino','Јагњетина':'Agnello','Јагњетина испод сача':'Agnello sotto il sač (Jagnjetina ispod sača)',
+  'Сремски кулен':'Salame kulen della Sirmia','Пршута':'Prosciutto crudo (Pršuta)','Кикирики':'Arachidi','Љута папричица':'Peperoncino','Листићи злата':'Foglie d’oro',
+  'Прасе на ражњу':'Maialino allo spiedo (Prase na ražnju)','Сремски кулен с пршутом и кајмаком':'Kulen, prosciutto crudo e kajmak (Sremski kulen)',
+  'исеци':'affetta','на ражањ':'allo spiedo','под сач':'sotto il sač','у вок, протреси!':'nel wok, fai saltare!',
+  'ВОЈСКА':'ESERCITO','ЈЕЛОВНИК':'MENU','ПОН':'LUN','УТО':'MAR','СРЕ':'MER','ЧЕТ':'GIO','ПЕТ':'VEN','ВИКЕНД':'WEEKEND','ПАСУЉ':'FAGIOLI',
+  '*са кобасицом, ако стигне':'*con salsiccia, se arriva','ОФИЦИРСКИ КЛУБ':'CIRCOLO UFFICIALI','ЗМАЈ И ШЉИВА':'Drago & Prugna','САМО ЗА ОФИЦИРЕ':'RISERVATO AGLI UFFICIALI',
+  'Касарна „Војвода Пасуљић“':'Caserma «Duca Fagiolović»',
+  'Лево војници, десно официри. Војска сваки дан добија корбаст пасуљ, а штаб прасе на ражњу, јагњетину испод сача и сремски кулен.':'Soldati a sinistra, ufficiali a destra. La truppa mangia zuppa di fagioli tutti i giorni, mentre lo stato maggiore si gusta maialino allo spiedo, agnello sotto il sač e kulen della Sirmia.',
+  'Ново: два шалтера. Пасуљ носи на леви шалтер, а официрска јела на десни, златни. Ако официрско јело однесеш војницима, војник га узме, а ти не добијеш ни динара! Кад нестаје пасуља, сипај воду у казан (+2 порције). Прасе окрећи на ражњу (E). Склањај се строју с пута!':'Novità: due passe. I fagioli vanno al passe di sinistra, i piatti degli ufficiali a quello di destra, quello dorato. Se porti un piatto da ufficiale ai soldati, un soldato se lo prende — e tu non vedi un dinaro! Quando i fagioli stanno per finire, versa acqua nel pentolone (+2 porzioni). Gira il maialino sullo spiedo (E). Fai largo al plotone!',
+  '„Змај и Шљива“ на Београду на води':'«Drago & Prugna» al Belgrade Waterfront',
+  'Кинеско-српски фјужн за београдску елиту: пекиншка патка с кајмаком, сарма-димсам, ланџоу резанци бабе Милеве, шаран у шљивовом сосу, пилетина генерала Мишића и кнедле са шљивама.':'Fusion sino-serba per l’élite di Belgrado: anatra laccata al kajmak, dim sum di sarma, noodles di Lanzhou di nonna Mileva, carpa in salsa di prugne, pollo del generale Mišić e gnocchi di prugne.',
+  'Ново: ћуп, парњача, развлачење теста и фламбирање. Патку прво глазирај у ћупу са шљивама, па је пеци на ражњу и окрећи (E). Димсам и кнедлу сложи на дасци, савиј (E), па у парњачу — пази да има воде! Тесто за резанце развлачи на дасци (E) до 64 нити, али не претерај. Гулаш и шљивов сос кувај унапред у казану, по четири порције. Пилетину на крају фламбирај ракијом — ни пре, ни после! Листићи злата дуплирају цену. Мени се шири током вечери.':'Novità: la giara, la vaporiera, la tiratura dei noodles e la flambatura. Prima lacca l’anatra nella giara con le prugne, poi arrostiscila allo spiedo girandola (E). Componi dim sum e gnocchi sul tagliere, chiudili (E), poi dritti nella vaporiera — controlla che ci sia acqua! Tira la pasta dei noodles sul tagliere (E) fino a 64 fili, ma senza esagerare. Prepara gulasch e salsa di prugne in anticipo nel pentolone, quattro porzioni alla volta. Flamba il pollo con la rakija proprio alla fine — né prima, né dopo! Le foglie d’oro raddoppiano il prezzo. Il menu si allarga nel corso della serata.',
+  'Патка':'Anatra','Пилетина':'Pollo','Шаран':'Carpa','Шљиве':'Prugne','Презле са сусамом':'Pangrattato al sesamo','Мешено тесто':'Impasto','Сарма-димсам':'Dim sum di sarma','Кнедла':'Gnocco di prugne','Резанци':'Noodles','Кувани резанци':'Noodles cotti',
+  'Гулаш':'Gulasch','Шљивов сос':'Salsa di prugne','Пилетина генерала Мишића':'Pollo del generale Mišić','Пржени шаран':'Carpa fritta','Смеса':'Composto',
+  'Пекиншка патка с кајмаком':'Anatra laccata al kajmak','Ланџоу резанци бабе Милеве':'Noodles di Lanzhou di nonna Mileva','Шаран у шљивовом сосу':'Carpa in salsa di prugne','Кнедле са шљивама':'Gnocchi di prugne (knedle)',
+  'фламбирај!':'flamba!','на даску, савиј (E)':'sul tagliere, chiudi (E)','у парњачу':'nella vaporiera','кап':'una goccia','у ћуп':'nella giara','на ражањ, окрећи':'allo spiedo, gira','палачинка':'crespella',
+  'развлачи (E) до 64 нити':'tira (E) fino a 64 fili','Гулаш, 4 порције:':'Gulasch, 4 porzioni:','Шљивов сос, 4 порције:':'Salsa di prugne, 4 porzioni:','на даску, обликуј (E)':'sul tagliere, modella (E)',
+  'Изгореле обрве! Прерано!':'Sopracciglia bruciacchiate! Troppo presto!','Фламбирано!':'Flambato!','Ракија иде на крају — фламбирај!':'La rakija va alla fine — flamba!','Касно за фламбирање!':'Troppo tardi per flambare!',
+  'Пукло тесто! Испочетка…':'La pasta si è strappata! Si ricomincia…','Тесто је већ развучено!':'La pasta è già tirata!','Прво заврши смесу на дасци!':'Prima finisci il composto sul tagliere!',
+  'Прво глазирај патку у ћупу!':'Prima lacca l’anatra nella giara!','Прво испеци патку на ражњу!':'Prima arrostisci l’anatra allo spiedo!','Прво исеци патку на дасци!':'Prima affetta l’anatra sul tagliere!',
+  'Прво савиј димсам на дасци!':'Prima chiudi il dim sum sul tagliere!','Прво обликуј кнедлу на дасци!':'Prima modella lo gnocco sul tagliere!','Прво у парњачу!':'Prima nella vaporiera!',
+  'Прво развуци тесто на дасци (E)!':'Prima tira la pasta sul tagliere (E)!','Прво зарежи шарана на дасци!':'Prima incidi la carpa sul tagliere!','Прво исеци пилетину на дасци!':'Prima taglia il pollo sul tagliere!',
+  'То иде у ћуп!':'Quello va nella giara!','То се слаже на дасци!':'Quello si compone sul tagliere!','Вода иде у парњачу!':'L’acqua va nella vaporiera!','Ћуп је пун!':'La giara è piena!',
+  'Патку узми рукама!':'L’anatra prendila con le mani!','Још се глазира…':'Si sta ancora laccando…','Парњача је пуна воде.':'La vaporiera è piena d’acqua.','Вода сипана!':'Acqua versata!',
+  'То не иде у парњачу!':'Quello non va nella vaporiera!','То је већ испарено!':'È già cotto al vapore!','Парњача је пуна!':'La vaporiera è piena!','Нема воде! Сипај воду.':'Niente acqua! Versa dell’acqua.',
+  'Још се пари…':'Ancora al vapore…','Стави димсам или кнедлу.':'Metti un dim sum o uno gnocco.','Готово је — исеци је на дасци!':'È pronta — affettala sul tagliere!','Стави патку на ражањ.':'Metti l’anatra sullo spiedo.',
+  'Сад ракија — фламбирај!':'Ora la rakija — flamba!','Нестало воде у парњачи!':'La vaporiera è rimasta a secco!','Распарило се!':'Si è sfatto, troppo vapore!','Загорело! Парњача без воде!':'Bruciato! La vaporiera era a secco!',
+  'Укиселило се!':'È andato a male!','Загорело! Фламбирај на време!':'Bruciato! Flamba in tempo!','На ражањ иде само патка!':'Sullo spiedo va solo l’anatra!',
+  'Регрут':'Recluta','Регрут на одслужењу':'Recluta di leva','Генерал':'Generale','Тек брат':'Tech bro','Тек брат из стартапа':'Tech bro da start-up','Тајкун':'Magnate','Тајкун са обезбеђењем':'Magnate con la scorta','Тајкун је у кухињи — са обезбеђењем!':'Il magnate è in cucina — con la scorta!',
+  'Не прилази шефу!':'Non avvicinarti al capo!','Без фотографисања!':'Niente foto!','Шеф не даје аутограме.':'Il capo non firma autografi.','Склони се, брате!':'Levati, fratello!','Полако, полако…':'Piano, piano…','Ко те звао?':'E tu chi ti ha invitato?','Заузет — неко други кува као он.':'Occupato — qualcun altro sta già usando questo cuoco.',
+  'Рецепти':'Ricette','H — сала':'H — sala','савиј (E)':'chiudi (E)','исеци (E)':'affetta (E)','обликуј (E)':'modella (E)','даска':'tagliere','пари':'vapore','глазирај':'lacca','окрећи (E)':'gira (E)','64 нити (E)':'64 fili (E)','кувај':'cuoci','мешај (E)':'mescola (E)','протреси (E)':'fai saltare (E)','★★★ у касарни':'★★★ in caserma','★★★ у „Змају“':'★★★ al «Drago»',
+  // касарна и фјужн: поруке у кухињи
+  'Вода иде у пасуљ!':'L’acqua va nei fagioli!','Довољно је злата!':'Basta oro!','Прво испеци прасе на ражњу!':'Prima arrostisci il maialino allo spiedo!','То иде под сач!':'Quello va sotto il sač!','То иде у вок!':'Quello va nel wok!',
+  'Прво скувај пасуљ!':'Prima cuoci i fagioli!','Доста воде, ово је већ чај!':'Basta acqua, ormai è una tisana!','Развучено! +2 порције':'Allungato! +2 porzioni','Сач је пун!':'Il sač è pieno!','Вок је пун!':'Il wok è pieno!',
+  'Шта је ово, војска?!':'Ma che siamo, in caserma?!','Нема шта да се окреће.':'Niente da girare.','Стави прасе на ражањ.':'Metti un maialino sullo spiedo.','Готово је — узми тањир!':'È pronto — prendi un piatto!','Готово је — узми порцију!':'È pronto — prendi una gavetta!',
+  'Још није време за протресање.':'Non è ancora il momento di far saltare.','Нема шта да се протресе.':'Niente da far saltare.','На ражањ иде само прасе!':'Sullo spiedo va solo il maialino!','Ражањ је заузет!':'Lo spiedo è occupato!',
+  'Загорело! Протреси вок на време!':'Bruciato! Fai saltare il wok in tempo!','Загорело! Окрећи ражањ!':'Bruciato! Gira lo spiedo!','Војник је мазнуо официрско јело!':'Un soldato ha fregato il piatto degli ufficiali!',
+  'Генерал стиже у смотру! Почистите загорело!':'Arriva il generale per l’ispezione! Pulite tutto il bruciato!','Смотра пала: у кухињи има загорелог!':'Ispezione fallita: c’è del bruciato in cucina!',
+  'Стартап је банкротирао. Акције не вреде ништа.':'La startup è fallita. Le azioni non valgono più niente.','Инспектор: „Осредње.“':'Ispettore: «Mediocre.»','Тајкун је задовољан — плаћа дупло!':'Il magnate è soddisfatto — paga il doppio!',
+  '„Знаш ли ко сам ја?“ Не плаћа!':'«Lo sai chi sono io?» Non paga!','Плаћа у акцијама стартапа!':'Paga in azioni della startup!','Листићи злата ×2!':'Foglia d’oro ×2!','Реклама на Инстаграму +200':'Promo su Instagram +200',
+  'ŠljivaCoin стабилан.':'ŠljivaCoin è stabile.','ŠljivaCoin ×0,5 — пад тржишта!':'ŠljivaCoin ×0,5 — crollo del mercato!','ŠljivaCoin ×0,2 — тржиште се коригује…':'ŠljivaCoin ×0,2 — il mercato si corregge…',
+  'Лево, десно, лево…':'Sinistra, destra, sinistra…','Не квари строј!':'Non rompere le righe!','Змај пролази!':'Passa il drago!','Опа! Склони се!':'Opa! Spostati!','Не видим ништа, ти водиш!':'Non vedo niente, guidi tu!','Чекај, газиш ми опанак!':'Aspetta, mi pesti l’opanak!',
+  'Ни кап да не проспем!':'Neanche una goccia per terra!','Кунг-фу шљивовица!':'Šljivovica kung-fu!','Полако, ово је стара шљива!':'Piano, questa è prugna invecchiata!',
+  'Строј пролази кроз кухињу!':'Un plotone attraversa la cucina!','Змај плеше кроз кухињу!':'Un drago balla per la cucina!','Мајстор чаја сипа шљивовицу!':'Il maestro del tè versa la šljivovica!',
+  'Ко рано рани, две среће граби.':'Il mattino ha l’oro in bocca.','Полако, али сигурно.':'Chi va piano va sano e va lontano.','Ко ће ти, брате, ако нећеш ти.':'Chi fa da sé fa per tre, fratello.','Није време, бре.':'Non è il momento, bello.',
+  'Ко другоме јаму копа, сам у њу пада.':'Chi la fa l’aspetti.','Боље врабац у руци него голуб на грани.':'Meglio un uovo oggi che una gallina domani.',
+  'Где има дима, има и ћевапа.':'Non c’è fumo senza ćevapi.','Сит гладном не верује.':'La pancia piena non crede a quella vuota.',
+  'Похвале':'Encomi','Разноврсност оброка':'Varietà dei pasti','Мишлен звездица':'Stella Michelin','Саопштење Министарства: Војници добијају разноврсне оброке.':'Comunicato del Ministero: i soldati ricevono pasti variati.',
+  // касарна и фјужн: гости
+  'Опет пасуљ?!':'Ancora fagioli?!','Нема. То је све што имамо.':'No. È tutto quello che abbiamo.','Друже водниче, има ли нешто друго?':'Compagno sergente, c’è qualcos’altro?','Има: пасуљ.':'Sì: fagioli.',
+  'Може ли бар мало кобасице?':'Si può avere almeno un po’ di salsiccia?','Кобасице стижу у четвртак.':'Le salsicce arrivano giovedì.','Ово је трећи пут ове недеље… а данас је уторак.':'È la terza volta questa settimana… e oggi è martedì.',
+  'Војска не броји дане.':'L’esercito non conta i giorni.','Мајка ми шаље пакет, само да издржим.':'Mia madre mi manda un pacco, devo solo resistere.','Пакет иде на преглед!':'Il pacco va all’ispezione!',
+  'Ко је појео моје прасе?! Издаја!':'Chi si è mangiato il mio maialino?! Tradimento!','Где ми је јагњетина?! Издаја!':'Dov’è il mio agnello?! Tradimento!','Ко је мазнуо мој кулен?!':'Chi mi ha fregato il kulen?!','Издаја!':'Tradimento!',
+  'Живела Србија!':'Viva la Serbia!','Хвала, кувару, памтићу те док сам жив!':'Grazie, cuoco, ti ricorderò finché campo!','Ово је најлепши дан у мојој служби!':'È il giorno più bello di tutto il mio servizio!','Ово ћу ја… да проверим.':'Questo lo… ispeziono io.',
+  'Смотра! Мирно!':'Ispezione! Attenti!','Свака част, војско!':'Complimenti, truppa!','Шта је ово загорело?! Казна!':'Cos’è questa roba bruciata?! Punizione!','Шта једу официри?':'Cosa mangiano gli ufficiali?','Пасуљ, наравно.':'Fagioli, ovviamente.',
+  'Корбаст, баш како треба.':'Bello brodoso, proprio come si deve.','Ово је чај од пасуља.':'Questo è tè di fagioli.','Видим дно порције.':'Vedo il fondo della gavetta.',
+  'Само мало, за морал трупе.':'Solo un assaggio, per il morale della truppa.','Кулен мора бити из Срема, ја сам у штабу.':'Il kulen deve venire dallo Srem, io sono dello stato maggiore.','Ово иде на рачун министарства.':'Questo lo paga il ministero.','За официре само најбоље!':'Per gli ufficiali solo il meglio!',
+  'Стомак ми крчи по правилу службе.':'Lo stomaco mi brontola da regolamento.','Друже водниче, гладан сам!':'Compagno sergente, ho fame!','Ко чека, тај дочека… пасуљ.':'Tutto arriva a chi sa aspettare… i fagioli.',
+  'Где ми је вечера, војско?!':'Dov’è la mia cena, soldati?!','Ово ће ићи у извештај!':'Questo finisce nel rapporto!','Кувару, у бункер ћеш!':'Cuoco, finisci in cella!',
+  'Одлично. Похвала кувару!':'Ottimo. Un encomio al cuoco!','То је храна за хероје!':'Questo è cibo da eroi!','Дезертирам!':'Diserto!','Идем у кантину!':'Vado allo spaccio!','Ово је издаја!':'Questo è tradimento!',
+  'Може ли кајмак од овсеног млека?':'Avete il kajmak al latte d’avena?','Ми смо као Uber, али за ћевапе.':'Siamo tipo Uber, ma per i ćevapi.','Disrupt-ујемо сарму!':'Facciamo disruption sulla sarma!','Брате, ово не скалира.':'Fratello, questa roba non scala.',
+  'Имам стендап за пет минута.':'Ho lo stand-up tra cinque minuti.','Где је MVP моје вечере?':'Dov’è l’MVP della mia cena?','Ово иде на LinkedIn!':'Questo va su LinkedIn!','Пивотирам у другу кафану.':'Faccio pivot su un’altra kafana.',
+  'Да, да, скалирамо…':'Sì, sì, scaliamo…','Пошаљи ми то на Слек.':'Mandamelo su Slack.','Ово је disruption!':'Questa è disruption!',
+  'Купујте ŠljivaCoin!':'Comprate ŠljivaCoin!','Плаћам у крипту, брате.':'Pago in crypto, fratello.','HODL, брате, HODL!':'HODL, fratello, HODL!','Курс ми пада док чекам!':'Il mio portafoglio crolla mentre aspetto!','Ово је спорије од блокчејна!':'È più lento di una blockchain!',
+  'Изгубио сам милион док чекам.':'Ho perso un milione mentre aspettavo.','Продајем све!':'Vendo tutto!','ŠljivaCoin расте!':'ŠljivaCoin vola!','Ко није купио, пропустио је!':'Chi non ha comprato ha perso il treno!','Ово је тек почетак, брате.':'Questo è solo l’inizio, fratello.',
+  'Можемо ли да платимо у акцијама?':'Possiamo pagare in azioni?','Тражимо инвеститоре за ћевапе.':'Cerchiamo investitori per i ćevapi.','Ово је стартап ручак.':'Questo è un pranzo da startup.','Мој runway се скраћује…':'La mia runway si accorcia…',
+  'Инвеститори чекају!':'Gli investitori aspettano!','Ово је горе од seed рунде.':'È peggio di un round seed.','Видимо се на берзи!':'Ci vediamo all’IPO!','Пропадамо, али елегантно.':'Falliamo, ma con eleganza.',
+  'Ми смо Uber за сарму.':'Siamo l’Uber della sarma.','Тражимо seed рунду.':'Stiamo chiudendo un round seed.','Пивотирамо у ајвар.':'Facciamo pivot sull’ajvar.',
+  'Чекај, светло није добро.':'Aspetta, la luce non è buona.','Ово ће бити вирално!':'Questo diventa virale!','Ћао, пратиоци!':'Ciao, follower!','Пратиоци чекају!':'I miei follower aspettano!','Сторија се не прави сама!':'Le storie non si fanno da sole!',
+  'Батерија ми је на пет посто!':'Ho la batteria al cinque per cento!','Сликам пре него што пробам!':'Prima la foto, poi assaggio!','Ово иде у сторије. Лоше.':'Questo va nelle storie. In negativo.','Лајкујте и пратите!':'Mettete like e seguitemi!',
+  'Ово је #fusion #luxury!':'Questo è #fusion #luxury!','Само још један кадар…':'Solo un ultimo scatto…',
+  'Знаш ли ко сам ја?':'Lo sai chi sono io?','Донеси ми све са менија.':'Portami tutto quello che c’è nel menù.','Ја сам власник пола Београда.':'Mezza Belgrado è mia.','Знаш ли ко сам ја?!':'Lo sai chi sono io?!',
+  'Купићу ову кафану!':'Mi compro questa kafana!','Зовем свог адвоката!':'Chiamo il mio avvocato!','Нека, нека. Ставите на мој рачун.':'Lasci, lasci. Lo metta sul mio conto.','Сутра купујем ову зграду и затварам вас!':'Domani compro questo palazzo e vi faccio chiudere!',
+  'Овај ресторан је мој. Или ће бити.':'Questo ristorante è mio. O lo sarà.','Моја јахта је већа од ове кухиње.':'Il mio yacht è più grande di questa cucina.',
+  'Хм… занимљиво.':'Mmh… interessante.','Записујем…':'Prendo appunti…','Хм.':'Mmh.','Минус један бод.':'Meno un punto.','Хм. Видећемо.':'Mmh. Vedremo.','Ово иде у рецензију.':'Questo finisce nella recensione.','Занимљиво…':'Interessante…',
+  'Сто поред прозора, молим.':'Un tavolo vicino alla finestra, per favore.','Шампањац, па видећемо.':'Champagne, e poi vedremo.','Има ли нешто скупље?':'Non avete niente di più caro?','Ово је неприхватљиво!':'È inaccettabile!',
+  'Мој шофер чека!':'Il mio autista aspetta!','Плаћам, а чекам?!':'Pago e devo pure aspettare?!','Шармантно!':'Delizioso!','Одлазим у Монако.':'Me ne vado a Monaco.','Шампањац је топао!':'Lo champagne è tiepido!',
+  // сладолед у Кнез Михаиловој
+  'Сладолед у Кнез Михаиловој':'Gelati in via Knez Mihailova',
+  'НОВО':'NUOVO','ЗАКЉУЧАНО':'BLOCCATO','Обука':'Tutorial','✓ Обука':'✓ Tutorial','ресет':'reset','Брише сав напредак (за развој)':'Cancella tutti i progressi (per lo sviluppo)',
+  'Обрисати сав напредак: звездице, рекорде, откључане нивое и куваре?':'Cancellare tutti i progressi: stelle, record, livelli e cuochi sbloccati?','Пронађене тајне':'Segreti trovati',
+  'Насликао бих вас… за један сладолед!':'Vi farei un ritratto… in cambio di un gelato!','За корнет бих свирала и брже!':'Per un cono suonerei ancora più veloce!','Сладолед за шал? Може трампа!':'Un gelato per una sciarpa? Affare fatto!',
+  'Седите, молим вас — сликам вас!':'Si sieda, prego — le faccio il ritratto!','Хвала! Ова је за вас — ајде, коло!':'Grazie! Questa è per voi — forza, un kolo!','Шал у бојама заставе — на поклон!':'Una sciarpa con i colori della bandiera — in regalo!',
+  'Портрет је ваш, на поклон!':'Il ritratto è suo, in regalo!','Хвала још једном!':'Grazie ancora!','Носите га с поносом!':'La porti con orgoglio!',
+  'сликар слика твој портрет!':'il pittore ti fa il ritratto!','виолинисткиња свира коло!':'la violinista suona un kolo!','добио си шал на поклон!':'hai ricevuto una sciarpa in regalo!',
+  'Готово! Портрет је ваш.':'Fatto! Il ritratto è suo.','Браво!':'Bravo!','Јао, што лепо!':'Oh, che bello!','Ајде, још једну!':'Dai, un’altra!',
+  'Сунчано поподне у Кнез Михаиловој. Шетачи, туристи, сликар и виолиниста — и свима се једе сладолед.':'Un pomeriggio di sole in via Knez Mihailova, la grande via pedonale di Belgrado. Passanti, turisti, un pittore e una violinista — e tutti hanno voglia di un gelato.',
+  'Обука. Узми корнет, па за сваку куглу додирни посуду са сладоледом. Гост тражи једну, две или три кугле; готов корнет стави на пулт са звонцетом. Погрешан корнет баци у канту. Нема сата ни журбе: обука траје док седам гостију не добије сладолед. Тезгу можеш да обиђеш са свих страна, а кроз гужву се пробијаш.':'Tutorial. Prendi un cono, poi tocca una vaschetta di gelato una volta per ogni pallina. I clienti chiedono una, due o tre palline; metti il cono pronto sul bancone con il campanello. Butta un cono sbagliato nel cestino. Niente orologio, niente fretta: il tutorial dura finché sette clienti non hanno avuto il loro gelato. Puoi girare intorno al banco da tutti i lati e farti strada tra la folla.',
+  'Ванила':'Vaniglia','Чоколада':'Cioccolato','Јагода':'Fragola','Пистаћи':'Pistacchio','Корнет и кугле':'Cono e palline','Корнет':'Cono',
+  'Треба ти корнет!':'Ti serve un cono!','Сладолед иде у корнет!':'Il gelato va nel cono!','Корнет је празан!':'Il cono è vuoto!','Највише три кугле!':'Massimo tre palline!','Прво узми корнет!':'Prima prendi un cono!',
+  'РЕСТОРАН':'RISTORANTE','КЊИЖАРА':'LIBRERIA','ГАЛЕРИЈА':'GALLERIA','СУВЕНИРИ':'SOUVENIR','АПОТЕКА':'FARMACIA','КАФЕ':'CAFFÈ','ОБУЋА':'CALZATURE','ЦВЕЋАРА':'FIORAIO',
+  'ПОСЛАСТИЧАРНИЦА':'PASTICCERIA','БАНКА':'BANCA','КНЕЗ МИХАИЛОВА':'KNEZ MIHAILOVA','ЗЛАТАРА':'GIOIELLERIA','СЛАДОЛЕД':'GELATI',
+  'Једну куглу, молим!':'Una pallina, per favore!','Две кугле, молим!':'Due palline, per favore!','Три кугле, молим!':'Tre palline, per favore!',
+  'Једну куглу, имам тачно сто педесет!':'Una pallina, ho giusto centocinquanta!','Две кугле, па на предавање!':'Due palline, e poi a lezione!','Три кугле, данас сам положио!':'Tre palline, oggi ho passato l’esame!',
+  'Једну куглу, за моју пензију…':'Una pallina, con la mia pensione…','Две кугле, к’о некад!':'Due palline, come ai bei tempi!','Три кугле! Нек иде живот!':'Tre palline! Si vive una volta sola!',
+  'Једну куглу за унука!':'Una pallina per mio nipote!','Две кугле, за мене и деду!':'Due palline, per me e il nonno!','Три кугле, за све унуке!':'Tre palline, per tutti i nipotini!',
+  'Једну куглу! У Бечу је скупље!':'Una pallina! A Vienna costa di più!','Две кугле! У Бечу кошта дупло!':'Due palline! A Vienna costa il doppio!','Три кугле! Нек се зна ко је дошао из Беча!':'Tre palline! Che si sappia chi è arrivato da Vienna!',
+  'Једну куглу, између две радње!':'Una pallina, tra un negozio e l’altro!','Две кугле, заслужила сам!':'Due palline, me le sono meritate!','Три кугле, данас је распродаја!':'Tre palline, oggi ci sono i saldi!',
+  'Брате, једну куглу!':'Fratello, una pallina!','Брате, две кугле!':'Fratello, due palline!','Брате, три кугле, највеће!':'Fratello, tre palline, le più grosse!',
+  'Једну куглу, благословени!':'Una pallina, che Dio vi benedica!','Две кугле, ако Бог да!':'Due palline, se Dio vuole!','Три кугле, пост је прошао!':'Tre palline, il digiuno è finito!',
+  'Једну куглу, по службеној дужности.':'Una pallina, nell’esercizio delle mie funzioni.','Две кугле. Ово је део патроле.':'Due palline. Fa parte della pattuglia.','Три кугле. Ово остаје међу нама.':'Tre palline. Resti tra noi.',
+  'Хвала!':'Grazie!','Хвала, брате!':'Grazie, fratello!','Хвала, сине!':'Grazie, figliolo!','Хвала, злато!':'Grazie, tesoro!','Супер, хвала!':'Super, grazie!',
+  'Нађимо се код коња!':'Ci vediamo al cavallo!','Ћао, куме!':'Ciao, compare!','Идем до Калемегдана.':'Vado fino al Kalemegdan.','Каква гужва данас!':'Che folla oggi!','Шта има, брате?':'Che si dice, fratello?',
+  'Све је на попусту!':'È tutto in saldo!','Још само једна радња…':'Ancora un solo negozio…','Где ми је новчаник?':'Dov’è il mio portafoglio?','Испит је сутра, а ја шетам…':'Ho l’esame domani, e io vado a spasso…',
+  'Идем у библиотеку… после сладоледа.':'Vado in biblioteca… dopo il gelato.','Ала се ово улепшало!':'Com’è diventato bello qui!','Ала је гужва!':'Mamma mia, che folla!','Где ми је унук?':'Dov’è mio nipote?',
+  'У Бечу је све чистије!':'A Vienna è tutto più pulito!','Брате, види ово!':'Fratello, guarda qua!','Мир Божји!':'La pace di Dio!','Све је под контролом.':'È tutto sotto controllo.',
+  'Још мало?':'Manca molto?','Полако, нема журбе…':'Con calma, nessuna fretta…','Да ли је то мој сладолед?':'È il mio gelato, quello?','Пардон!':'Pardon!','Ајде, ајде…':'Dai, dai…',
+  'Сир!':'Cheese!','Браво, мајсторице!':'Brava, artista!','Колико кошта ова слика?':'Quanto costa questo quadro?','За вас — пола цене!':'Per lei — metà prezzo!','Једну шајкачу, молим!':'Un berretto šajkača, per favore!',
+  'Пет евра, пријатељу!':'Cinque euro, amico mio!','Хвала, хвала!':'Grazie, grazie!','Шајкаче, магнети, опанци!':'Berretti šajkača, calamite, opanci!','Сликам Калемегдан по сећању.':'Dipingo il Kalemegdan a memoria.','Портрет за пет минута!':'Un ritratto in cinque minuti!',
+  // дијагностика мреже (L2)
+  'проверавам…':'verifica…','STUN не одговара (UDP блокиран?)':'STUN non risponde (UDP bloccato?)','симетричан (P2P ретко пролази)':'simmetrico (P2P passa raramente)','обичан (P2P обично пролази)':'normale (P2P passa di solito)','није подешен (TURN_URL)':'non configurato (TURN_URL)','учитавам…':'caricamento…','учитан, проверавам…':'caricato, verifica…','✓ ради':'✓ funziona','✗ сервери не одговарају':'✗ i server non rispondono','Домаћин':'Host','Мрежа':'Rete','домаћин':'host','гост':'ospite','ван игре':'fuori partita','НЕМА, искључен у прегледачу или додатку':'ASSENTE, disattivato dal browser o da un’estensione',' релеја':' relay','Домаћин: ':'Host: ','пронађен':'trovato','тражим… ':'ricerca… ','директно':'diretto','неуспело: ':'non riuscito: ','Прикажи':'Mostra','Сакриј':'Nascondi'
+};
+XT.it={din:'{p}{n} din.',best:'Record: {n} din.',ticket:'N. {n}',hidden:'Livello segreto {n}',earn:'Ottieni una ★ al livello {n}',secret:'Segreto {n}/3: {text}',of3:'{n} su 3',tip2:'Mancia +{n} € ×2',tip:'Mancia +{n}',tipmusic:'Mancia +{n} (musica!)',praise:'Complimenti +{n}',inspect:'Ispezione superata! +{n}',michelin:'Stella Michelin! +{n}',exit:'EXIT! La startup è stata venduta: +{n} din.',walked:'Un cliente se n’è andato! −{n}',left:'{name} ha lasciato la cucina',notfound:'Partita {code} non trovata.',joining:'Entro nella partita {code}',stars:'Stelle: {n} su 3',level:'Livello {n}',forcooks:'per {n} cuochi',hosting:'{name} ospita una partita',code:'Codice {code}, cuochi: {n} su 4',codebusy:'Codice {code}, cuochi: {n} su 4, livello in corso',host:'{name}, host',cook:'{name}, cuoco',taken:'{name}, occupato',allclear:'Tutti i livelli completati! {text}',onplate:'{name} nel piatto',scoop1:'1 pallina — {p} din.',scoopN:'{n} palline — {p} din.',strands:'{n} fili',perfect:'Perfetto! {n} fili',from:'dalle {t}',player:'Giocatore {n}',pad:'Gamepad {n}',padoff:'Gamepad {n} (scollegato)',icecream:'Gelato: {list}',listsep:', '};
 /* поруке са бројем или именом у себи: образац даје кључ шаблона из XT[језик] и вредности за {место} у њему */
 const XT_RE=[
   [/^(\+?)([\d.,\u202f]+) дин\.$/,(m,p,n)=>['din',{p,n}]],
@@ -3200,7 +3556,7 @@ function persist(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }
 
 /* ======================= ПОМОЋНЕ ======================= */
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const fmt=n=>String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,{sr:'.',es:'.',pt:'.',fr:'\u202f'}[LANG]||',');
+const fmt=n=>String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,{sr:'.',es:'.',pt:'.',fr:'\u202f',it:'.'}[LANG]||',');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const now=()=>performance.now()/1000;
 function rr(c,x,y,w,h,r){ r=Math.max(0,Math.min(r,w/2,h/2)); c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
@@ -3896,7 +4252,7 @@ function buildGrid(o,L){
       if(L.kinds&&L.kinds[ch]) t.deco=true; // украс улице: чврст, али се не користи
       if(FK[ch]){ if(FK[ch]==='cow') t.kind='cow'; else { t.kind='bed'; t.crop=FK[ch]; t.grow=1; } }
       if(t.kind==='pot'||t.kind==='kotlic'||t.kind==='kazan'||t.kind==='sac'||t.kind==='wok'||t.kind==='marin') t.v=mkVessel(t.kind);
-      if(t.kind==='steam'){ t.st={b:[null,null,null],w:1,dry:0}; o.steam=true; }
+      if(t.kind==='steam'){ t.st={b:[null],w:1,dry:0}; o.steam=true; }
       if(ch==='Q') t.officer=true;
       if(t.kind==='plates'){ t.count=L.plates; o.plateTile=t; o.plateTiles.push(t); }
       if(t.kind==='trays') t.count=L.trays;
@@ -4235,7 +4591,9 @@ function simGrab(p){
 }
 function startWash(p,t){ if(p.hold){ deny(p,t,'Прво спусти то што држиш!'); return; } p.work={tile:t,kind:'wash'}; }
 function simWork(p){
-  const t=p.target; if(!t||p.stun>0) return;
+  const t=p.target; if(p.stun>0) return;
+  if(!t){ if(!p.hold&&!(p.toot>0)){ // ван станице: трубач дува у трубу, Ник на свадби пуца у небо
+    if((p.ch|0)===TRUBAC){ p.toot=TOOT_T; ev('s','trumpet'); } else if((p.ch|0)===NICK&&S.L.theme==='salas'){ p.toot=SHOT_T; ev('g','N',p.slot); } } return; }
   if(t.kind==='board'){
     const it=t.item;
     if(it&&it.k==='i'&&it.s==='R'&&pullOf(it.t)&&canPull(pullOf(it.t))){ if(p.hold){ deny(p,t,'Прво спусти то што држиш!'); return; } pullDough(p,t,it); return; }
@@ -4579,7 +4937,7 @@ function updateNpcs(dt){
 }
 function simStep(dt){
   S.time+=dt; if(timed(S.L)) S.timeLeft-=dt; S.goT=Math.max(0,S.goT-dt);
-  for(const p of S.players) if(p.stun>0) p.stun=Math.max(0,p.stun-dt);
+  for(const p of S.players){ if(p.stun>0) p.stun=Math.max(0,p.stun-dt); if(p.toot>0) p.toot=Math.max(0,p.toot-dt); }
   for(const p of S.players) updateWork(p,dt);
   updateNpcs(dt); if(S.L.street) streetStep(dt); if(S.L.farm) farmStep(dt); guardStep(dt); updateStations(dt); if(S.tools.length) toolStep(); heatStep(dt); levelEvents(dt); updateOrders(dt); updatePending(dt);
   if(S.L.theme==='kafana'&&S.time>=S.nextTrubac){ S.nextTrubac=S.time+30+Math.random()*15;
@@ -4952,7 +5310,7 @@ function buildSnap(){
   const s={f:++Game.snapSeq,ph:Game.phase,lv:Game.li};
   if(S&&['countdown','play','pause','ending','end'].includes(Game.phase)){
     s.rs=S.rs; s.tl=Math.round(S.timeLeft*10); if(S.L.feast) s.el=Math.round(S.time*10); s.sc=S.score; s.dl=S.delivered; if(S.st&&S.st.eggs) s.eg=EGG_KEYS.map(k=>{ const e=S.st.eggs[k]; return e?[e.slot,e.ch,e.c.join(',')]:0; }); s.cd=Math.round(S.countdown*10); s.go=Math.round(S.goT*10);
-    s.pl=S.players.map(p=>[p.slot,p.ch,Math.round(p.x*100),Math.round(p.y*100),Math.round(p.fx*100),Math.round(p.fy*100),enc(p.hold),wkCode(p.work),p.target?p.target.x:-1,p.target?p.target.y:-1,Math.round((p.stun||0)*10)]);
+    s.pl=S.players.map(p=>[p.slot,p.ch,Math.round(p.x*100),Math.round(p.y*100),Math.round(p.fx*100),Math.round(p.fy*100),enc(p.hold),wkCode(p.work),p.target?p.target.x:-1,p.target?p.target.y:-1,Math.round((p.stun||0)*10),Math.round((p.toot||0)*10)]);
     s.np=S.npcs.map(n=>{ const a=[Math.round(n.x*100),Math.round(n.y*100),Math.round(n.fx*10),Math.round(n.fy*10),n.gone?1:n.pause>0||n.started?2:0];
       if(n.kind==='ped'||n.kind==='cust') a.push(n.kind==='cust'?2:1,n.id,Math.max(0,CTS.indexOf(n.ct)),n.state,n.carry?RKEYS.indexOf(n.carry):-1,n.act|0,n.oid|0); return a; });
     s.gd=(S.guards||[]).map(g=>[g.o,Math.round(g.x*100),Math.round(g.y*100),Math.round(g.fx*10),Math.round(g.fy*10),g.mv?1:0]);
@@ -5056,7 +5414,7 @@ function onSnap(s){
   for(const a of s.pl||[]){
     const slot=a[0]; seen.add(slot); let p=V.pmap[slot];
     if(!p){ p=V.pmap[slot]={slot,dx:a[2]/100,dy:a[3]/100,walk:0}; }
-    p.ch=a[1]; p.x=a[2]/100; p.y=a[3]/100; p.fx=a[4]/100; p.fy=a[5]/100; p.hold=dec(a[6]); p.wk=a[7]; p.tx=a[8]; p.ty=a[9]; p.stun=(a[10]|0)/10;
+    p.ch=a[1]; p.x=a[2]/100; p.y=a[3]/100; p.fx=a[4]/100; p.fy=a[5]/100; p.hold=dec(a[6]); p.wk=a[7]; p.tx=a[8]; p.ty=a[9]; p.stun=(a[10]|0)/10; p.toot=(a[11]|0)/10;
     if(slot===Game.mySlot&&!me){ me={x:p.x,y:p.y,fx:p.fx,fy:p.fy,walk:0,dashT:0,dashCd:0,moving:false,target:null}; }
   }
   for(const k of Object.keys(V.pmap)) if(!seen.has(+k)) delete V.pmap[k];
@@ -5073,7 +5431,7 @@ function onSnap(s){
   for(const [x,y,c] of s.t||[]){ const t=tileAt(V,x,y); if(!t) continue;
     switch(t.kind){ case 'counter': case 'board': case 'grill': case 'oven': case 'roaster': case 'pan': case 'griddle': case 'spit': t.item=dec(c); break;
       case 'pot': case 'kotlic': case 'kazan': case 'sac': case 'wok': case 'marin': Object.assign(t.v,dec(c,t.kind),{kind:t.kind,k:'t'}); break;
-      case 'steam': t.st={w:c[1]/99,dry:c[2]/10,b:[dec(c[3]),dec(c[4]),dec(c[5])]}; break;
+      case 'steam': t.st={w:c[1]/99,dry:c[2]/10,b:c.slice(3).map(x=>dec(x))}; break;
       case 'plates': case 'trays': case 'dirtyret': t.count=+c||0; break;
       case 'sink': t.dirty=c[0]; t.prog=c[1]/99; break;
       case 'hotpot': Object.assign(t.hp,{oid:c[1]|0,eat:(c[2]|0)/10,coal:(c[3]|0)/99,dirty:c[4]|0,gid:c[5]|0}); break; } }
@@ -5160,6 +5518,7 @@ const SFX={
   radio:()=>{ N({d:.2,v:.12,f:2300,q:4}); T({f:1250,d:.05,type:'square',v:.04,at:.2}); },
   money:()=>T({f:1760,to:2349,d:.08,type:'triangle',v:.07}),
   pop:()=>N({d:.3,v:.16,f:1500,q:.5}),
+  trumpet:()=>{ [[392,.14],[523,.14],[659,.14],[784,.42]].reduce((at,[f,d])=>{ T({f,d,type:'sawtooth',v:.05,at}); T({f:f*2,d,type:'square',v:.015,at}); return at+d; },0); },
   horn:()=>{ T({f:410,to:470,d:.55,type:'sawtooth',v:.05}); T({f:820,to:900,d:.5,type:'square',v:.02}); },
   flip:()=>{ N({d:.12,v:.22,f:900,q:.8}); T({f:300,to:620,d:.12,type:'triangle',v:.08}); },
   gull:()=>{ T({f:1400,to:2100,d:.16,type:'sawtooth',v:.04}); T({f:2100,to:1200,d:.22,type:'sawtooth',v:.04,at:.17}); T({f:1500,to:2200,d:.14,type:'sawtooth',v:.035,at:.45}); },
@@ -5276,6 +5635,7 @@ function ambient(dt){
     if(v&&(t.kind!=='oven'||true)&&v.ph!=='i'){ const warn=v.ph==='d'&&BURN_T[v.kind]-v.burn<4;
       if(warn) warnTick(t.x+','+t.y,dt); if(Math.random()<dt*(v.ph==='b'?6:3)) smoke(t,warn||v.ph==='b'); }
   }
+  for(const p of V.players||[]) if(p.toot>0&&(p.ch|0)===TRUBAC){ p.note=(p.note||0)-dt; if(p.note<=0){ p.note=.18+Math.random()*.12; FX.parts.push({x:(p.dx??p.x)+p.fx*.5,y:(p.dy??p.y)-.5,vx:p.fx*.5+(Math.random()-.5)*.4,vy:-.8,t:0,life:1.1,kind:'note',ch:Math.random()<.5?'♪':'♫'}); } }
   for(const p of DP){ if(!p.wk) continue; const t=tileAt(V,p.tx,p.ty); if(!t) continue; const key='w'+p.slot, v=(FX.chopT.get(key)||0)+dt;
     if(p.wk===1&&v>.2){ FX.chopT.set(key,0); sfx('chop'); const ty=t.item&&t.item.t; for(let i=0;i<4;i++) FX.parts.push({x:t.x+.5,y:t.y+.45-surf45(t),vx:(Math.random()-.5)*2.2,vy:-1-Math.random()*1.2,g:6,t:0,life:.45,kind:'dot',r:.05,c:BITS[ty]||'#fff'}); }
     else if(p.wk===2&&v>.3){ FX.chopT.set(key,0); sfx('wash'); for(let i=0;i<3;i++) FX.parts.push({x:t.x+.3+Math.random()*.4,y:t.y+.45-surf45(t),vx:(Math.random()-.5)*.3,vy:-.6-Math.random()*.4,t:0,life:.8,kind:'bubble',r:.05+Math.random()*.05}); }
@@ -5498,6 +5858,7 @@ function shoveStep(o,a,slot,guards,dt){
   for(const g of guards||[]){ if(g.o===slot) continue; const dx=a.x-g.x, dy=a.y-g.y, d=Math.hypot(dx,dy); if(d>=SHOVE_R) continue;
     let ux=dx, uy=dy; if(d<1e-3){ ux=g.fx||0; uy=g.fy||1; } const m=Math.hypot(ux,uy)||1; a.kvx=ux/m*SHOVE_V; a.kvy=uy/m*SHOVE_V; a.kvT=SHOVE_T; return; }
 }
+const TRUBAC=6, TOOT_T=1.2, SHOT_T=.7; // ван станице на E: трубач засвира, Ник на свадби пуца у небо (p.toot траје толико)
 const PANDUR=5, nearNpc=(x,y)=>((V&&V.npcs)||[]).some(n=>n.kind!=='car'&&!n.gone&&Math.hypot(n.x-x,n.y-y)<PR+NPC_R+.08);
 function hostUpdate(dt){
   if(!S||V!==S) return;
@@ -6684,7 +7045,7 @@ function drawCup(t,cx,cy,s){
   else if(v.ph==='b'){ for(let k=0;k<4;k++){ const ph=(G_anim+k*.25)%1; circ(ctx,cx+(k-1.5)*s*.08,cy-s*.3-ph*s*.22,s*.03); ctx.fillStyle=`rgba(140,200,60,${.9-ph*.8})`; ctx.fill(); } }
 }
 /* парњача: три бамбусове корпе на лонцу са водом */
-const STEAM_POS=[[-.17,-.08],[.17,-.08],[0,.17]];
+const STEAM_POS=[[0,0]]; // једна корпа по парњачи
 function drawSteamer(t,cx,cy,s,lw){
   const st=t.st, act=st.w>0&&st.b.some(x=>x&&(x.s==='C'||x.s==='K'));
   circ(ctx,cx,cy+s*.04,s*.4); ctx.fillStyle='#24282b'; ctx.fill(); circ(ctx,cx,cy+s*.04,s*.35); ctx.fillStyle=st.w>0?`rgba(90,160,220,${.35+.5*st.w})`:'#3a2a20'; ctx.fill();
@@ -7196,6 +7557,7 @@ function body(c,px,py,s0,fx,fy,walk,st,o,A){
   const armOf=sg=>{ const Sx=px+nx*sg*B.sh*s*w*.92, Sy=yS+.05*s+ny*sg*.016*s; let hx2,hy2;
     if(pose==='upboth'){ const wv=Math.sin(t*12+sg)*.025*s; hx2=px+nx*sg*.32*s+(side>.5?sg*.12*s:0)+wv; hy2=yS-.26*s+Math.abs(wv); }
     else if(pose==='trumpet'){ hx2=px+fx*.2*s+nx*sg*.06*s; hy2=my+.05*s+fy*.06*s; }
+    else if((pose==='gunup'||pose==='gunfire')&&sg===gsg){ hx2=px+nx*sg*.2*s+fx*.04*s; hy2=yS-.3*s; }
     else if(pose==='gunrun'){ const sup=sg!==gsg; hx2=px+fx*s*(sup?.2:.25)+nx*sg*.03*s; hy2=yS+.1*s+fy*.1*s+(sup?.03*s:0); }
     else if(o.knife!==undefined){ const lift=Math.sin(Math.PI*Math.min(1,o.knife)); if(sg>0){ hx2=px+fx*.3*s+nx*.07*s; hy2=byN+fy*.13*s-.02*s-lift*.17*s; } else { hx2=px+fx*.27*s-nx*.12*s; hy2=byN+fy*.15*s+.01*s; } }
     else if(pose==='violin'){ if(sg<0){ hx2=px+nx*sg*.34*s; hy2=yS+.02*s; } else { const bw=Math.sin(t*6)*.09*s; hx2=px+nx*sg*.02*s+bw; hy2=yS+.1*s-bw*.3; } }
@@ -7213,11 +7575,11 @@ function body(c,px,py,s0,fx,fy,walk,st,o,A){
     let best=null, bs=-1e9; for(const sgn of [-1,1]){ const ex=Sx+Math.cos(base+sgn*An)*a, ey=Sy+Math.sin(base+sgn*An)*a, sc=out*(ex-mxp)*1.2+(ey-myp)*.5-(side>.3?fx*(ex-mxp)*1.4:0); if(sc>bs){ bs=sc; best=[ex,ey]; } }
     return {sg,Sx,Sy,ex:best[0],ey:best[1],hx:hx2,hy:hy2,depth:ny*sg}; };
   const arms=[armOf(-1),armOf(1)], behind=back?arms:(side>.35?arms.filter(q2=>q2.depth<0):[]), front=arms.filter(q2=>!behind.includes(q2));
-  if(back&&st.trumpetBack) trumpetBack(c,px,yS,by,s,fx,back);
+  if(back&&st.trumpetBack&&!o.trumpet) trumpetBack(c,px,yS,by,s,fx,back);
   for(const Ar of behind){ armDraw(c,Ar,s,st,B); handDraw(c,Ar,s,st); }
   torso(c,Tp,px,s,st,B,{back,fx,side,yS,chestY,bellyY,hipY,yH,xc,w,o,skirt,by,t,spark:A.spark});
   if(st.hood) hoodBack(c,hx,hy,hw,hh,s,st);
-  if(!back&&st.trumpetBack) trumpetBack(c,px,yS,by,s,fx,back);
+  if(!back&&st.trumpetBack&&!o.trumpet) trumpetBack(c,px,yS,by,s,fx,back);
   head(c,hx,hy,hw,hh,s*HK,fx,fy,back,st,B,o,FX,A,seed,t);
   for(const Ar of front) armDraw(c,Ar,s,st,B);
   if(o.trumpet&&!back) trumpetHeld(c,hx+fx*hw*.4,my,s,fx,fy);
@@ -7225,7 +7587,8 @@ function body(c,px,py,s0,fx,fy,walk,st,o,A){
   for(const Ar of front) handDraw(c,Ar,s,st);
   const hands=arms.map(Ar=>[Ar.hx,Ar.hy]);
   if(st.gun&&!sit){ const knife=o.knife!==undefined, h=hands[knife?0:gsg>0?1:0];
-    if(pose==='gunrun'){ if(!back) drawRevolver(c,h[0],h[1],s0*.62,Math.atan2(fx+nx*gsg*.7*(1-Math.abs(fx)),Math.max(.25,fy)),0,st.skin,INK); }
+    if(pose==='gunup'||pose==='gunfire') drawRevolver(c,h[0],h[1],s0*.7,.12*gsg,pose==='gunfire'?1:0,st.skin,INK);
+    else if(pose==='gunrun'){ if(!back) drawRevolver(c,h[0],h[1],s0*.62,Math.atan2(fx+nx*gsg*.7*(1-Math.abs(fx)),Math.max(.25,fy)),0,st.skin,INK); }
     else if(knife||pose==='busy'){ if(!back) drawRevolver(c,h[0],h[1],s0*.78,knife?.11:.12*nx*gsg,0,st.skin,INK); }
     else drawRevolver(c,h[0],h[1],s0*.7,Math.PI-.3*clamp(nx*gsg+fx*.6,-1,1),0,st.skin,INK); }
   const hold=[(hands[0][0]+hands[1][0])/2,(hands[0][1]+hands[1][1])/2-.03*s];
@@ -7745,6 +8108,7 @@ function sceneEvent(e){
   else if(k==='M') startPeace(e[3],e[4]);
   else if(k==='T') startTrubac(e[3]);
   else if(k==='B') startBand();
+  else if(k==='N') nickShot(e[3]);
   else if(k==='S'){ const w=e[3]; if(w===2){ fireShooter(0); fireShooter(1); } else fireShooter(w|0); }
 }
 function startBrawl(a,b){
@@ -8060,12 +8424,19 @@ function fireShooter(k){
   else s.fire=true;
 }
 function bang(s){
-  sfxS('bang'); SCN.duckT=.9; if(Game.phase==='play') FX.shake=Math.max(FX.shake,.12);
+  bangReact();
   const mz=s.mz||[s.x+SCN.sc*.25,s.y-SCN.sc*1.05]; spart({kind:'bang',x:mz[0],y:mz[1]-SCN.sc*.12,life:.7}); for(let i=0;i<5;i++) spart({kind:'smoke',x:mz[0],y:mz[1],vx:(Math.random()-.5)*15,vy:-20,life:1.2});
+}
+// пуцањ у небо: сала се сагне, деда се тргне или баба грди
+function bangReact(){
+  sfxS('bang'); SCN.duckT=.9; if(Game.phase==='play') FX.shake=Math.max(FX.shake,.12);
   if(SCN.dedaEnt) SCN.dedaEnt.wake=2.6;
   if(SCN.dedaEnt&&Math.random()<.5) setTimeout(()=>{ if(SCN.dedaEnt) bubble(SCN.dedaEnt,pick(['Шта?! Ко пуца?!','Ко је то, бре?!','Јел’ стигла млада?!']),1.9); },250);
   else setTimeout(()=>{ if(SCN.babaEnt) bubble(SCN.babaEnt,pick(SCOLD),2.1); },650);
 }
+function nickShot(slot){ bangReact(); const p=V&&(V.players||[]).find(q=>q.slot===slot); if(!p) return;
+  const l=Math.hypot(p.fx,p.fy)||1, fx=p.fx/l, fy=p.fy/l, g=(!(fy<-.35)&&Math.abs(fx)>.35)?Math.sign(fx):1, x=(p.dx??p.x)-fy*g*.2+fx*.04, y=(p.dy??p.y)-1.05; // изнад подигнуте шаке (body: nx=-fy)
+  for(let i=0;i<5;i++) FX.parts.push({x:x+(Math.random()-.5)*.1,y,vx:(Math.random()-.5)*.5,vy:-.5-Math.random()*.4,t:0,life:.9,kind:'puff',r:.07,c:'rgba(200,200,200,'}); }
 /* ---- свадба: смешне ситнице ---- */
 const DEDA={tag:'#555',skin:'#ecc4a0',shirt:'#f2ede0',vest:'#3a3a3a',trim:'#3a3a3a',apron:null,hat:'sajkaca',hatC:'#4a4636',hair:'#e8e8e8',stache:true};
 const UJAK={tag:'#555',skin:'#f0b892',shirt:'#ffffff',vest:'#4a5a7a',trim:'#c8202b',apron:null,hat:'hair',hatC:'#222',hair:'#3a2a1a',stache:true,redNose:true,blush:true};
@@ -11489,7 +11860,7 @@ function buildDisplay(dt){
       if(Game.role==='client') p.mvT=mv>.002?.15:Math.max(0,(p.mvT||0)-dt);
       d={slot:p.slot,ch:p.ch,x:p.dx,y:p.dy,fx:p.fx,fy:p.fy,walk:p.walk,hold:p.hold,wk:Game.role==='client'?p.wk:wkCode(p.work),
         tx:Game.role==='client'?p.tx:(p.target?p.target.x:-1),ty:Game.role==='client'?p.ty:(p.target?p.target.y:-1),mv:Game.role==='client'?p.mvT>0:!!p.moving,me:false}; }
-    DP.push(d);
+    d.toot=p.toot||0; DP.push(d);
   }
   for(const n of V.npcs||[]){ if(n.dx===undefined){ n.dx=n.x; n.dy=n.y; } const ox_=n.dx, oy_=n.dy; n.dx+=(n.x-n.dx)*k; n.dy+=(n.y-n.dy)*k; n.walk=(n.walk||0)+Math.hypot(n.dx-ox_,n.dy-oy_)*13; DN.push(n); }
   /* телохранитељи корачају спорије од тајкуна: играч пређе 13/SPEED корака по пољу, они 60% од тога */
@@ -11523,7 +11894,7 @@ function render(dt){
     for(const e of ents){
       if(e.f){ e.f(); continue; }
       if(e.p){ const p=e.p, s=ts, hx=p.hold, kt=isChina(V.L)&&chinaKettle(p), ge=V.L.street&&eggOf('souvenir'), cst=ge&&ge.slot===p.slot?{...chefLook(p.ch),scarf:EGG_SCARF}:chefLook(p.ch);
-        drawChar(ctx,ox+p.x*ts,oy+p.y*ts,s*((CHARS[p.ch]||CHARS[0]).scale||1),p.fx,p.fy,p.walk,cst,{ent:PENT[p.slot]||(PENT[p.slot]={}),hero:true,pose:kt?'up':(CHARS[p.ch]||CHARS[0]).gun&&p.mv&&!hx&&!(p.wk===1||p.wk===2)?'gunrun':undefined,prop:kt?((c,i)=>propTeaKettle(c,i,true)):undefined,holding:!!hx,working:p.wk===1||p.wk===2,knife:p.wk===1?(FX.chopT.get('w'+p.slot)||0)/.2:undefined,
+        drawChar(ctx,ox+p.x*ts,oy+p.y*ts,s*((CHARS[p.ch]||CHARS[0]).scale||1),p.fx,p.fy,p.walk,cst,{ent:PENT[p.slot]||(PENT[p.slot]={}),hero:true,pose:kt?'up':p.toot>0&&(p.ch|0)===NICK?(p.toot>SHOT_T-.12?'gunfire':'gunup'):(CHARS[p.ch]||CHARS[0]).gun&&p.mv&&!hx&&!(p.wk===1||p.wk===2)?'gunrun':undefined,prop:kt?((c,i)=>propTeaKettle(c,i,true)):undefined,trumpet:p.toot>0&&(p.ch|0)===TRUBAC,holding:!!hx||(p.toot>0&&(p.ch|0)===TRUBAC),working:p.wk===1||p.wk===2,knife:p.wk===1?(FX.chopT.get('w'+p.slot)||0)/.2:undefined,
           drawHold:hx?((x,y)=>drawItemAt(ctx,hx,x,y,s*.52)):null,label:multi?tr(Game.role==='couch'?'Играч '+(p.slot+1):p.me?'Ти':slotName(p.slot)):null}); }
       else { const n=e.n; if(n.kind==='ped'||n.kind==='cust'){ drawStreetNpc(n); continue; } if(n.kind==='car'){ if(!n.gone) drawKitchenCar(n); } else if(n.kind==='squad') drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk*1.4,SQUAD,{ent:n}); else if(n.kind==='zmaj') drawZmaj(ctx,[n,...DN.filter(o=>o.kind==='zmajr')].map(o=>({x:ox+o.dx*ts,y:oy+o.dy*ts,walk:o.walk})),ts); else if(n.kind==='zmajr'){} else if(n.kind==='caj') drawCajMajstor(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n); else if(n.kind==='guard') drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk,GUARD,{ent:n}); else if(n.kind==='rider') drawRider(n); else drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk,BAND,{ent:n,trumpet:true,holding:true}); }
     }
