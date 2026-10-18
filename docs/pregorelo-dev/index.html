@@ -5073,7 +5073,10 @@ const kbHalf=code=>Object.keys(KB).find(d=>Object.values(KB[d]).some(a=>a.includ
 const anyKey=a=>a.some(k=>keys.has(k));
 const keyVec=m=>{ let x=0,y=0; if(anyKey(m.up)) y-=1; if(anyKey(m.down)) y+=1; if(anyKey(m.left)) x-=1; if(anyKey(m.right)) x+=1; return {x,y}; };
 const inPlay=()=>['countdown','play','ending'].includes(Game.phase)&&!Game.localMenu&&!Game.notice&&!(Game.role==='client'&&Game.mySlot<0);
-function readInput(){ if(!inPlay()) return {x:0,y:0}; let {x,y}=keyVec(KB_ALL); if(stick.active){ x+=stick.x; y+=stick.y; } x+=pad.x; y+=pad.y; return {x,y}; }
+// трк држан (Shift, L, B/RB на гејмпаду, дугме „Трк“): Ник, који иначе стално трчи, тада хода
+const DASH_KEYS=['ShiftLeft','ShiftRight','KeyL'], padDash=st=>!!(st&&st.down&&(st.down[1]||st.down[5]));
+let touchDash=false;
+function readInput(){ if(!inPlay()) return {x:0,y:0}; let {x,y}=keyVec(KB_ALL); if(stick.active){ x+=stick.x; y+=stick.y; } x+=pad.x; y+=pad.y; return {x,y,slow:anyKey(DASH_KEYS)||touchDash||[...pads.values()].some(padDash)}; }
 const localActor=()=>S?S.players.find(p=>p.slot===Game.mySlot):null;
 const localPlayers=()=>!S?[]:Game.role==='couch'?S.players:S.players.filter(p=>p.slot===Game.mySlot);
 const couchBy=dev=>Couch.players.find(c=>c.dev===dev);
@@ -5081,8 +5084,8 @@ const couchKb=()=>Couch.players.filter(c=>c.dev[0]==='k');
 function couchKbPlayer(code){ const kb=couchKb(); if(kb.length===1) return kb[0]; const d=kbHalf(code); return d?couchBy(d):null; }
 function couchInput(slot){
   const c=Couch.players.find(q=>q.slot===slot); if(!c||!inPlay()) return {x:0,y:0};
-  if(c.dev[0]==='k') return keyVec(couchKb().length===1?KB_ALL:KB[c.dev]);
-  const st=pads.get(+c.dev.slice(1)); return st?{x:st.x,y:st.y}:{x:0,y:0};
+  if(c.dev[0]==='k'){ const one=couchKb().length===1; return Object.assign(keyVec(one?KB_ALL:KB[c.dev]),{slow:anyKey(one?DASH_KEYS:KB[c.dev].dash)}); }
+  const st=pads.get(+c.dev.slice(1)); return st?{x:st.x,y:st.y,slow:padDash(st)}:{x:0,y:0};
 }
 const inputFor=p=>Game.role==='couch'?couchInput(p.slot):readInput();
 const couchJoinable=()=>Game.role==='couch'&&['menu','intro','end'].includes(Game.phase)&&!Game.tip;
@@ -5101,9 +5104,9 @@ function couchCycle(slot,d){
 }
 function doAction(kind,slot){
   if(Game.phase!=='play'||!inPlay()) return;
-  if(Game.role==='client'){ if(kind==='dash'){ if(me&&me.dashCd<=0){ me.dashT=.15; me.dashCd=.5; sfx('dash'); } } else clientAction(kind); return; }
+  if(Game.role==='client'){ if(kind==='dash'){ const mc=V&&V.players.find(q=>q.slot===Game.mySlot); if(me&&me.dashCd<=0&&!(mc&&(mc.ch|0)===NICK)){ me.dashT=.15; me.dashCd=.5; sfx('dash'); } } else clientAction(kind); return; }
   const p=slot===undefined?localActor():S&&S.players.find(q=>q.slot===slot); if(!p) return;
-  if(kind==='grab') simGrab(p); else if(kind==='work') simWork(p); else if(p.dashCd<=0){ p.dashT=.15; p.dashCd=.5; sfx('dash'); }
+  if(kind==='grab') simGrab(p); else if(kind==='work') simWork(p); else if(p.dashCd<=0&&(p.ch|0)!==NICK){ p.dashT=.15; p.dashCd=.5; sfx('dash'); }
 }
 function menuKey(){ if(Game.role==='client'){ Game.localMenu=!Game.localMenu; uiDirty(); } else if(Game.phase==='pause') resumeGame(); else pauseGame(); }
 /* мени игре заједно: „узми“ слободне половине тастатуре улази у кухињу; њен кувар онда лево–десно бира кувара, горе–доле дугме, „узми“ га притиска */
@@ -5130,6 +5133,7 @@ addEventListener('keydown',e=>{
   if(!inPlay()) return;
   if(MOVE.has(e.code)){ keys.add(e.code); e.preventDefault(); return; }
   if(e.code==='KeyH'&&!e.repeat&&helpLevel(V&&V.L)){ e.preventDefault(); toggleHelp(); return; }
+  if(DASH_KEYS.includes(e.code)) keys.add(e.code); // држање трка: Ник хода
   const kind=KEY_ACT[e.code]; if(!kind) return;
   e.preventDefault(); if(e.repeat) return;
   if(Game.role!=='couch') doAction(kind); else { const c=couchKbPlayer(e.code); if(c) doAction(kind,c.slot); }
@@ -5147,8 +5151,8 @@ zone.addEventListener('pointermove',e=>{ if(!stick.active||e.pointerId!==stick.i
 const endStick=e=>{ if(e.pointerId!==stick.id) return; stick.active=false; stick.x=stick.y=0; knob.style.transform=''; };
 zone.addEventListener('pointerup',endStick); zone.addEventListener('pointercancel',endStick);
 document.querySelectorAll('.tb').forEach(b=>{
-  b.addEventListener('pointerdown',e=>{ e.preventDefault(); b.classList.add('down'); doAction(b.dataset.act); });
-  const up=()=>b.classList.remove('down'); b.addEventListener('pointerup',up); b.addEventListener('pointercancel',up); b.addEventListener('pointerleave',up);
+  b.addEventListener('pointerdown',e=>{ e.preventDefault(); b.classList.add('down'); if(b.dataset.act==='dash') touchDash=true; doAction(b.dataset.act); });
+  const up=()=>{ b.classList.remove('down'); if(b.dataset.act==='dash') touchDash=false; }; b.addEventListener('pointerup',up); b.addEventListener('pointercancel',up); b.addEventListener('pointerleave',up);
 });
 const TOUCH=(window.matchMedia&&matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window);
 const NOKB=!!(window.matchMedia&&matchMedia('(hover: none) and (pointer: coarse)').matches); // телефон или таблет, без тастатуре
@@ -5237,7 +5241,7 @@ $('#helpBtn').addEventListener('click',e=>{ e.currentTarget.blur(); toggleHelp()
 
 /* ======================= ТОК ИГРЕ ======================= */
 function othersFor(a,list,pushNpc){ const o=[]; for(const p of list) if(p!==a) o.push({x:p.x,y:p.y,r:PR}); for(const n of (V&&V.npcs)||[]){ if(n.gone) continue; if(n.kind==='car') o.push({...carBox(n),car:true}); else if(!pushNpc) o.push({x:n.x,y:n.y,r:n.r||NPC_R}); } return o; }
-const NICK=8, chefSpeed=ch=>(ch|0)===NICK?1.6:1; // Ник Слотер always sprints
+const NICK=8, chefSpeed=(ch,slow)=>(ch|0)===NICK&&!slow?1.6:1; // Ник Слотер always sprints, and walks while the dash button is held (so he has no dash)
 const TAJKUN=11, GUARD_GAP=.85, SHOVE_R=PR*2+.08, SHOVE_V=3.4, SHOVE_T=.18;
 const GUARD_SAY=['Не прилази шефу!','Без фотографисања!','Шеф не даје аутограме.','Склони се, брате!','Полако, полако…','Ко те звао?'];
 /* тајкун: два телохранитеља иду његовим трагом и одгурују свакога ко му приђе (играче и змаја — само главу, тело иде њеним трагом).
@@ -5276,7 +5280,7 @@ function hostUpdate(dt){
     for(const p of ps) p.target=findTarget(S,p); return;
   }
   if(Game.phase==='play'){
-    for(const p of ps){ const i=p.stun>0?{x:0,y:0}:inputFor(p), pd=(p.ch|0)===PANDUR, pc=pd||(p.ch|0)===TAJKUN||!!S.L.street, sl=(pd||S.L.street)&&nearNpc(p.x,p.y)?(pd?.78:.88):1; stepMove(S,p,i.x*sl,i.y*sl,dt,othersFor(p,S.players,pc),chefSpeed(p.ch)); shoveStep(S,p,p.slot,S.guards,dt); p.target=findTarget(S,p); }
+    for(const p of ps){ const i=p.stun>0?{x:0,y:0}:inputFor(p), pd=(p.ch|0)===PANDUR, pc=pd||(p.ch|0)===TAJKUN||!!S.L.street, sl=(pd||S.L.street)&&nearNpc(p.x,p.y)?(pd?.78:.88):1; stepMove(S,p,i.x*sl,i.y*sl,dt,othersFor(p,S.players,pc),chefSpeed(p.ch,i.slow)); shoveStep(S,p,p.slot,S.guards,dt); p.target=findTarget(S,p); }
     simStep(dt); if(Game.phase==='ending') uiDirty(); return;
   }
   if(Game.phase==='ending'){ S.endT-=dt; if(S.endT<=0) finishLevel(); }
@@ -5286,7 +5290,7 @@ function clientUpdate(dt){
   if(Game.phase==='play'){ V.timeLeft=Math.max(0,V.timeLeft-dt); V.goT=Math.max(0,V.goT-dt); }
   if(Game.phase==='countdown') V.countdown-=dt;
   if(me&&(Game.phase==='play'||Game.phase==='countdown')){
-    if(Game.phase==='play'){ const mp=V.players.find(q=>q.slot===Game.mySlot)||{}, myc=mp.ch|0, i=mp.stun>0?{x:0,y:0}:readInput(), pd=myc===PANDUR, pc=pd||myc===TAJKUN||!!V.L.street, sl=(pd||V.L.street)&&nearNpc(me.x,me.y)?(pd?.78:.88):1; stepMove(V,me,i.x*sl,i.y*sl,dt,othersFor(null,DP.filter(p=>p.slot!==Game.mySlot),pc),chefSpeed(myc)); shoveStep(V,me,Game.mySlot,V.guards,dt); }
+    if(Game.phase==='play'){ const mp=V.players.find(q=>q.slot===Game.mySlot)||{}, myc=mp.ch|0, i=mp.stun>0?{x:0,y:0}:readInput(), pd=myc===PANDUR, pc=pd||myc===TAJKUN||!!V.L.street, sl=(pd||V.L.street)&&nearNpc(me.x,me.y)?(pd?.78:.88):1; stepMove(V,me,i.x*sl,i.y*sl,dt,othersFor(null,DP.filter(p=>p.slot!==Game.mySlot),pc),chefSpeed(myc,i.slow)); shoveStep(V,me,Game.mySlot,V.guards,dt); }
     me.target=findTarget(V,me);
   }
 }
