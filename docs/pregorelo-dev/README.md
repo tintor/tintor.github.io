@@ -42,6 +42,7 @@ Search the file for these lines:
 ```js
 const UNLOCK_ALL=true;   // all levels open (for playtesting); set to false to unlock levels in order
 const TURN_URL='';       // empty = no TURN relay; see section 2
+const TIP={kofi:'', usd:3, ipsAccount:'', ipsName:'', rsd:300}; // empty = no tip jar; see section 3
 ```
 
 ---
@@ -122,6 +123,42 @@ That key is visible to anyone who opens the page, so restrict it in your Metered
 
 ---
 
+## 3. Optional: tip jar
+
+A one-time tip unlocks every level and every chef. The main menu shows **♥ Подржи игру**, which opens a screen with the ways to pay. The player then presses **Уплаћено, откључај све** to unlock everything. The game doesn't check the payment, and the screen says so.
+
+With both `kofi` and `ipsAccount` empty, the menu shows no tip button.
+
+### Ko-fi (cards and PayPal)
+
+1. Create a page on [ko-fi.com](https://ko-fi.com) and connect Stripe or PayPal to receive the money.
+2. In Ko-fi, set the price of one coffee to $3, or to whatever `usd` is set to; the game shows that number.
+3. Set `kofi` to the page address, e.g. `'https://ko-fi.com/yourname'`.
+
+Players don't see your bank details: Ko-fi pays into your Stripe or PayPal account.
+
+### NBS IPS QR (bank apps in Serbia)
+
+```js
+const TIP={kofi:'https://ko-fi.com/yourname', usd:3, ipsAccount:'160-0000000123456-78', ipsName:'Ime Prezime', rsd:300};
+```
+
+- `ipsAccount`: a dinar account, written as the bank prints it (`160-0000000123456-78` or `160-123456-78`) or as 18 digits. The game checks the control digits. If they're wrong, the browser console says so and there is no QR code.
+- `ipsName`: the account holder, in Latin script. NBS rejects Cyrillic in this field.
+- `rsd`: the amount in dinars.
+
+The game draws the QR code itself. It holds the account, the name, the amount, payment code 289 and the purpose *Podrška igri Pregorelo*. Players see the account number and the name, so use an account opened only for tips if you'd rather not publish your main one.
+
+To check the code, take a screenshot of it and send it to NBS's free validator:
+
+```sh
+curl -F file=@qr.png https://nbs.rs/QRcode/api/qr/v1/upload
+```
+
+`"code":0` means a bank app will read it.
+
+---
+
 ## Playing
 
 - **Solo:** open the page and pick a level.
@@ -134,4 +171,4 @@ That key is visible to anyone who opens the page, so restrict it in your Metered
 
 ## Credits
 
-Bundles [Trystero](https://github.com/dmotz/trystero) 0.25.4 (MIT) for WebRTC peer connections, which in turn includes code from [paulmillr](https://github.com/paulmillr)'s libraries (MIT License (c) 2019 Paul Miller). Fonts are loaded from Google Fonts, with system fonts as a fallback.
+Bundles [Trystero](https://github.com/dmotz/trystero) 0.25.4 (MIT) for WebRTC peer connections, which in turn includes code from [paulmillr](https://github.com/paulmillr)'s libraries (MIT License (c) 2019 Paul Miller), and [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) 1.4.4 (MIT License (c) 2009 Kazuhiko Arase) for the tip jar's QR code. Fonts are loaded from Google Fonts, with system fonts as a fallback.
