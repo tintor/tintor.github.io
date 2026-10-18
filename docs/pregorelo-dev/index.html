@@ -11,7 +11,7 @@
 :root{
   --wall:#3b2416; --wall-2:#2c1a0f;
   --paper:#fffdf8; --ink:#33200f; --muted:#80654c; --rule:#e9dcc6;
-  --red:#b5121b; --red-dark:#7d0b11; --on-red:#ffffff; --brass:#d9a21b; --blue:#2f5f9e;
+  --red:#b5121b; --red-dark:#7d0b11; --on-red:#ffffff; --brass:#d9a21b; --blue:#2f5f9e; --ok:#2e7d32;
   --chip:#f5ecdc; --chip-edge:#dccbb0; --shade:rgba(30,16,8,.55);
   --font:"Rubik", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --display:"Lobster", "Brush Script MT", Georgia, serif;
@@ -21,12 +21,12 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --wall:#1c110a; --wall-2:#140c07; --paper:#2a1d14; --ink:#f6e9d4; --muted:#c8ab8c;
+    --wall:#1c110a; --wall-2:#140c07; --paper:#2a1d14; --ink:#f6e9d4; --muted:#c8ab8c; --ok:#86cf8a;
     --rule:#4a3424; --chip:#3a291c; --chip-edge:#5c432d; --shade:rgba(0,0,0,.66);
   }
 }
 :root[data-theme="dark"]{
-  --wall:#1c110a; --wall-2:#140c07; --paper:#2a1d14; --ink:#f6e9d4; --muted:#c8ab8c;
+  --wall:#1c110a; --wall-2:#140c07; --paper:#2a1d14; --ink:#f6e9d4; --muted:#c8ab8c; --ok:#86cf8a;
   --rule:#4a3424; --chip:#3a291c; --chip-edge:#5c432d; --shade:rgba(0,0,0,.66);
 }
 *,*::before,*::after{box-sizing:inherit}
@@ -88,8 +88,18 @@ h3{font-size:17px; margin:0 0 4px; font-weight:800}
 .row{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
 .row.end{justify-content:flex-end} .row.mid{justify-content:center} .row.col{flex-direction:column; align-items:stretch}
 
-.howto{margin-top:18px; display:flex; flex-wrap:wrap; gap:10px 22px; font-size:14px; color:var(--muted)}
-.howto div{display:flex; flex-wrap:wrap; gap:5px; align-items:center}
+.howto{margin-top:18px; display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px 28px; font-size:14px; color:var(--muted)}
+.howto h4{margin:0 0 8px; font-size:14px; font-weight:800; color:var(--ink)}
+.hcol>div{line-height:1.95; margin-bottom:3px}
+.hcol kbd{margin-right:3px} .hcol .nw{white-space:nowrap; margin-right:6px}
+.hnote{margin:2px 0 0; font-size:13px; line-height:1.4}
+.fb{position:relative; display:inline-block; vertical-align:-5px; width:20px; height:20px; margin-right:5px}
+.fb i{position:absolute; width:8px; height:8px; border-radius:50%; border:1.5px solid var(--chip-edge); background:var(--chip)}
+.fb i:nth-child(1){left:6px; top:0} .fb i:nth-child(2){right:0; top:6px} .fb i:nth-child(3){left:6px; bottom:0} .fb i:nth-child(4){left:0; top:6px}
+.fb.n i:nth-child(1){background:#e0a81e; border-color:#e0a81e} .fb.e i:nth-child(2){background:#d0342c; border-color:#d0342c}
+.fb.s i:nth-child(3){background:#3a9d3a; border-color:#3a9d3a} .fb.w i:nth-child(4){background:#2f6fd0; border-color:#2f6fd0}
+.padline{text-align:center; color:var(--muted); font-size:14px; margin:4px 0 0}
+.padline.on{color:var(--ok); font-weight:700}
 kbd{display:inline-block; min-width:1.9em; padding:2px 7px; border-radius:6px; background:var(--chip); border:1px solid var(--chip-edge);
   border-bottom-width:3px; color:var(--ink); font-family:var(--font); font-weight:700; font-size:12px; text-align:center}
 .touch-note{display:none; margin-top:10px; font-size:14px; color:var(--muted)}
@@ -640,11 +650,15 @@ const EN={
   'или стрелице: кретање':'or arrow keys: move','Размак':'Space','узми или спусти':'pick up or put down','сецкај или пери':'chop or wash','трк':'dash','мени игре':'game menu',
   'На телефону: превуци палцем по левој страни екрана за кретање, дугмад су десно. Најбоље игра у положеном положају.':'On a phone: drag your thumb on the left side of the screen to move; the buttons are on the right. Best played in landscape.',
   '🎮 Најбоље се игра на уређају са тастатуром или уз гејмпад.':'🎮 Plays best on a device with a keyboard or a game controller.',
-  'Гејмпад:':'Controller:','узми':'grab','ради':'work','мени':'menu',
+  'узми':'grab','ради':'work','мени':'menu',
+  'рецепти на екрану, где их има':'on-screen recipes, where available','лева палица или крстић: кретање':'left stick or d-pad: move','или':'or',
+  'У менијима: крстић или палица бира дугме, A потврђује, B враћа назад, десна палица помера страну.':'In menus: the d-pad or stick picks a button, A confirms, B goes back, the right stick scrolls.',
+  'Гејмпад је повезан: крстић бира, A потврђује, B враћа назад.':'Controller connected: the d-pad picks, A confirms, B goes back.',
+  'Може и гејмпад: повежи га и притисни било које дугме.':'Got a game controller? Connect it and press any button.',
   'Заједно, за једним рачунаром':'Couch co-op on one computer',
   'Притисни „узми“ на свом уређају да уђеш у кухињу: A на гејмпаду, Размак на левој страни тастатуре или тачку на десној. До четири кувара.':'Press “grab” on your own device to join the kitchen: A on a controller, Space on the left side of the keyboard or the period key on the right. Up to four cooks.',
   'На свом уређају лево и десно бираш кувара, а B на гејмпаду или × на картици излази из кухиње.':'On your own device, left and right pick your cook; B on a controller or × on the card leaves the kitchen.',
-  'Тастатура лево:':'Keyboard, left:','Тастатура десно:':'Keyboard, right:','стрелице':'arrow keys','Сам на тастатури? Ради цела тастатура.':'Alone on the keyboard? The whole keyboard works.',
+  'Лево:':'Left:','Десно:':'Right:','Тастатура':'Keyboard','Гејмпад':'Controller','стрелице':'arrow keys','Сам на тастатури? Ради цела тастатура.':'Alone on the keyboard? The whole keyboard works.',
   'Тастатура: WASD':'Keyboard: WASD','Тастатура: стрелице':'Keyboard: arrows','Изађи из кухиње':'Leave the kitchen','Претходни кувар':'Previous cook','Следећи кувар':'Next cook',
   'Звук':'Sound','Музика':'Music',
   '♥ Подржи игру':'♥ Support the game','♥ Хвала на подршци':'♥ Thanks for your support','Подржи игру':'Support the game',
@@ -2754,15 +2768,14 @@ function couchMenuKey(e){
     if((e.code==='Space'||e.code==='Enter')&&f&&ov.contains(f)&&f.tagName==='BUTTON') return false; // прегледач сам притиска дугме
     e.preventDefault(); if(!e.repeat) padPress(); return true; }
   if(m.left.includes(e.code)||m.right.includes(e.code)){ e.preventDefault(); couchCycle(c.slot,m.left.includes(e.code)?-1:1); return true; }
-  if(m.up.includes(e.code)||m.down.includes(e.code)){ e.preventDefault(); padNav(m.up.includes(e.code)?-1:1); return true; }
+  if(m.up.includes(e.code)||m.down.includes(e.code)){ e.preventDefault(); padNav(m.up.includes(e.code)?'up':'down'); return true; }
   return false;
 }
 addEventListener('keydown',e=>{
   audioInit();
   if(e.code==='Escape'||e.code==='KeyP'){
     if(['countdown','play','ending','pause'].includes(Game.phase)&&!Game.notice){ e.preventDefault(); menuKey(); return; }
-    if(e.code==='Escape'&&Game.phase==='intro'&&Game.role!=='client'){ act('back'); return; }
-    if(e.code==='Escape'&&overlayKind()==='tip'){ act('tipclose'); return; }
+    if(e.code==='Escape'&&padBack()) return; // дугме [data-back] на екрану: назад, затвори, одустани
   }
   if(couchMenuKey(e)) return;
   if(!inPlay()) return;
@@ -2790,25 +2803,48 @@ document.querySelectorAll('.tb').forEach(b=>{
 });
 const TOUCH=(window.matchMedia&&matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window);
 const NOKB=!!(window.matchMedia&&matchMedia('(hover: none) and (pointer: coarse)').matches); // телефон или таблет, без тастатуре
-/* гејмпад: лева палица или крстић за кретање, A узми, X ради, B или RB трк, Start мени; у менијима крстић бира дугме, A га притиска.
+/* гејмпад: лева палица или крстић за кретање, A узми, X ради, B или RB трк, Y рецепти, Start мени.
+   У менијима крстић или палица води до најближег дугмета у том смеру, A га притиска, B враћа назад ([data-back]), десна палица помера страну.
    У игри заједно сваки гејмпад води свог кувара; у менију A на слободном гејмпаду улази у кухињу, а њен кувар лево–десно бира кувара, B излази. */
 const pad={x:0,y:0,on:false,prev:[],held:false,navT:0,sig:''};
 const pads=new Map(); // по индексу гејмпада: {x,y,down,hit,prev,held,navT}
-function padFocusables(){ return [...ov.querySelectorAll('button:not([disabled]):not(.cbtn),input:not([readonly])')].filter(e=>e.offsetParent!==null); }
-function padNav(d){ const l=padFocusables(); if(!l.length) return; const i=l.indexOf(document.activeElement); const f=l[i<0?0:(i+d+l.length)%l.length]; try{ f.focus(); f.scrollIntoView({block:'nearest'}); }catch(e){} }
-function padPress(){ const f=document.activeElement, b=f&&ov.contains(f)&&f.tagName==='BUTTON'&&!f.disabled?f:ov.querySelector('[data-primary]:not([disabled])'); if(b) b.click(); }
+const PAD_BTNS=[0,1,2,3,5,9];
+// поља за текст се прескачу: гејмпадом се не може куцати
+function padFocusables(){ return [...ov.querySelectorAll('button:not([disabled]):not(.cbtn)')].filter(e=>e.offsetParent!==null); }
+function padNav(dir){
+  const l=padFocusables(); if(!l.length) return;
+  const cur=document.activeElement;
+  let f=null;
+  if(!l.includes(cur)){ const p=ov.querySelector('[data-primary]:not([disabled])'); f=l.includes(p)?p:l[0]; }
+  else {
+    const a=cur.getBoundingClientRect(), v=dir==='up'||dir==='down', s=dir==='down'||dir==='right'?1:-1; let bs=Infinity;
+    for(const el of l){ if(el===cur) continue; const b=el.getBoundingClientRect();
+      // само дугмад која су цела иза ивице текућег у том смеру; ближе по правцу, па по одступању у страну
+      const gap=v?(s>0?b.top-a.bottom:a.top-b.bottom):(s>0?b.left-a.right:a.left-b.right); if(gap<-2) continue;
+      const side=v?Math.max(0,b.left-a.right,a.left-b.right):Math.max(0,b.top-a.bottom,a.top-b.bottom);
+      const sc=Math.max(0,gap)+side*2+(v?Math.abs((b.left+b.right)-(a.left+a.right)):Math.abs((b.top+b.bottom)-(a.top+a.bottom)))*.05;
+      if(sc<bs){ bs=sc; f=el; } }
+  }
+  if(f) try{ f.focus(); f.scrollIntoView({block:'nearest'}); }catch(e){}
+}
+function padPress(){ const f=document.activeElement; if(f&&ov.contains(f)&&f.tagName==='INPUT') return;
+  const b=f&&ov.contains(f)&&f.tagName==='BUTTON'&&!f.disabled?f:ov.querySelector('[data-primary]:not([disabled])'); if(b) b.click(); }
+function padBack(){ const b=ov.hidden?null:ov.querySelector('[data-back]:not([disabled])'); if(b) b.click(); return !!b; }
+const padDir=(x,y)=>Math.abs(x)>.5&&Math.abs(x)>=Math.abs(y)?(x>0?'right':'left'):Math.abs(y)>.5?(y>0?'down':'up'):null;
 function pollPad(dt){
   const ps=navigator.getGamepads?[...navigator.getGamepads()].filter(g=>g&&g.connected!==false):[];
-  const down=[]; let x=0,y=0; const seen=new Set();
+  const down=[]; let x=0,y=0,ry=0; const seen=new Set();
   for(const g of ps){ const b=i=>!!(g.buttons[i]&&g.buttons[i].pressed), ax=g.axes[0]||0, ay=g.axes[1]||0;
     let gx=0, gy=0; if(Math.hypot(ax,ay)>.25){ gx=ax; gy=ay; }
     if(b(12)) gy-=1; if(b(13)) gy+=1; if(b(14)) gx-=1; if(b(15)) gx+=1;
+    if(Math.abs(g.axes[3]||0)>.25) ry+=g.axes[3];
     let st=pads.get(g.index); if(!st){ st={prev:[],held:false,navT:0}; pads.set(g.index,st); } seen.add(g.index);
     st.x=clamp(gx,-1,1); st.y=clamp(gy,-1,1); st.down=[]; st.hit=[];
-    for(const i of [0,1,2,5,9]){ st.down[i]=b(i); st.hit[i]=st.down[i]&&!st.prev[i]; down[i]=down[i]||st.down[i]; }
+    for(const i of PAD_BTNS){ st.down[i]=b(i); st.hit[i]=st.down[i]&&!st.prev[i]; down[i]=down[i]||st.down[i]; }
     st.prev=st.down; x+=gx; y+=gy; }
   for(const i of [...pads.keys()]) if(!seen.has(i)){ pads.delete(i); if(Game.role==='couch'&&couchBy('p'+i)) pauseGame(); } // кувару је нестао гејмпад
   const sig=[...seen].sort().join(); if(sig!==pad.sig){ pad.sig=sig; uiDirty(); }
+  if(ry&&!ov.hidden) ov.scrollTop+=clamp(ry,-1,1)*dt*900; // десна палица помера дугачак мени
   x=clamp(x,-1,1); y=clamp(y,-1,1);
   const prev=pad.prev, hit=i=>down[i]&&!prev[i]; pad.prev=down;
   if(!pad.on&&(down.some(Boolean)||x||y)){ pad.on=true; document.body.classList.add('padnav'); uiDirty(); }
@@ -2817,10 +2853,11 @@ function pollPad(dt){
   if(!down.some(Boolean)&&!x&&!y){ pad.held=false; return; }
   audioInit();
   if(hit(9)&&['countdown','play','ending','pause'].includes(Game.phase)&&!Game.notice){ menuKey(); return; }
-  if(playing){ if(hit(0)) doAction('grab'); if(hit(2)) doAction('work'); if(hit(1)||hit(5)) doAction('dash'); return; }
+  if(playing){ if(hit(0)) doAction('grab'); if(hit(2)) doAction('work'); if(hit(1)||hit(5)) doAction('dash'); if(hit(3)&&helpLevel(V&&V.L)) toggleHelp(); return; }
   if(ov.hidden) return;
   if(hit(0)||hit(9)){ padPress(); return; }
-  const d=Math.abs(y)>.5?Math.sign(y):Math.abs(x)>.5?Math.sign(x):0;
+  if(hit(1)){ padBack(); return; }
+  const d=padDir(x,y);
   if(!d){ pad.held=false; return; }
   if(!pad.held){ pad.held=true; pad.navT=.4; padNav(d); } else if((pad.navT-=dt)<=0){ pad.navT=.15; padNav(d); }
 }
@@ -2830,16 +2867,16 @@ function couchPads(dt){
     if(!st.down.some(Boolean)&&!st.x&&!st.y){ st.held=false; continue; }
     audioInit();
     if(hit(9)&&['countdown','play','ending','pause'].includes(Game.phase)&&!Game.notice){ menuKey(); return; }
-    if(playing){ if(c){ if(hit(0)) doAction('grab',c.slot); if(hit(2)) doAction('work',c.slot); if(hit(1)||hit(5)) doAction('dash',c.slot); } continue; }
+    if(playing){ if(c){ if(hit(0)) doAction('grab',c.slot); if(hit(2)) doAction('work',c.slot); if(hit(1)||hit(5)) doAction('dash',c.slot); if(hit(3)&&helpLevel(V&&V.L)) toggleHelp(); } continue; }
     if(ov.hidden) continue;
     if(jn&&!c&&hit(0)){ couchJoin('p'+i); continue; }
-    if(jn&&c&&hit(1)){ couchLeave(c.slot); continue; }
+    if(hit(1)){ if(jn&&c&&Game.phase==='menu') couchLeave(c.slot); else padBack(); continue; }
     if(hit(0)||hit(9)){ padPress(); continue; }
-    const h=Math.abs(st.x)>.5&&Math.abs(st.x)>=Math.abs(st.y)?Math.sign(st.x):0, v=h?0:Math.abs(st.y)>.5?Math.sign(st.y):0;
-    if(!h&&!v){ st.held=false; continue; }
+    const d=padDir(st.x,st.y);
+    if(!d){ st.held=false; continue; }
     if(st.held&&(st.navT-=dt)>0) continue;
     st.navT=st.held?.15:.4; st.held=true;
-    if(h&&c&&jn) couchCycle(c.slot,h); else padNav(v||h);
+    if((d==='left'||d==='right')&&c&&jn) couchCycle(c.slot,d==='left'?-1:1); else padNav(d);
   }
 }
 if(TOUCH) document.body.classList.add('touch');
@@ -5781,9 +5818,20 @@ function levelList(noPlay){
       <button class="btn small act" data-act="pick" data-li="${i}" ${open&&!noPlay?'':'disabled'} ${i===0&&!noPlay?'data-primary':''}>Играј</button>
       ${save.best[i]?`<span class="best">Рекорд: ${fmt(save.best[i])} дин.</span>`:''}</li>`; }).join('')}</ol>`;
 }
-const howto=()=>`<div class="howto"><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> или стрелице: кретање</div><div><kbd>Размак</kbd> узми или спусти</div>
-  <div><kbd>E</kbd> сецкај или пери</div><div><kbd>Shift</kbd> трк</div><div><kbd>Esc</kbd> мени игре</div><div>Гејмпад: <kbd>A</kbd> узми <kbd>X</kbd> ради <kbd>B</kbd> трк <kbd>Start</kbd> мени</div></div>
+const howto=()=>`<div class="howto"><div class="hcol"><h4><span aria-hidden="true">⌨️</span> Тастатура</h4>
+  <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> или стрелице: кретање</div><div><kbd>Размак</kbd> узми или спусти</div>
+  <div><kbd>E</kbd> сецкај или пери</div><div><kbd>Shift</kbd> трк</div><div><kbd>H</kbd> рецепти на екрану, где их има</div><div><kbd>Esc</kbd> мени игре</div></div>${padHelp()}</div>
   <p class="touch-note">На телефону: превуци палцем по левој страни екрана за кретање, дугмад су десно. Најбоље игра у положеном положају.</p>`;
+/* дугмад гејмпада: ромб показује место дугмета (доле, лево, десно, горе), јер Nintendo има друга слова на истим местима */
+const faceBtn=pos=>`<span class="fb ${pos}" aria-hidden="true"><i></i><i></i><i></i><i></i></span>`;
+const padHelp=()=>`<div class="hcol"><h4><span aria-hidden="true">🎮</span> Гејмпад</h4>
+  <div>лева палица или крстић: кретање</div>
+  <div>${faceBtn('s')}<kbd>A</kbd><kbd>✕</kbd> узми или спусти</div>
+  <div>${faceBtn('w')}<kbd>X</kbd><kbd>□</kbd> сецкај или пери</div>
+  <div>${faceBtn('e')}<kbd>B</kbd><kbd>○</kbd> или <kbd>RB</kbd> трк</div>
+  <div>${faceBtn('n')}<kbd>Y</kbd><kbd>△</kbd> рецепти на екрану, где их има</div>
+  <div><kbd>Start</kbd> мени игре</div>
+  <p class="hnote">У менијима: крстић или палица бира дугме, A потврђује, B враћа назад, десна палица помера страну.</p></div>`;
 const toggles=(withTip)=>`<div class="row toggles"><button class="chip" data-act="toggle" data-k="sound" aria-pressed="${save.sound}">Звук</button><button class="chip" data-act="toggle" data-k="music" aria-pressed="${save.music}">Музика</button>${withTip&&TIP_ON?`<button class="chip tip-chip" data-act="tip">${save.allOpen?'♥ Хвала на подршци':'♥ Подржи игру'}</button>`:''}</div>`;
 /* игра заједно: картице кувара на овом рачунару; сваки уређај бира свог кувара, мишем ‹ › и × */
 const couchSig=()=>Game.role==='couch'?JSON.stringify(Couch.players)+pad.sig:'';
@@ -5800,10 +5848,10 @@ function couchSlots(size){
 }
 const couchPanel=()=>`<div class="mp-block"><h3>Заједно, за једним рачунаром</h3><p class="lede">Притисни „узми“ на свом уређају да уђеш у кухињу: A на гејмпаду, Размак на левој страни тастатуре или тачку на десној. До четири кувара.</p>
   ${couchSlots(56)}<p class="hint">На свом уређају лево и десно бираш кувара, а B на гејмпаду или × на картици излази из кухиње.</p></div>${levelList(couchEmpty())}`;
-const couchHowto=()=>`<div class="howto couch-keys"><div><b>Тастатура лево:</b><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>Размак</kbd> узми <kbd>E</kbd> ради <kbd>Shift</kbd> трк</div>
-  <div><b>Тастатура десно:</b> стрелице <kbd>.</kbd> узми <kbd>,</kbd> ради <kbd>Shift</kbd> трк</div>
-  <div><b>Гејмпад:</b><kbd>A</kbd> узми <kbd>X</kbd> ради <kbd>B</kbd> трк <kbd>Start</kbd> мени</div>
-  <div>Сам на тастатури? Ради цела тастатура.</div><div><kbd>Esc</kbd> мени игре</div></div>`;
+const couchHowto=()=>`<div class="howto"><div class="hcol"><h4><span aria-hidden="true">⌨️</span> Тастатура</h4>
+  <div><b>Лево:</b> <span class="nw"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span class="nw"><kbd>Размак</kbd> узми</span><span class="nw"><kbd>E</kbd> ради</span><span class="nw"><kbd>Shift</kbd> трк</span></div>
+  <div><b>Десно:</b> <span class="nw">стрелице</span><span class="nw"><kbd>.</kbd> узми</span><span class="nw"><kbd>,</kbd> ради</span><span class="nw"><kbd>Shift</kbd> трк</span></div>
+  <div>Сам на тастатури? Ради цела тастатура.</div><div><kbd>H</kbd> рецепти на екрану, где их има</div><div><kbd>Esc</kbd> мени игре</div></div>${padHelp()}</div>`;
 function mpPanel(){
   if(Net.standalone){
     if(Net.avail===false) return `<div class="mp-block"><h3>Игра са друштвом</h3><p class="lede">Мрежни део игре није успео да се учита у овом прегледачу.</p></div>`;
@@ -5857,7 +5905,7 @@ function ipsQR(){
 }
 const BUILD={
   menu:()=>{ const m=Game.mode==='mp'?'mp':Game.mode==='couch'?'couch':'solo';
-    return `<div class="sheet"><div class="cloth"></div><div class="sheet-body"><div class="langsel"><div class="seg" role="group" aria-label="Језик / Language"><button data-act="lang" data-l="sr" lang="sr" aria-pressed="${LANG==='sr'}">Српски</button><button data-act="lang" data-l="en" lang="en" aria-pressed="${LANG==='en'}">English</button></div></div><h1 class="logo">Прегорело</h1><p class="tagline">Кафанска кухиња, гладни гости и до четири кувара.</p>${NOKB&&!pad.on?'<p class="touch-tip" role="note">🎮 Најбоље се игра на уређају са тастатуром или уз гејмпад.</p>':''}<div class="kilim"></div>
+    return `<div class="sheet"><div class="cloth"></div><div class="sheet-body"><div class="langsel"><div class="seg" role="group" aria-label="Језик / Language"><button data-act="lang" data-l="sr" lang="sr" aria-pressed="${LANG==='sr'}">Српски</button><button data-act="lang" data-l="en" lang="en" aria-pressed="${LANG==='en'}">English</button></div></div><h1 class="logo">Прегорело</h1><p class="tagline">Кафанска кухиња, гладни гости и до четири кувара.</p>${NOKB&&!pad.on?'<p class="touch-tip" role="note">🎮 Најбоље се игра на уређају са тастатуром или уз гејмпад.</p>':`<p class="padline${pad.on?' on':''}" role="status"><span aria-hidden="true">🎮</span> ${pad.on?'Гејмпад је повезан: крстић бира, A потврђује, B враћа назад.':'Може и гејмпад: повежи га и притисни било које дугме.'}</p>`}<div class="kilim"></div>
     <div class="seg" role="group" aria-label="Начин игре"><button data-act="mode" data-m="solo" aria-pressed="${m==='solo'}">Сам</button><button data-act="mode" data-m="couch" aria-pressed="${m==='couch'}">Заједно</button><button data-act="mode" data-m="mp" aria-pressed="${m==='mp'}">Онлајн са друштвом</button></div>
     ${m==='couch'?couchPanel()+couchHowto():chefPicker()+(m==='solo'?levelList():mpPanel())+howto()}${toggles(true)}</div></div>`; },
   lobby:()=>{ const host=Game.role==='host', link=inviteLink();
@@ -5891,11 +5939,11 @@ const BUILD={
       <p class="lede">${esc(L.desc)}</p><div class="novo">${esc(L.novo)}</div><div class="recipes">${recs}</div>
       <div class="goals">${thr.map((s,k)=>`<span><b>${'★'.repeat(k+1)}</b> ${fmt(s)} дин.</span>`).join('')}${nPlayers()>1?`<span>за ${nPlayers()} кувара</span>`:''}</div>
       ${Game.role==='couch'?couchSlots(44):chefPicker(44)}
-      ${host?`<div class="row end"><button class="btn quiet" data-act="back">Назад</button><button class="btn" data-act="go" data-primary ${couchEmpty()?'disabled':''}>Крени!</button></div>`
+      ${host?`<div class="row end"><button class="btn quiet" data-act="back" data-back>Назад</button><button class="btn" data-act="go" data-primary ${couchEmpty()?'disabled':''}>Крени!</button></div>`
            :`<p class="wait">Чека се да домаћин крене…</p><div class="row end"><button class="btn quiet" data-act="leave">Напусти игру</button></div>`}</div></div>`; },
   pause:()=>{ const host=Game.role!=='client';
     return `<div class="sheet narrow"><div class="cloth thin"></div><div class="sheet-body"><h2>Пауза</h2>
-      ${host?`<p class="lede">Гости чекају, али време стоји.</p><div class="row col"><button class="btn" data-act="resume" data-primary>Настави</button><button class="btn quiet" data-act="retry">Почни испочетка</button><button class="btn quiet" data-act="tobase">${Game.role==='host'?'Назад у чекаоницу':'Главни мени'}</button></div>${toggles()}`
+      ${host?`<p class="lede">Гости чекају, али време стоји.</p><div class="row col"><button class="btn" data-act="resume" data-primary data-back>Настави</button><button class="btn quiet" data-act="retry">Почни испочетка</button><button class="btn quiet" data-act="tobase">${Game.role==='host'?'Назад у чекаоницу':'Главни мени'}</button></div>${toggles()}`
             :`<p class="wait">Домаћин је паузирао игру.</p><div class="row col"><button class="btn quiet" data-act="leave">Напусти игру</button></div>${toggles()}`}</div></div>`; },
   end:()=>{ const r=Game.result||{sc:0,st:0,d:0,m:0,tp:0,thr:[0,0,0],li:Game.li}, host=Game.role!=='client', last=r.li>=LEVELS.length-1, th=(LEVELS[r.li]||{}).theme;
     const verdict=['Газда није задовољан. Пробај поново!','Није лоше, али може брже.','Браво! Гости су сити и задовољни.','Свака част! Права кафанска легенда.'][r.st];
@@ -5918,11 +5966,11 @@ const BUILD={
         <dl class="tip-acct"><dt>Прималац</dt><dd>${esc(TIP.ipsName.trim())}</dd><dt>Рачун</dt><dd>${fmtAcct(ipsAcct)}</dd><dt>Износ</dt><dd>${fmt(TIP.rsd)} дин.</dd><dt>Сврха</dt><dd>${IPS_PURPOSE}</dd></dl>
         <button class="btn small quiet" data-act="tipcopy">Копирај рачун</button><p class="hint" id="tipHint"></p></div>`:''}
       <p class="hint">Уплату не проверавамо, верујемо ти на реч.</p>
-      <div class="row end"><button class="btn quiet" data-act="tipclose" ${TIP.kofi?'':'data-primary'}>Назад</button><button class="btn" data-act="tipdone" ${done?'disabled':''}>${done?'Све је откључано. Хвала!':'Уплаћено, откључај све'}</button></div></div></div>`; },
-  notice:()=>`<div class="sheet narrow"><div class="cloth thin"></div><div class="sheet-body"><h2>Обавештење</h2><p class="lede">${esc(Game.notice)}</p><div class="row end"><button class="btn" data-act="ok" data-primary>У реду</button></div></div></div>`,
-  joining:()=>`<div class="sheet narrow"><div class="cloth thin"></div><div class="sheet-body"><h2>${Net.standalone?'Улазак у игру':'Улазак у игру '+esc(Net.code||'')}</h2><p class="wait">Тражим домаћина…${Net.standalone?' Ово може да потраје неколико секунди.':''}</p><div class="row end"><button class="btn quiet" data-act="leave" data-primary>Одустани</button></div></div></div>`,
+      <div class="row end"><button class="btn quiet" data-act="tipclose" data-back ${TIP.kofi?'':'data-primary'}>Назад</button><button class="btn" data-act="tipdone" ${done?'disabled':''}>${done?'Све је откључано. Хвала!':'Уплаћено, откључај све'}</button></div></div></div>`; },
+  notice:()=>`<div class="sheet narrow"><div class="cloth thin"></div><div class="sheet-body"><h2>Обавештење</h2><p class="lede">${esc(Game.notice)}</p><div class="row end"><button class="btn" data-act="ok" data-primary data-back>У реду</button></div></div></div>`,
+  joining:()=>`<div class="sheet narrow"><div class="cloth thin"></div><div class="sheet-body"><h2>${Net.standalone?'Улазак у игру':'Улазак у игру '+esc(Net.code||'')}</h2><p class="wait">Тражим домаћина…${Net.standalone?' Ово може да потраје неколико секунди.':''}</p><div class="row end"><button class="btn quiet" data-act="leave" data-primary data-back>Одустани</button></div></div></div>`,
   waitslot:()=>`<div class="sheet narrow"><div class="cloth thin"></div><div class="sheet-body"><h2>Само тренутак</h2><p class="wait">Ниво је у току или је кухиња пуна. Улазиш чим домаћин заврши ниво.</p><div class="row end"><button class="btn quiet" data-act="leave" data-primary>Напусти игру</button></div></div></div>`,
-  cmenu:()=>`<div class="sheet narrow"><div class="cloth thin"></div><div class="sheet-body"><h2>Мени</h2><p class="lede">Игра тече даље док си овде. Паузу може да укључи само домаћин.</p><div class="row col"><button class="btn" data-act="cclose" data-primary>Назад у кухињу</button><button class="btn quiet" data-act="leave">Напусти игру</button></div>${toggles()}</div></div>`
+  cmenu:()=>`<div class="sheet narrow"><div class="cloth thin"></div><div class="sheet-body"><h2>Мени</h2><p class="lede">Игра тече даље док си овде. Паузу може да укључи само домаћин.</p><div class="row col"><button class="btn" data-act="cclose" data-primary data-back>Назад у кухињу</button><button class="btn quiet" data-act="leave">Напусти игру</button></div>${toggles()}</div></div>`
 };
 function copyLink(){
   const inp=$('#linkIn'), hint=$('#copyHint'); if(!inp) return;
@@ -5989,7 +6037,7 @@ V=viewForLevel(0); resize(); applyLang();
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ bgKey=''; iconCache.clear(); });
 netInit();
 requestAnimationFrame(frame);
-window.__kb={tr,setLang,SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,Couch,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,simStep,enc,dec,buildSnap,onHostPeers,setMyChef,onSnap,shoveStep,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
+window.__kb={tr,setLang,SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,Couch,padNav,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,simStep,enc,dec,buildSnap,onHostPeers,setMyChef,onSnap,shoveStep,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
 })();
 </script>
 </body>
