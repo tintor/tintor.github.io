@@ -43,8 +43,9 @@ body{height:100%; margin:0; color:var(--ink); font-family:var(--font); overflow:
 .sheet{margin:auto; width:min(700px,100%); background:var(--paper); color:var(--ink); border-radius:6px;
   box-shadow:0 24px 70px rgba(0,0,0,.45); overflow:hidden}
 .sheet.narrow{width:min(440px,100%)}
-.cloth{height:26px; background:conic-gradient(var(--red) 25%, #fff 0 50%, var(--red) 0 75%, #fff 0) 0 0/26px 26px}
-.cloth.thin{height:14px; background-size:14px 14px}
+.cloth{height:26px; background:linear-gradient(90deg,rgba(196,22,34,.55) 50%,transparent 0),linear-gradient(rgba(196,22,34,.55) 50%,transparent 0),#fff; background-size:10px 10px}
+.cloth.thin{height:14px; background-size:7px 7px}
+.link-chip{display:inline-block; text-decoration:none}
 .sheet-body{padding:22px clamp(18px,4vw,36px) 26px}
 .logo{font-family:var(--display); font-weight:400; color:var(--red); text-align:center; font-size:clamp(52px,11vw,92px);
   line-height:.95; margin:8px 0 0; letter-spacing:.5px; text-shadow:0 2px 0 rgba(125,11,17,.18)}
@@ -684,7 +685,7 @@ const EN={
   'На свом уређају лево и десно бираш кувара, а B на гејмпаду или × на картици излази из кухиње.':'On your own device, left and right pick your cook; B on a controller or × on the card leaves the kitchen.',
   'Лево:':'Left:','Десно:':'Right:','Тастатура':'Keyboard','Гејмпад':'Controller','стрелице':'arrow keys','Сам на тастатури? Ради цела тастатура.':'Alone on the keyboard? The whole keyboard works.',
   'Тастатура: WASD':'Keyboard: WASD','Тастатура: стрелице':'Keyboard: arrows','Изађи из кухиње':'Leave the kitchen','Претходни кувар':'Previous cook','Следећи кувар':'Next cook',
-  'Звук':'Sound','Музика':'Music',
+  'Звук':'Sound','Музика':'Music','Српска кухиња ↗':'Serbian cuisine ↗',
   '♥ Подржи игру':'♥ Support the game','♥ Хвала на подршци':'♥ Thanks for your support','Подржи игру':'Support the game',
   'Прегорело је бесплатно. Ако ти се допада, части нас кафом: откључаћеш све нивое и све куваре.':'Pregorelo is free. If you like it, buy us a coffee: it unlocks every level and every cook.',
   'Картицом или PayPal-ом':'By card or PayPal','Преко Ko-fi, од':'Through Ko-fi, from','Отвори Ko-fi':'Open Ko-fi',
@@ -2922,7 +2923,7 @@ const pad={x:0,y:0,on:false,prev:[],held:false,navT:0,sig:''};
 const pads=new Map(); // по индексу гејмпада: {x,y,down,hit,prev,held,navT}
 const PAD_BTNS=[0,1,2,3,5,9];
 // поља за текст се прескачу: гејмпадом се не може куцати
-function padFocusables(){ return [...ov.querySelectorAll('button:not([disabled]):not(.cbtn)')].filter(e=>e.offsetParent!==null); }
+function padFocusables(){ return [...ov.querySelectorAll('button:not([disabled]):not(.cbtn),a.link-chip')].filter(e=>e.offsetParent!==null); }
 function padNav(dir){
   const l=padFocusables(); if(!l.length) return;
   const cur=document.activeElement;
@@ -2940,7 +2941,7 @@ function padNav(dir){
   if(f) try{ f.focus(); f.scrollIntoView({block:'nearest'}); }catch(e){}
 }
 function padPress(){ const f=document.activeElement; if(f&&ov.contains(f)&&f.tagName==='INPUT') return;
-  const b=f&&ov.contains(f)&&f.tagName==='BUTTON'&&!f.disabled?f:ov.querySelector('[data-primary]:not([disabled])'); if(b) b.click(); }
+  const b=f&&ov.contains(f)&&(f.tagName==='BUTTON'||f.tagName==='A')&&!f.disabled?f:ov.querySelector('[data-primary]:not([disabled])'); if(b) b.click(); }
 function padBack(){ const b=ov.hidden?null:ov.querySelector('[data-back]:not([disabled])'); if(b) b.click(); return !!b; }
 const padDir=(x,y)=>Math.abs(x)>.5&&Math.abs(x)>=Math.abs(y)?(x>0?'right':'left'):Math.abs(y)>.5?(y>0?'down':'up'):null;
 function pollPad(dt){
@@ -3836,9 +3837,9 @@ function drawZmaj(c,D,s){
   c.moveTo(.38*s,0); c.bezierCurveTo(.5*s,.04*s,.52*s,(.16-wv)*s,.62*s,(.12-wv)*s); c.stroke();
   c.restore(); }
 // мајстор чаја: свилени мантил и шајкача; кунг-фу бакрачем дугачког кљуна сипа шљивовицу, а кад стане, врти се
-// у „Змају“ сви кувари носе униформу ресторана: високу капу и кецељу са шљивом
+// у „Змају“ сви кувари носе униформу ресторана: високу капу и кецељу са шљивом (пандур капу преко шлема, кецељу преко опреме)
 const UNI=new Map();
-function chefLook(ch){ const st=CHARS[ch]||CHARS[0]; if(!(V&&V.L&&V.L.uniform)) return st; let u=UNI.get(ch); if(!u){ u=Object.assign({},st,{hat:'toque',uniform:true}); UNI.set(ch,u); } return u; }
+function chefLook(ch){ const st=CHARS[ch]||CHARS[0]; if(!(V&&V.L&&V.L.uniform)) return st; let u=UNI.get(ch); if(!u){ u=Object.assign({},st,st.hat==='riot'?{toqueOver:true,uniform:true}:{hat:'toque',uniform:true}); UNI.set(ch,u); } return u; }
 const CAJ={tag:'#7a1018',skin:'#efc19a',shirt:'#7a1018',vest:'#7a1018',sleeve:'#7a1018',trim:'#d9a21b',apron:null,hat:'sajkaca',hatC:'#3a3a32',hair:'#2b1a10',stache:true,noBelt:true};
 function drawCajMajstor(c,px,py,s,n){ const pour=n.pause>0; drawChar(c,px,py,s,n.fx,n.fy,n.walk,CAJ,{pose:pour?'up':'busy',prop:(cc,i)=>propTeaKettle(cc,i,pour)}); }
 function propTeaKettle(c,i,pour){
@@ -4192,6 +4193,15 @@ function drawChar(c,px,py,s,fx,fy,walk,st,o){
     c.fillStyle='#fff'; c.textAlign='center'; c.textBaseline='middle'; c.fillText(o.label,px,ly+1); }
   return info;
 }
+// висока куварска капа „Змаја и Шљиве“: бела, набрана, црвена трака са шљивом; hy је средина главе
+function drawToque(c,px,hy,s,lw,back){
+  const y0=hy-s*.12;
+  for(const [x,y,r] of [[-.11,-.3,.1],[.11,-.3,.1],[0,-.35,.11]]){ circ(c,px+x*s,y0+y*s,r*s); fs(c,'#ffffff','rgba(0,0,0,.3)',lw); }
+  c.fillStyle='#ffffff'; c.fillRect(px-s*.17,y0-s*.3,s*.34,s*.3); c.strokeStyle='rgba(0,0,0,.3)'; c.lineWidth=lw; c.beginPath(); c.moveTo(px-s*.17,y0); c.lineTo(px-s*.19,y0-s*.3); c.moveTo(px+s*.17,y0); c.lineTo(px+s*.19,y0-s*.3); c.stroke();
+  c.strokeStyle='rgba(120,120,140,.3)'; c.beginPath(); for(const k of [-.09,0,.09]){ c.moveTo(px+k*s,y0-s*.02); c.lineTo(px+k*s*1.1,y0-s*.34); } c.stroke();
+  rr(c,px-s*.18,y0-s*.05,s*.36,s*.08,s*.02); fs(c,'#7a1018','#d9a21b',Math.max(1,s*.015));
+  if(!back){ circ(c,px,y0-s*.01,s*.028); c.fillStyle='#6a3a9a'; c.fill(); c.strokeStyle='#ffd34d'; c.lineWidth=Math.max(1,s*.01); c.stroke(); }
+}
 function hatDraw(c,st,px,hy,s,back,fx,fy,lw,o){
   const line='rgba(0,0,0,.5)'; o=o||{};
   if(st.hat==='sajkaca'){ const y0=hy-s*.12;
@@ -4273,14 +4283,9 @@ function hatDraw(c,st,px,hy,s,back,fx,fy,lw,o){
   } else if(st.hat==='bald'){
     c.save(); circ(c,px,hy,s*.195); c.clip(); c.fillStyle=st.hair; c.fillRect(px-s*.2,hy-s*.02,s*.06,s*.12); c.fillRect(px+s*.14,hy-s*.02,s*.06,s*.12); c.restore();
     ell(c,px-s*.05,hy-s*.12,s*.05,s*.025,-.3); c.fillStyle='rgba(255,255,255,.45)'; c.fill();
-  } else if(st.hat==='toque'){ // висока куварска капа „Змаја и Шљиве“: бела, набрана, црвена трака са шљивом
+  } else if(st.hat==='toque'){
     c.save(); circ(c,px,hy,s*.195); c.clip(); ell(c,px,hy-s*.1+(back?s*.06:0),s*.23,back?s*.2:s*.13); c.fillStyle=st.hair; c.fill(); c.restore();
-    const y0=hy-s*.12;
-    for(const [x,y,r] of [[-.11,-.3,.1],[.11,-.3,.1],[0,-.35,.11]]){ circ(c,px+x*s,y0+y*s,r*s); fs(c,'#ffffff','rgba(0,0,0,.3)',lw); }
-    c.fillStyle='#ffffff'; c.fillRect(px-s*.17,y0-s*.3,s*.34,s*.3); c.strokeStyle='rgba(0,0,0,.3)'; c.lineWidth=lw; c.beginPath(); c.moveTo(px-s*.17,y0); c.lineTo(px-s*.19,y0-s*.3); c.moveTo(px+s*.17,y0); c.lineTo(px+s*.19,y0-s*.3); c.stroke();
-    c.strokeStyle='rgba(120,120,140,.3)'; c.beginPath(); for(const k of [-.09,0,.09]){ c.moveTo(px+k*s,y0-s*.02); c.lineTo(px+k*s*1.1,y0-s*.34); } c.stroke();
-    rr(c,px-s*.18,y0-s*.05,s*.36,s*.08,s*.02); fs(c,'#7a1018','#d9a21b',Math.max(1,s*.015));
-    if(!back){ circ(c,px,y0-s*.01,s*.028); c.fillStyle='#6a3a9a'; c.fill(); c.strokeStyle='#ffd34d'; c.lineWidth=Math.max(1,s*.01); c.stroke(); }
+    drawToque(c,px,hy,s,lw,back);
   } else if(st.hat==='kapa'){
     ell(c,px,hy-s*.1,s*.2,s*.12); fs(c,lg(c,px,hy-s*.22,px,hy,st.hatC,'#1a1a1a'),line,lw);
     if(!back){ ell(c,px+fx*s*.08,hy-s*.03+fy*s*.06,s*.15,s*.05); fs(c,'#1a1a1a'); }
@@ -4306,6 +4311,7 @@ function hatDraw(c,st,px,hy,s,back,fx,fy,lw,o){
         c.strokeStyle='rgba(255,255,255,.6)'; c.lineWidth=1; c.beginPath(); c.moveTo(px-s*.12,hy-s*.04); c.lineTo(px-s*.04,hy-s*.04); c.stroke(); }
       if(o.grease){ c.fillStyle='rgba(210,160,60,.65)'; circ(c,px-s*.04,hy-s*.21,s*.025); c.fill(); circ(c,px+s*.06,hy-s*.22,s*.018); c.fill(); }
     }
+    if(st.toqueOver){ c.save(); c.translate(px,hy-s*.16); c.rotate(-.14); drawToque(c,0,s*.02,s*.92,lw,back); c.restore(); }
   }
 }
 function portrait(c,size,ch,dim){ const st=CHARS[ch]; c.save(); if(dim) c.globalAlpha=.3; drawChar(c,size/2,size*.7,size*.98,0,1,0,st,{}); c.restore(); }
@@ -5025,7 +5031,8 @@ function drawGuest(g){
 function drawTable(t){
   const sc=SCN.sc; ctx.fillStyle='rgba(0,0,0,.25)'; ell(ctx,t.x,t.y+t.r*.25,t.r*1.05,t.r*.85); ctx.fill();
   ctx.save(); circ(ctx,t.x,t.y,t.r); ctx.clip(); ctx.fillStyle='#ffffff'; ctx.fillRect(t.x-t.r,t.y-t.r,t.r*2,t.r*2);
-  const n=5, cs=t.r*2/n; ctx.fillStyle='#c81d27'; for(let i=0;i<n;i++) for(let j=0;j<n;j++) if((i+j)%2===0) ctx.fillRect(t.x-t.r+i*cs,t.y-t.r+j*cs,cs+.5,cs+.5); ctx.restore();
+  // кафански столњак „вичи“: црвене пруге уздуж и попреко, где се укрсте тамније
+  const n=11, cs=t.r*2/n; ctx.fillStyle='rgba(196,22,34,.55)'; for(let i=0;i<n;i+=2){ ctx.fillRect(t.x-t.r+i*cs,t.y-t.r,cs,t.r*2); ctx.fillRect(t.x-t.r,t.y-t.r+i*cs,t.r*2,cs); } ctx.restore();
   circ(ctx,t.x,t.y,t.r); ctx.strokeStyle='rgba(60,20,10,.45)'; ctx.lineWidth=1.2; ctx.stroke();
   for(const g of SCN.guests.values()) if(g.plate&&g.state==='eat'&&SCN.seats[g.seat%SCN.seats.length].ti===t.i) drawFnAt(ctx,'dish:'+g.plate,cc=>dishArt(cc,g.plate),t.x+(g.x-t.x)*.45,t.y+(g.y-t.y)*.45,sc*.42);
   { const smoking=t.i===1, R=Math.max(8,sc*.21), cx=t.x+t.r*.55, cy=t.y-t.r*.58, ring=smoking?'#2e8b4a':'#c8102e';
@@ -6623,7 +6630,7 @@ const padHelp=()=>`<div class="hcol"><h4><span aria-hidden="true">🎮</span> Г
   <div>${faceBtn('n')}<kbd>Y</kbd><kbd>△</kbd> рецепти на екрану, где их има</div>
   <div><kbd>Start</kbd> мени игре</div>
   <p class="hnote">У менијима: крстић или палица бира дугме, A потврђује, B враћа назад, десна палица помера страну.</p></div>`;
-const toggles=(withTip)=>`<div class="row toggles"><button class="chip" data-act="toggle" data-k="sound" aria-pressed="${save.sound}">Звук</button><button class="chip" data-act="toggle" data-k="music" aria-pressed="${save.music}">Музика</button>${withTip&&TIP_ON?`<button class="chip tip-chip" data-act="tip">${save.allOpen?'♥ Хвала на подршци':'♥ Подржи игру'}</button>`:''}</div>`;
+const toggles=(withTip)=>`<div class="row toggles"><button class="chip" data-act="toggle" data-k="sound" aria-pressed="${save.sound}">Звук</button><button class="chip" data-act="toggle" data-k="music" aria-pressed="${save.music}">Музика</button>${withTip?`<a class="chip link-chip" href="https://serbia.com/about-serbia/traditional-cuisine/" target="_blank" rel="noopener">Српска кухиња ↗</a>`:''}${withTip&&TIP_ON?`<button class="chip tip-chip" data-act="tip">${save.allOpen?'♥ Хвала на подршци':'♥ Подржи игру'}</button>`:''}</div>`;
 /* игра заједно: картице кувара на овом рачунару; сваки уређај бира свог кувара, мишем ‹ › и × */
 const couchSig=()=>Game.role==='couch'?JSON.stringify(Couch.players)+pad.sig:'';
 const couchEmpty=()=>Game.role==='couch'&&!Couch.players.length;
