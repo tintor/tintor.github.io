@@ -161,6 +161,8 @@ body.padnav #ov :focus{outline:3px solid var(--brass); outline-offset:2px}
 .rec-name{font-weight:800; font-size:16px; display:flex; gap:8px; align-items:baseline; flex-wrap:wrap}
 .rec-price{font-weight:500; color:var(--muted); font-size:14px}
 .rec-parts{display:flex; flex-wrap:wrap; gap:4px 6px; align-items:center; margin-top:4px; font-size:13px; color:var(--muted)}
+.rec-parts .brk{flex-basis:100%; height:0}
+.rec-sub{font-size:12.5px; color:var(--ink); margin-right:2px}
 .part{display:inline-flex; align-items:center; gap:4px; padding:2px 8px 2px 3px; border-radius:999px; background:var(--chip)}
 .part em{font-style:normal; color:var(--red); font-weight:700}
 .plus{font-weight:800; color:var(--chip-edge)}
@@ -284,23 +286,45 @@ Object.assign(RECIPES,{
 Object.assign(ING,{
   ps:{n:'Пасуљ'}, vo:{n:'Вода'}, pz:{n:'Корбаст пасуљ'}, pg:{n:'Прасе',spit:1}, jg:{n:'Јагњетина'}, jt:{n:'Јагњетина испод сача'},
   kl:{n:'Сремски кулен',chop:1,verb:'исеци'}, pt:{n:'Пршута'},
-  ba:{n:'Бао лепиња'}, kk:{n:'Кикирики'}, lj:{n:'Љута папричица',chop:1}, kg:{n:'Кунг Пао'}, rl:{n:'Ролнице'}, zl:{n:'Листићи злата'}
+  kk:{n:'Кикирики'}, lj:{n:'Љута папричица',chop:1}, zl:{n:'Листићи злата'},
+  pk:{n:'Патка',spit:1,carve:1,verb:'исеци'}, pl:{n:'Пилетина',chop:1,verb:'исеци'}, sn:{n:'Шаран',chop:1,verb:'зарежи'}, sl:{n:'Шљиве'}, mr:{n:'Презле са сусамом'}, tz:{n:'Мешено тесто'},
+  dm:{n:'Сарма-димсам',chop:1,verb:'савиј',steam:1}, kn:{n:'Кнедла',chop:1,verb:'обликуј',steam:1}, rz:{n:'Резанци'}, rv:{n:'Кувани резанци'},
+  gu:{n:'Гулаш'}, ss:{n:'Шљивов сос'}, gm:{n:'Пилетина генерала Мишића'}, sp:{n:'Пржени шаран'}, mx:{n:'Смеса'}
 });
 Object.assign(RECIPES,{
   pasulj:{n:'Корбаст пасуљ', cook:'kazan', in:['psR'], out:'pz', parts:['pzK'], price:120, por:4},
   prase:{n:'Прасе на ражњу', parts:['pgG','luC'], price:950},
   jagnjetina:{n:'Јагњетина испод сача', cook:'sac', in:['jgR','kmC'], out:'jt', parts:['jtK'], price:900},
   kulen:{n:'Сремски кулен с пршутом и кајмаком', parts:['klC','ptR','kaR'], price:800},
-  cevbao:{n:'Ћевап-бао', parts:['meG','baR','luC'], price:1200},
-  kungpao:{n:'Кунг Пао пљескавица', cook:'wok', in:['meR','kkR','ljC'], out:'kg', parts:['kgK'], price:1500},
-  rolnice:{n:'Ајвар пролећне ролнице', cook:'wok', in:['koR','avR','kpR'], out:'rl', parts:['rlK'], price:1400}
+  /* међупроизводи (L.preps): не наручују се, спремају се на дасци, у ћупу, казану и лонцу */
+  dmp:{n:'Сирови сарма-димсам', cook:'board', in:['kpR','meR','piR'], out:'dm', parts:[], price:0},
+  knp:{n:'Сирова кнедла', cook:'board', in:['tzR','slR'], out:'kn', parts:[], price:0},
+  glz:{n:'Глазирана патка', cook:'marin', in:['pkR','slR'], out:'pk', parts:[], price:0},
+  gul:{n:'Гулаш', cook:'kazan', in:['meR','luC','ljC'], out:'gu', parts:[], price:0, por:4},
+  sos:{n:'Шљивов сос', cook:'kazan', in:['slR','slR','ljC'], out:'ss', parts:[], price:0, por:4},
+  rzk:{n:'Кувани резанци', cook:'pot', in:['rzR'], out:'rv', parts:[], price:0},
+  /* „Змај и Шљива“: шест јела, мени се шири током вечери (L.waves) */
+  misic:{n:'Пилетина генерала Мишића', cook:'wok', in:['plC','kkR','ljC'], out:'gm', parts:['gmK'], price:1900, flambe:1,
+    card:['plR','kkR','ljR','@wok','rkR'], steps:[['i','plR','исеци'],'+',['i','kkR'],'+',['i','ljR','сецкај'],'→',['s','wok','у вок, протреси!'],'→',['i','rkR','фламбирај!']]},
+  dimsum:{n:'Сарма-димсам', parts:['dmK','kaR','rkR'], price:1800, pat:15,
+    card:['kpR','meR','piR','@steam','kaR','rkR'], steps:[['i','kpR'],'+',['i','meR'],'+',['i','piR'],'→',['s','board','на даску, савиј (E)'],'→',['s','steam','у парњачу'],'+',['i','kaR'],'+',['i','rkR','кап']]},
+  patka:{n:'Пекиншка патка с кајмаком', parts:['pkC','teG','kaR'], price:2800, pat:40,
+    card:['pkR','slR','@marin','@spit','teR','kaR'], steps:[['i','pkR'],'+',['i','slR'],'→',['s','marin','у ћуп'],'→',['s','spit','на ражањ, окрећи'],'→',['s','board','исеци'],'+',['i','teR','палачинка'],'+',['i','kaR']]},
+  lanzou:{n:'Ланџоу резанци бабе Милеве', parts:['rvK','guK'], price:2200, pat:30,
+    card:['tzR','@pull','@pot','guK'], steps:[['i','tzR'],'→',['s','pull','развлачи (E) до 64 нити'],'→',['s','pot','у лонац'],'+',['i','guK'],'/',['t','Гулаш, 4 порције:'],['i','meR'],'+',['i','luR','сецкај'],'+',['i','ljR','сецкај'],'→',['s','kazan','у казан, мешај!']]},
+  saran:{n:'Шаран у шљивовом сосу', cook:'wok', in:['snC'], out:'sp', parts:['spK','ssK'], price:2400, pat:20,
+    card:['snR','@wok','ssK'], steps:[['i','snR','зарежи'],'→',['s','wok','у вок, протреси!'],'+',['i','ssK'],'/',['t','Шљивов сос, 4 порције:'],['i','slR'],'+',['i','slR'],'+',['i','ljR','сецкај'],'→',['s','kazan','у казан, мешај!']]},
+  knedle:{n:'Кнедле са шљивама', parts:['knK','mrR'], price:1600, pat:15,
+    card:['tzR','slR','@steam','mrR'], steps:[['i','tzR'],'+',['i','slR'],'→',['s','board','на даску, обликуј (E)'],'→',['s','steam','у парњачу'],'+',['i','mrR']]}
 });
 const RKEYS=Object.keys(RECIPES);
 const CRATE={p:'pa',k:'kr',s:'si',l:'lu',m:'me',h:'le',j:'ka',f:'ko',y:'jo',e:'ja',c:'ku',r:'ri',a:'ap',u:'kp',i:'pi',q:'pr',t:'km'};
-const KIND={'#':'counter',W:'window',Q:'window',D:'plates',R:'trash',X:'board',G:'grill',P:'pot',K:'kotlic',O:'oven',T:'trays',N:'sink',Y:'dirtyret',B:'roaster',Z:'kazan',L:'griddle',V:'pan',J:'spit',S:'sac',H:'wok'};
+const KIND={'#':'counter',W:'window',Q:'window',D:'plates',R:'trash',X:'board',G:'grill',P:'pot',K:'kotlic',O:'oven',T:'trays',N:'sink',Y:'dirtyret',B:'roaster',Z:'kazan',L:'griddle',V:'pan',J:'spit',S:'sac',H:'wok',C:'marin',M:'steam'};
 const CHOP_T=1.6, WASH_T=1.9, GRILL_T=9.75, GRILL_BURN=13.5, RETURN_T=5.5, PENALTY=200;
-const COOK_T={pot:9,kotlic:10,tray:10,kazan:11,sac:11,wok:6}, BURN_T={pot:12,kotlic:12,tray:12,kazan:12,sac:12,wok:9};
+const COOK_T={pot:9,kotlic:10,tray:10,kazan:11,sac:11,wok:6,marin:16}, BURN_T={pot:12,kotlic:12,tray:12,kazan:12,sac:12,wok:9,marin:22};
 const ROAST_T=7, ROAST_BURN=9, PAN_T=7, PAN_BURN=9, GRID_T1=6.75, GRID_FLIP=6, GRID_T2=5.25, GRID_BURN=12, STIR_DRAIN=4, PEP_HEAT=10, DRINK_HEAT=22;
+const STEAM_T=12, STEAM_BURN=16, STEAM_WATER=55, STEAM_DRY=3, PULL_OK=64, PULL_MAX=128, FLAMBE_AT=.8, FLAMBE_WIN=3.5, STUN_T=2;
+const SPIT_FROM={pg:'R',pk:'M'}; // на ражањ иде прасе сирово, а патка тек глазирана
 const SPIT_T=10, SPIT_BURN=9, TURN_DRAIN=3.5, WOK_TOSS=3.2, WOK_TOSSES=2, WATER_MAX=2, SMOTRA_BONUS=300, MICHELIN_BONUS=1000;
 const SPEED=4.4, PR=0.3, NPC_R=0.32;
 const UNLOCK_ALL=false; // true = сви нивои отворени без звездица (за тестирање)
@@ -353,12 +377,14 @@ const LEVELS=[
     band:[0,1,2].map(k=>({kind:'squad',path:[[1.5+k*.9,4.5],[14.5,4.5],[14.5,5.5],[1.5,5.5],[1.5,4.5]],speed:1.3,wp:1})),
     map:['#b####WW#ok#jQQ#','Z.......#......X','Z.......#......X','#...##..#..##..J','#..............S','#..............S','#...##..#..##..#','R...@...#......R','#v####D##gDn#tl#']},
   { name:'„Змај и Шљива“ на Београду на води', theme:'fusion', tune:'zmaj',
-    desc:'Кинеско-српски фјужн за београдску елиту: ћевап-бао, кунг пао пљескавица и ајвар ролнице.',
-    novo:'Ново: вок. Убаци састојке, па кад се појави ↻ протреси вок (E) — ако закасниш, загори! Листићи злата на тањиру дуплирају цену. Крипто инвеститор плаћа како курс падне, стартап у акцијама, а тајкун само ако је брзо. Склањај се роботу за доставу!',
-    time:200, recipes:['cevbao','kungpao','rolnice'], interval:17, maxOrders:5, patience:85, plates:5, trays:0, dirty:false, gold:true, plate:'slate',
-    stars:[4000,8000,12000], crates:{b:'ba',p:'kk',c:'lj',a:'av',z:'zl'},
-    band:[{kind:'robot',path:[[1.5,4.5],[12.5,4.5],[12.5,5.5],[1.5,5.5]],speed:1.05,wp:1}],
-    map:['#WW#m#b#l#p#c#','#............X','D............X','#...##..##...H','G............H','G............#','#...##..##...#','R.....@......z','##f#a##u######']}
+    desc:'Кинеско-српски фјужн за београдску елиту: пекиншка патка с кајмаком, сарма-димсам, ланџоу резанци бабе Милеве, шаран у шљивовом сосу, пилетина генерала Мишића и кнедле са шљивама.',
+    novo:'Ново: ћуп, парњача, развлачење теста и фламбирање. Патку прво глазирај у ћупу са шљивама, па је пеци на ражњу и окрећи (E). Димсам и кнедлу сложи на дасци, савиј (E), па у парњачу — пази да има воде! Тесто за резанце развлачи на дасци (E) до 64 нити, али не претерај. Гулаш и шљивов сос кувај унапред у казану, по четири порције. Пилетину на крају фламбирај ракијом — ни пре, ни после! Листићи злата дуплирају цену. Мени се шири током вечери.',
+    time:600, recipes:['misic','dimsum','patka','lanzou','saran','knedle'], preps:['dmp','knp','glz','gul','sos','rzk'],
+    waves:[[0,['misic','dimsum']],[90,['patka']],[210,['lanzou']],[330,['saran']],[450,['knedle']]],
+    interval:26, maxOrders:5, patience:150, plates:6, trays:0, dirty:false, gold:true, plate:'slate',
+    stars:[12000,25000,40000], crates:{a:'pk',b:'pl',c:'sn',d:'sl',e:'te',f:'me',g:'kp',h:'pi',i:'ka',j:'lu',k:'lj',l:'kk',m:'rk',n:'mr',o:'zl',p:'vo',q:'tz'},
+    band:[{kind:'robot',path:[[1.5,4.5],[14.5,4.5],[14.5,5.5],[1.5,5.5]],speed:1.05,wp:1}],
+    map:['#WW#abcd#efgh#D#','H..............M','H..............M','J...XX....CC...#','#..............Z','L..............Z','#...XX....##...P','#..............#','R......@.......#','##ijklmnopq#####']}
 ];
 
 const CHARS=[
@@ -611,9 +637,8 @@ const EN={
   'Дођи да кувамо заједно у „Прегорело“':'Come cook with me in “Pregorelo”',
   // касарна и „Змај и Шљива“: састојци, јела, нивои, кувари
   'Пасуљ':'Beans','Вода':'Water','Корбаст пасуљ':'Runny bean stew (Korbast pasulj)','Прасе':'Suckling pig','Јагњетина':'Lamb','Јагњетина испод сача':'Lamb under the sač (Jagnjetina ispod sača)',
-  'Сремски кулен':'Srem kulen sausage','Пршута':'Prosciutto (Pršuta)','Бао лепиња':'Bao bun','Кикирики':'Peanuts','Љута папричица':'Chili pepper','Кунг Пао':'Kung pao','Ролнице':'Spring rolls','Листићи злата':'Gold leaf',
-  'Прасе на ражњу':'Spit-roasted pig (Prase na ražnju)','Сремски кулен с пршутом и кајмаком':'Kulen with prosciutto and kajmak (Sremski kulen)','Ћевап-бао':'Ćevap bao',
-  'Кунг Пао пљескавица':'Kung pao pljeskavica','Ајвар пролећне ролнице':'Ajvar spring rolls',
+  'Сремски кулен':'Srem kulen sausage','Пршута':'Prosciutto (Pršuta)','Кикирики':'Peanuts','Љута папричица':'Chili pepper','Листићи злата':'Gold leaf',
+  'Прасе на ражњу':'Spit-roasted pig (Prase na ražnju)','Сремски кулен с пршутом и кајмаком':'Kulen with prosciutto and kajmak (Sremski kulen)',
   'исеци':'slice','на ражањ':'on the spit','под сач':'under the sač','у вок, протреси!':'into the wok, toss!',
   'ВОЈСКА':'ARMY','ДОСТАВА':'DELIVERY','ЈЕЛОВНИК':'MENU','ПОН':'MON','УТО':'TUE','СРЕ':'WED','ЧЕТ':'THU','ПЕТ':'FRI','ВИКЕНД':'WEEKEND','ПАСУЉ':'BEANS',
   '*са кобасицом, ако стигне':'*with sausage, if it arrives','ОФИЦИРСКИ КЛУБ':'OFFICERS’ CLUB','ЗМАЈ И ШЉИВА':'Dragon & Plum','САМО ЗА ОФИЦИРЕ':'OFFICERS ONLY',
@@ -621,8 +646,24 @@ const EN={
   'Лево војници, десно официри. Војска сваки дан добија корбаст пасуљ, а штаб прасе на ражњу, јагњетину испод сача и сремски кулен.':'Soldiers on the left, officers on the right. The troops get runny bean stew every single day, while the top brass get spit-roasted pig, lamb under the sač and Srem kulen.',
   'Ново: два шалтера. Пасуљ носи на леви шалтер, а официрска јела на десни, златни. Ако официрско јело однесеш војницима, војник га узме, а ти не добијеш ни динара! Кад нестаје пасуља, сипај воду у казан (+2 порције). Прасе окрећи на ражњу (E). Склањај се строју с пута!':'New: two serving windows. Beans go to the left window, officers’ dishes to the golden one on the right. Take an officers’ dish to the soldiers and a soldier grabs it — and you don’t get a single dinar! When the beans run low, pour water into the kettle (+2 portions). Turn the pig on the spit (E). Stay out of the platoon’s way!',
   '„Змај и Шљива“ на Београду на води':'“Dragon & Plum” on Belgrade Waterfront',
-  'Кинеско-српски фјужн за београдску елиту: ћевап-бао, кунг пао пљескавица и ајвар ролнице.':'Chinese-Serbian fusion for the Belgrade elite: ćevap bao, kung pao pljeskavica and ajvar spring rolls.',
-  'Ново: вок. Убаци састојке, па кад се појави ↻ протреси вок (E) — ако закасниш, загори! Листићи злата на тањиру дуплирају цену. Крипто инвеститор плаћа како курс падне, стартап у акцијама, а тајкун само ако је брзо. Склањај се роботу за доставу!':'New: the wok. Add the ingredients, and when ↻ appears, toss the wok (E) — too late and it burns! Gold leaf on a plate doubles the price. The crypto investor pays whatever the exchange rate says, the startup pays in shares, and the tycoon pays only if you’re quick. Stay out of the delivery robot’s way!',
+  'Кинеско-српски фјужн за београдску елиту: пекиншка патка с кајмаком, сарма-димсам, ланџоу резанци бабе Милеве, шаран у шљивовом сосу, пилетина генерала Мишића и кнедле са шљивама.':'Chinese-Serbian fusion for the Belgrade elite: Peking duck with kajmak, sarma dim sum, Grandma Mileva’s Lanzhou noodles, carp in plum sauce, General Mišić’s chicken and plum dumplings.',
+  'Ново: ћуп, парњача, развлачење теста и фламбирање. Патку прво глазирај у ћупу са шљивама, па је пеци на ражњу и окрећи (E). Димсам и кнедлу сложи на дасци, савиј (E), па у парњачу — пази да има воде! Тесто за резанце развлачи на дасци (E) до 64 нити, али не претерај. Гулаш и шљивов сос кувај унапред у казану, по четири порције. Пилетину на крају фламбирај ракијом — ни пре, ни после! Листићи злата дуплирају цену. Мени се шири током вечери.':'New: the clay jar, the steamer, pulling noodles and flambéing. Glaze the duck in the jar with plums first, then roast it on the spit and keep turning it (E). Assemble dim sum and dumplings on the board, fold them (E), then into the steamer — make sure it has water! Pull the noodle dough on the board (E) to 64 strands, but don’t overdo it. Cook goulash and plum sauce ahead in the kettle, four portions a batch. Flambé the chicken with rakija at the very end — not before, not after! Gold leaf doubles the price. The menu grows through the evening.',
+  'Патка':'Duck','Пилетина':'Chicken','Шаран':'Carp','Шљиве':'Plums','Презле са сусамом':'Sesame breadcrumbs','Мешено тесто':'Dough','Сарма-димсам':'Sarma dim sum','Кнедла':'Plum dumpling','Резанци':'Noodles','Кувани резанци':'Boiled noodles',
+  'Гулаш':'Goulash','Шљивов сос':'Plum sauce','Пилетина генерала Мишића':'General Mišić’s chicken','Пржени шаран':'Fried carp','Смеса':'Mix',
+  'Пекиншка патка с кајмаком':'Peking duck with kajmak','Ланџоу резанци бабе Милеве':'Grandma Mileva’s Lanzhou noodles','Шаран у шљивовом сосу':'Carp in plum sauce','Кнедле са шљивама':'Plum dumplings (knedle)',
+  'фламбирај!':'flambé!','на даску, савиј (E)':'on the board, fold (E)','у парњачу':'into the steamer','кап':'a drop','у ћуп':'into the clay jar','на ражањ, окрећи':'on the spit, keep turning','палачинка':'pancake',
+  'развлачи (E) до 64 нити':'pull (E) to 64 strands','Гулаш, 4 порције:':'Goulash, 4 portions:','Шљивов сос, 4 порције:':'Plum sauce, 4 portions:','на даску, обликуј (E)':'on the board, shape (E)',
+  'Изгореле обрве! Прерано!':'Eyebrows singed! Too early!','Фламбирано!':'Flambéed!','Ракија иде на крају — фламбирај!':'Rakija goes in last — flambé!','Касно за фламбирање!':'Too late to flambé!',
+  'Пукло тесто! Испочетка…':'The dough tore! Start over…','Тесто је већ развучено!':'The dough is already pulled!','Прво заврши смесу на дасци!':'Finish the mix on the board first!',
+  'Прво глазирај патку у ћупу!':'Glaze the duck in the clay jar first!','Прво испеци патку на ражњу!':'Roast the duck on the spit first!','Прво исеци патку на дасци!':'Slice the duck on the board first!',
+  'Прво савиј димсам на дасци!':'Fold the dim sum on the board first!','Прво обликуј кнедлу на дасци!':'Shape the dumpling on the board first!','Прво у парњачу!':'Into the steamer first!',
+  'Прво развуци тесто на дасци (E)!':'Pull the dough on the board first (E)!','Прво зарежи шарана на дасци!':'Score the carp on the board first!','Прво исеци пилетину на дасци!':'Slice the chicken on the board first!',
+  'То иде у ћуп!':'That goes in the clay jar!','То се слаже на дасци!':'That gets assembled on the board!','Вода иде у парњачу!':'Water goes in the steamer!','Ћуп је пун!':'The clay jar is full!',
+  'Патку узми рукама!':'Take the duck out by hand!','Још се глазира…':'Still glazing…','Парњача је пуна воде.':'The steamer is full of water.','Вода сипана!':'Water added!',
+  'То не иде у парњачу!':'That doesn’t go in the steamer!','То је већ испарено!':'That’s already steamed!','Парњача је пуна!':'The steamer is full!','Нема воде! Сипај воду.':'No water! Add water.',
+  'Још се пари…':'Still steaming…','Стави димсам или кнедлу.':'Put in dim sum or a dumpling.','Готово је — исеци је на дасци!':'Done — slice it on the board!','Стави патку на ражањ.':'Put the duck on the spit.',
+  'Сад ракија — фламбирај!':'Now the rakija — flambé!','Нестало воде у парњачи!':'The steamer ran dry!','Распарило се!':'Oversteamed!','Загорело! Парњача без воде!':'Burnt! The steamer ran dry!',
+  'Укиселило се!':'It went sour!','Загорело! Фламбирај на време!':'Burnt! Flambé in time!','На ражањ иде само патка!':'Only the duck goes on the spit!',
   'Регрут':'Recruit','Регрут на одслужењу':'Recruit doing military service','Тек брат':'Tech Bro','Тек брат из стартапа':'Tech bro from a startup','★★★ у касарни':'★★★ in the barracks','★★★ у „Змају“':'★★★ at the “Dragon”',
   // касарна и фјужн: поруке у кухињи
   'Вода иде у пасуљ!':'Water goes into the beans!','Довољно је злата!':'That’s enough gold!','Прво испеци прасе на ражњу!':'Roast the pig on the spit first!','То иде под сач!':'That goes under the sač!','То иде у вок!':'That goes in the wok!',
@@ -693,7 +734,9 @@ const EN_RE=[
   [/^(.+), (домаћин|кувар)$/,(m,n,r)=>tr(n)+', '+(r==='домаћин'?'host':'cook')],
   [/^(.+), заузет$/,(m,n)=>tr(n)+', taken'],
   [/^Сви нивои су пређени! (.+)$/,(m,v)=>'All levels cleared! '+tr(v)],
-  [/^(.+) на тањир$/,(m,n)=>tr(n)+' on the plate']
+  [/^(.+) на тањир$/,(m,n)=>tr(n)+' on the plate'],
+  [/^(\d+) нити$/,(m,n)=>n+' strands'],
+  [/^Савршено! (\d+) нити$/,(m,n)=>'Perfect! '+n+' strands']
 ];
 const CYR=/[\u0400-\u04FF]/;
 function tr(s){
@@ -1013,7 +1056,7 @@ function dishArt(c,id){
     case 'pecenje': sub(c,0,0,.78,iPecenje); break;
   }
 }
-const SLOTS={0:[],1:[[0,0]],2:[[-15,0],[15,0]],3:[[-15,-11],[15,-11],[0,14]]};
+const SLOTS={0:[],1:[[0,0]],2:[[-15,0],[15,0]],3:[[-15,-11],[15,-11],[0,14]],4:[[-15,-11],[15,-11],[-15,14],[15,14]]};
 function badgeIcon(c,n){ circ(c,36,-34,15); fs(c,'#b5121b','#fff',3); c.fillStyle='#fff'; c.font='800 20px Rubik, system-ui, sans-serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillText(String(n),36,-33); }
 function drawPlateIcon(c,item,L){
   const d=plateDishOf(L,item.c); if(d) return dishArt(c,d);
@@ -1024,7 +1067,7 @@ function drawDirtyIcon(c,n){ const m=Math.min(n,4); for(let i=m-1;i>=0;i--){ c.s
 
 /* кеш икона — свака икона се црта једном по величини */
 const iconCache=new Map();
-function itemSig(it){ if(!it) return ''; if(it.k==='i') return it.t+it.s; if(it.k==='p') return 'P'+it.c.join(''); if(it.k==='d') return 'D'+it.n;
+function itemSig(it){ if(!it) return ''; if(it.k==='i') return it.t+it.s+(it.c?it.c.join(''):'')+(it.st>1?'#'+it.st:''); if(it.k==='p') return 'P'+it.c.join(''); if(it.k==='d') return 'D'+it.n;
   if(it.k==='t') return 'T'+it.ph+(it.dish||'')+it.c.join('')+(it.ph==='c'?Math.round(it.cook*8):''); return ''; }
 function cachedIcon(sig,fn,px){
   px=Math.max(8,Math.round(px)); const key=sig+'@'+px+'@'+DPR;
@@ -1042,7 +1085,7 @@ function drawItemAt(c,item,x,y,u,L){
   if(!item) return;
   L=L||(V&&V.L);
   let fn;
-  if(item.k==='i') fn=cc=>drawIngIcon(cc,item.t+item.s);
+  if(item.k==='i') fn=item.t==='mx'?cc=>iMix(cc,item.c||[]):item.st>1?cc=>iPulled(cc,item.st):cc=>drawIngIcon(cc,item.t+item.s);
   else if(item.k==='p') fn=cc=>drawPlateIcon(cc,item,L);
   else if(item.k==='d') fn=cc=>drawDirtyIcon(cc,item.n);
   else if(item.k==='t') fn=cc=>iTray(cc,item);
@@ -1198,20 +1241,15 @@ function iSremKulen(c,ch){
 }
 function iPrsut(c){ for(const [x,y,a] of [[-12,-10,-.3],[10,-4,.25],[-2,12,.05]]){ c.save(); c.translate(x,y); c.rotate(a); c.beginPath(); c.moveTo(-24,-8); c.quadraticCurveTo(0,-18,24,-8); c.quadraticCurveTo(28,4,20,10); c.quadraticCurveTo(0,2,-20,10); c.quadraticCurveTo(-28,2,-24,-8); c.closePath();
   fs(c,lg(c,0,-14,0,10,'#e8707a','#b83848'),'#7a1828',2); c.strokeStyle='#fff4ee'; c.lineWidth=3; c.beginPath(); c.moveTo(-20,10); c.quadraticCurveTo(0,2,20,10); c.stroke(); c.restore(); } }
-function iBao(c){ ell(c,0,10,40,20); fs(c,rg(c,0,10,40,'#ffffff','#e6dccb'),'#b8ab90',2.5); ell(c,0,-2,38,22); fs(c,rg(c,-8,-8,38,'#ffffff','#ece4d4'),'#b8ab90',2.5);
-  c.strokeStyle='rgba(180,170,150,.6)'; c.lineWidth=1.5; c.beginPath(); c.moveTo(-34,4); c.quadraticCurveTo(0,14,34,4); c.stroke(); ell(c,-12,-10,10,4,-.2); c.fillStyle='rgba(255,255,255,.8)'; c.fill(); }
 function iPeanuts(c){ for(const [x,y,a] of [[-16,-8,-.5],[14,-12,.4],[0,14,.1]]){ c.save(); c.translate(x,y); c.rotate(a); c.beginPath(); c.ellipse(-8,0,10,9,0,Math.PI*.35,Math.PI*1.65); c.ellipse(8,0,10,9,0,Math.PI*1.35,Math.PI*2.65); c.closePath(); fs(c,lg(c,0,-9,0,9,'#e8c88a','#b88a4a'),'#7a5a2a',2);
   c.fillStyle='rgba(120,80,30,.35)'; for(let k=0;k<6;k++){ circ(c,-12+k*5,(k%2?-3:3),1.3); c.fill(); } c.restore(); } }
 function iChili(c,ch){ if(ch){ for(const [x,y] of [[-16,-10],[14,-12],[-10,14],[16,12],[0,0]]){ circ(c,x,y,10); fs(c,'#d8202a','#7a0a10',2); circ(c,x,y,5.5); c.fillStyle='#f6e2b0'; c.fill(); c.fillStyle='#f2c230'; for(let k=0;k<3;k++){ circ(c,x+Math.cos(k*2.1)*3,y+Math.sin(k*2.1)*3,1.2); c.fill(); } } return; }
   c.save(); c.rotate(-.5); c.beginPath(); c.moveTo(-26,-5); c.quadraticCurveTo(10,-10,40,6); c.quadraticCurveTo(12,4,-26,6); c.closePath(); fs(c,lg(c,0,-8,0,6,'#f0403a','#a8101a'),'#5a0a0a',2.5);
   c.fillStyle='#3f8f3a'; rr(c,-36,-5,12,10,3); c.fill(); c.strokeStyle='#2f6f2a'; c.lineWidth=3; c.beginPath(); c.moveTo(-34,0); c.quadraticCurveTo(-42,-4,-44,-12); c.stroke(); ell(c,0,-4,14,2); c.fillStyle='rgba(255,230,220,.6)'; c.fill(); c.restore(); }
-function iKungPao(c){ ell(c,0,10,42,26); fs(c,lg(c,0,-10,0,36,'#2a2a2e','#0c0c10'),'#000',3); ell(c,0,2,40,20); fs(c,'#3a3a3e','#000',2); ell(c,0,2,34,15); c.fillStyle='#7a3a14'; c.fill();
-  for(const [x,y,a] of [[-14,0,.3],[8,-4,-.4],[18,6,.8],[-4,8,1.2],[-22,6,-.2]]){ c.save(); c.translate(x,y); c.rotate(a); rr(c,-6,-4,12,8,3); fs(c,'#a85a28','rgba(60,20,0,.6)',1); c.restore(); }
+function iMisic(c){ ell(c,0,10,42,26); fs(c,lg(c,0,-10,0,36,'#2a2a2e','#0c0c10'),'#000',3); ell(c,0,2,40,20); fs(c,'#3a3a3e','#000',2); ell(c,0,2,34,15); c.fillStyle='#8a3a10'; c.fill();
+  for(const [x,y,a] of [[-14,0,.3],[8,-4,-.4],[18,6,.8],[-4,8,1.2],[-22,6,-.2]]){ c.save(); c.translate(x,y); c.rotate(a); rr(c,-6,-4,12,8,3); fs(c,lg(c,0,-4,0,4,'#f0b050','#b8661c'),'rgba(80,30,0,.6)',1); c.restore(); }
   for(const [x,y] of [[0,-2],[-10,-6],[24,0],[10,8]]){ ell(c,x,y,3.5,2.6); c.fillStyle='#e8c88a'; c.fill(); }
   for(const [x,y] of [[-18,-4],[14,2],[4,-8]]){ circ(c,x,y,2.8); c.fillStyle='#d8202a'; c.fill(); } c.fillStyle='#5fb04f'; for(let k=0;k<6;k++){ c.fillRect(-20+k*8,-10+(k%3)*6,4,2); } }
-function iRolls(c){ for(const [x,y,a] of [[-12,-12,-.35],[6,-2,-.35],[24,8,-.35]]){ c.save(); c.translate(x,y); c.rotate(a); rr(c,-26,-8,52,16,8); fs(c,lg(c,0,-8,0,8,'#f6c86a','#c47a2a'),'#8a4a10',2);
-  c.strokeStyle='rgba(140,70,10,.4)'; c.lineWidth=1.5; c.beginPath(); c.moveTo(-14,-7); c.lineTo(-18,7); c.moveTo(10,-7); c.lineTo(6,7); c.stroke(); c.restore(); }
-  circ(c,-26,20,12); fs(c,'#f4f1ea','#8a8478',2); circ(c,-26,20,8.5); c.fillStyle='#c8381e'; c.fill(); }
 function iGold(c){ rr(c,-30,-30,60,60,6); fs(c,lg(c,-30,-30,30,30,'#fff4cc','#e8d8a0'),'#9c7414',2.5);
   for(let i=0;i<9;i++){ const x=-20+(i%3)*20+(hash(i,3)-.5)*8, y=-20+Math.floor(i/3)*20+(hash(5,i)-.5)*8, r=6+hash(i,i)*4; c.save(); c.translate(x,y); c.rotate(hash(i,9)*3); c.beginPath(); c.moveTo(-r,-r*.5); c.lineTo(r*.6,-r); c.lineTo(r,r*.4); c.lineTo(-r*.3,r); c.closePath(); c.fillStyle=i%2?'#f2c230':'#ffe680'; c.fill(); c.restore(); } }
 function goldFlakes(c){ for(let i=0;i<7;i++){ const a=i*2.39996, r=8+(i*9%26), x=Math.cos(a)*r, y=Math.sin(a)*r*.8, s=3.5+hash(i,7)*3; c.save(); c.translate(x,y); c.rotate(a); c.beginPath(); c.moveTo(-s,-s*.4); c.lineTo(s*.5,-s); c.lineTo(s,s*.3); c.lineTo(-s*.3,s); c.closePath(); c.fillStyle=i%2?'#f2c230':'#ffe680'; c.fill(); c.strokeStyle='rgba(150,110,10,.6)'; c.lineWidth=.8; c.stroke(); c.restore(); } }
@@ -1222,13 +1260,99 @@ function iSacIcon(c){ ell(c,0,30,46,10); fs(c,'#3a3a3a','#111',2); c.beginPath()
 function iWokIcon(c){ for(let i=0;i<5;i++){ const x=-24+i*12; c.beginPath(); c.moveTo(x-7,44); c.quadraticCurveTo(x,22-(i%2)*8,x+7,44); c.closePath(); c.fillStyle=i%2?'#ffb02a':'#4aa3ff'; c.fill(); }
   rr(c,34,-14,30,9,4); c.fillStyle='#5a3a20'; c.fill(); c.beginPath(); c.moveTo(-42,-8); c.quadraticCurveTo(0,44,42,-8); c.closePath(); fs(c,lg(c,0,-8,0,30,'#3a3a3e','#0c0c10'),'#000',3); ell(c,0,-8,42,9); fs(c,'#2a2a2e','#000',2);
   for(const [x,y,col] of [[-10,-22,'#a85a28'],[6,-30,'#e8c88a'],[16,-20,'#d8202a'],[-2,-36,'#5fb04f']]){ circ(c,x,y,4.5); c.fillStyle=col; c.fill(); } }
+/* „Змај и Шљива“: патка, шаран, димсам, кнедле, резанци */
+function iDuck(c,s){
+  if(s==='C'){ for(let i=0;i<5;i++){ c.save(); c.translate(-24+i*12,6-Math.abs(i-2)*4); c.rotate(-.4+i*.2); rr(c,-7,-22,14,40,6); fs(c,lg(c,0,-22,0,18,'#f6dcc6','#e0a888'),'#8a4a2a',1.5); rr(c,-7,-22,14,9,5); c.fillStyle='#8a2410'; c.fill(); c.restore(); } return; }
+  const col={R:['#f6dcd0','#e0b0a0','#a87060'],M:['#c8486a','#7a1838','#3a0a18'],G:['#c8642a','#7a2a0e','#3a1206']}[s]||['#f6dcd0','#e0b0a0','#a87060'];
+  c.beginPath(); c.ellipse(4,8,34,24,-.15,0,Math.PI*2); fs(c,lg(c,0,-16,0,32,col[0],col[1]),col[2],2.5);
+  c.beginPath(); c.ellipse(10,4,18,11,-.35,0,Math.PI*2); c.fillStyle='rgba(0,0,0,.12)'; c.fill();
+  c.beginPath(); c.moveTo(-22,-2); c.quadraticCurveTo(-34,-20,-26,-32); c.lineTo(-18,-30); c.quadraticCurveTo(-24,-18,-12,-6); c.closePath(); fs(c,col[1],col[2],2);
+  circ(c,-24,-34,8); fs(c,col[0],col[2],2);
+  c.beginPath(); c.moveTo(-31,-35); c.lineTo(-42,-32); c.lineTo(-31,-30); c.closePath(); c.fillStyle=s==='R'?'#f0a020':'#5a2a0a'; c.fill();
+  c.strokeStyle=col[2]; c.lineWidth=3; c.beginPath(); c.moveTo(30,18); c.lineTo(42,26); c.moveTo(28,24); c.lineTo(38,32); c.stroke();
+  if(s==='R'){ c.fillStyle='rgba(160,100,90,.35)'; for(let k=0;k<10;k++){ circ(c,-10+hash(k,3)*36,-4+hash(5,k)*22,1.2); c.fill(); } }
+  else { c.beginPath(); c.ellipse(-4,-6,14,5,-.3,0,Math.PI*2); c.fillStyle='rgba(255,255,255,.35)'; c.fill(); }
+}
+function iChicken(c,ch){
+  if(ch){ for(const [x,y,a] of [[-16,-8,.3],[8,-14,-.2],[18,6,.6],[-6,10,1.1],[-22,12,-.4],[6,20,.2]]){ c.save(); c.translate(x,y); c.rotate(a); rr(c,-9,-7,18,14,4); fs(c,lg(c,0,-7,0,7,'#f8d8c8','#e8b0a0'),'#a8705a',1.8); c.restore(); } return; }
+  c.beginPath(); c.moveTo(-34,6); c.quadraticCurveTo(-30,-24,4,-26); c.quadraticCurveTo(36,-22,38,4); c.quadraticCurveTo(30,28,0,28); c.quadraticCurveTo(-30,28,-34,6); c.closePath(); fs(c,lg(c,0,-26,0,28,'#fbe2d4','#eab4a0'),'#a8705a',2.5);
+  c.strokeStyle='rgba(200,130,110,.5)'; c.lineWidth=2; c.beginPath(); c.moveTo(-20,-6); c.quadraticCurveTo(0,-14,24,-6); c.moveTo(-16,8); c.quadraticCurveTo(4,2,26,8); c.stroke();
+}
+function carpShape(c){ c.beginPath(); c.moveTo(-38,0); c.quadraticCurveTo(-10,-24,22,-8); c.lineTo(40,-20); c.lineTo(36,0); c.lineTo(40,20); c.lineTo(22,8); c.quadraticCurveTo(-10,24,-38,0); c.closePath(); }
+function iCarp(c,ch){
+  c.save(); c.rotate(-.12); carpShape(c); fs(c,lg(c,0,-20,0,20,'#a8a070','#5a5a38'),'#2a2a18',2.5);
+  c.strokeStyle='rgba(40,40,20,.35)'; c.lineWidth=1; for(let i=0;i<5;i++) for(let j=-1;j<=1;j++){ c.beginPath(); c.arc(-14+i*8,j*7,4,-1,1); c.stroke(); }
+  circ(c,-26,-3,3); c.fillStyle='#111'; c.fill(); circ(c,-26.8,-3.8,1); c.fillStyle='#fff'; c.fill();
+  if(ch){ c.strokeStyle='#f4e6c8'; c.lineWidth=3; for(let i=0;i<4;i++){ c.beginPath(); c.moveTo(-12+i*9,-12); c.lineTo(-6+i*9,10); c.stroke(); } }
+  c.restore();
+}
+function iFriedCarp(c){ c.save(); c.rotate(-.12); carpShape(c); fs(c,lg(c,0,-20,0,20,'#f0b850','#a8601a'),'#5a2a08',2.5);
+  c.strokeStyle='#7a3a0a'; c.lineWidth=3; for(let i=0;i<4;i++){ c.beginPath(); c.moveTo(-12+i*9,-12); c.lineTo(-6+i*9,10); c.stroke(); }
+  c.fillStyle='rgba(255,240,200,.45)'; ell(c,-4,-8,14,3,-.1); c.fill(); circ(c,-27,-3,2.8); c.fillStyle='#2a1406'; c.fill(); c.restore(); }
+function iPlums(c){ for(const [x,y] of [[-14,6],[14,8],[0,-10]]){ c.beginPath(); c.ellipse(x,y,15,17,0,0,Math.PI*2); fs(c,rg(c,x-5,y-6,18,'#8a5ac8','#3a1a5a'),'#24103a',2);
+    c.strokeStyle='rgba(30,10,50,.5)'; c.lineWidth=1.5; c.beginPath(); c.moveTo(x,y-15); c.quadraticCurveTo(x+4,y,x,y+15); c.stroke(); c.fillStyle='rgba(220,210,255,.35)'; c.beginPath(); c.ellipse(x-6,y-6,4,6,-.3,0,Math.PI*2); c.fill(); }
+  c.strokeStyle='#5a3a1a'; c.lineWidth=2.5; c.beginPath(); c.moveTo(0,-26); c.lineTo(4,-34); c.stroke(); c.beginPath(); c.ellipse(14,-34,11,5,-.3,0,Math.PI*2); c.fillStyle='#4a8a3a'; c.fill(); }
+function iCrumbs(c){ ell(c,0,12,40,22); fs(c,'#e8e2d6','#a8a090',2.5); ell(c,0,6,34,15); c.fillStyle='#d8a050'; c.fill();
+  for(let i=0;i<30;i++){ const x=(hash(i,2)-.5)*56, y=6+(hash(3,i)-.5)*22; if(x*x/1156+(y-6)*(y-6)/225>1) continue; if(i%3){ c.fillStyle='#a86a20'; c.fillRect(x,y,2.5,2.5); } else { ell(c,x,y,2.6,1.4,hash(i,i)*3); c.fillStyle='#f6ecd4'; c.fill(); } } }
+function iDimsum(c,s){
+  if(s==='R'){ c.beginPath(); c.ellipse(0,4,40,30,0,0,Math.PI*2); fs(c,rg(c,0,4,40,'#d8e8a0','#9ab858'),'#5a7a2a',2.5);
+    c.strokeStyle='rgba(90,120,40,.6)'; c.lineWidth=2; c.beginPath(); c.moveTo(-34,4); c.lineTo(34,4); c.stroke();
+    circ(c,0,2,15); c.fillStyle='#a85a3a'; c.fill(); for(let k=0;k<8;k++){ ell(c,(hash(k,4)-.5)*20,2+(hash(6,k)-.5)*18,2.5,1.4,hash(k,1)*3); c.fillStyle='#f6f0e2'; c.fill(); } return; }
+  for(const [x,y,r] of (s==='K'?[[-16,8,16],[16,8,16],[0,-10,16]]:[[0,2,28]])){
+    c.beginPath(); c.moveTo(x-r,y+r*.5); c.quadraticCurveTo(x-r*1.05,y-r*.9,x,y-r); c.quadraticCurveTo(x+r*1.05,y-r*.9,x+r,y+r*.5); c.quadraticCurveTo(x,y+r*.9,x-r,y+r*.5); c.closePath();
+    fs(c,rg(c,x-r*.3,y-r*.4,r*1.3,s==='K'?'#eef6c8':'#cfe08a','#8aa848'),'#5a7a2a',2);
+    c.strokeStyle='rgba(80,110,40,.6)'; c.lineWidth=1.5; c.beginPath(); for(let k=-2;k<=2;k++){ c.moveTo(x+k*r*.2,y-r*.95); c.lineTo(x+k*r*.32,y-r*.3); } c.stroke();
+    if(s==='K'){ c.fillStyle='rgba(255,255,255,.45)'; ell(c,x-r*.35,y-r*.35,r*.25,r*.12,-.4); c.fill(); } }
+  if(s==='K'){ c.strokeStyle='rgba(255,255,255,.75)'; c.lineWidth=2.5; for(let k=0;k<3;k++){ c.beginPath(); c.moveTo(-14+k*14,-28); c.quadraticCurveTo(-20+k*14,-36,-12+k*14,-44); c.stroke(); } }
+}
+function iKnedla(c,s){
+  if(s==='R'){ circ(c,0,4,36); fs(c,rg(c,-8,-6,40,'#fbf2dc','#e8d6b0'),'#b89c6a',2.5); c.beginPath(); c.ellipse(0,2,14,16,0,0,Math.PI*2); fs(c,rg(c,-4,-4,16,'#8a5ac8','#3a1a5a'),'#24103a',2); return; }
+  const pos=s==='K'?[[-16,8],[16,8],[0,-10]]:[[0,2]], r=s==='K'?17:28;
+  for(const [x,y] of pos){ circ(c,x,y,r); fs(c,rg(c,x-r*.3,y-r*.35,r*1.2,s==='K'?'#fffaf0':'#f8ecd4','#e0c898'),'#b89c6a',2); c.fillStyle='rgba(255,255,255,.55)'; ell(c,x-r*.35,y-r*.4,r*.28,r*.14,-.5); c.fill(); }
+  if(s==='K'){ c.strokeStyle='rgba(255,255,255,.75)'; c.lineWidth=2.5; for(let k=0;k<2;k++){ c.beginPath(); c.moveTo(-8+k*16,-28); c.quadraticCurveTo(-14+k*16,-36,-6+k*16,-44); c.stroke(); } }
+}
+/* тесто које се развлачи: што више нити, то тање */
+function iPulled(c,st){
+  const n=Math.min(14,Math.max(2,Math.round(Math.log2(st||2))*2)), w=Math.max(1.4,16/Math.sqrt(st||2));
+  for(let i=0;i<n;i++){ const y=-18+i*36/(n-1); c.strokeStyle=i%2?'#f2e2b8':'#fbf0d0'; c.lineWidth=w+1.5; c.beginPath(); c.moveTo(-36,y*.35); c.bezierCurveTo(-14,y,14,y,36,y*.35); c.stroke(); }
+  for(const sx of [-1,1]){ ell(c,sx*38,0,8,13); fs(c,'#f6e6c0','#b89c6a',1.5); }
+}
+function iBowl(c,fill){ ell(c,0,10,42,26); fs(c,lg(c,0,-10,0,36,'#f6f2ea','#cfc6b6'),'#8a8478',2.5); ell(c,0,2,40,18); fs(c,'#e8e2d6','#a8a090',1.5); ell(c,0,2,34,13); c.fillStyle=fill; c.fill();
+  c.strokeStyle='#c8202b'; c.lineWidth=2; c.beginPath(); c.moveTo(-36,22); c.quadraticCurveTo(0,34,36,22); c.stroke(); }
+function iBoiledNoodles(c){ iBowl(c,'#e8d8a8'); c.strokeStyle='#f8eecc'; c.lineWidth=2.2; for(let k=0;k<7;k++){ c.beginPath(); c.moveTo(-30,-2+k*1.5); c.bezierCurveTo(-10,-10+k*3,10,10-k*2,30,-2+k*1.2); c.stroke(); } }
+function iGulas(c){ iBowl(c,'#8a3214'); for(const [x,y] of [[-14,0],[10,-4],[0,6],[20,4],[-22,6]]){ rr(c,x-5,y-4,10,8,3); c.fillStyle='#5a1e0a'; c.fill(); }
+  for(const [x,y] of [[-6,-4],[14,6]]){ circ(c,x,y,2.6); c.fillStyle='#e8a030'; c.fill(); } c.fillStyle='rgba(255,180,120,.35)'; ell(c,-10,-4,10,3); c.fill(); }
+function iPlumSauce(c){ ell(c,0,10,36,20); fs(c,lg(c,0,-6,0,30,'#2a2a2e','#0c0c10'),'#000',2.5); ell(c,0,4,30,13); fs(c,rg(c,-8,0,30,'#9a3a8a','#4a0a3a'),'#2a0420',1.5);
+  for(const [x,y] of [[-8,2],[10,6],[2,-2]]){ circ(c,x,y,2.4); c.fillStyle='#e8202a'; c.fill(); } c.fillStyle='rgba(255,220,255,.4)'; ell(c,-10,0,8,2.5); c.fill(); }
+/* смеса на дасци: састојци један до другог док не постану јело */
+function iMix(c,keys){ const n=Math.min(keys.length,3); keys.slice(0,3).forEach((k,i)=>{ const q=SLOTS[n][i]; sub(c,q[0],q[1],.58,cc=>drawIngIcon(cc,k)); }); }
+function iSteamIcon(c){ for(let k=0;k<3;k++){ const y=26-k*20; ell(c,0,y,40,11); fs(c,'#b08a40','#6a4a1a',2); c.fillStyle='#c8a050'; c.fillRect(-40,y-11,80,11); ell(c,0,y-11,40,11); fs(c,'#dcbc6a','#6a4a1a',2); }
+  c.strokeStyle='rgba(120,90,40,.6)'; c.lineWidth=1.5; for(let i=-3;i<=3;i++){ c.beginPath(); c.moveTo(i*9,-32); c.lineTo(i*9,-22); c.stroke(); }
+  c.strokeStyle='rgba(255,255,255,.9)'; c.lineWidth=3; for(let k=0;k<3;k++){ c.beginPath(); c.moveTo(-14+k*14,-38); c.quadraticCurveTo(-20+k*14,-44,-12+k*14,-50); c.stroke(); } }
+function iCupIcon(c){
+  c.beginPath(); c.moveTo(-18,-34); c.lineTo(18,-34); c.quadraticCurveTo(20,-26,30,-18); c.quadraticCurveTo(46,8,26,38); c.lineTo(-26,38); c.quadraticCurveTo(-46,8,-30,-18); c.quadraticCurveTo(-20,-26,-18,-34); c.closePath();
+  fs(c,lg(c,-40,0,40,0,'#c8743a','#7a3a14'),'#4a1e08',2.5); ell(c,0,-34,20,6); fs(c,'#5a2a10','#3a1406',2);
+  c.strokeStyle='rgba(255,230,190,.55)'; c.lineWidth=2.5; c.beginPath(); c.moveTo(-34,0); c.quadraticCurveTo(0,8,34,0); c.moveTo(-32,10); c.quadraticCurveTo(0,18,32,10); c.stroke();
+  c.fillStyle='rgba(255,255,255,.2)'; ell(c,-18,-4,6,16,.2); c.fill(); }
+function iSpitIcon(c){ c.strokeStyle='#5a5a5e'; c.lineWidth=4; c.beginPath(); c.moveTo(-40,40); c.lineTo(-36,-4); c.moveTo(40,40); c.lineTo(36,-4); c.stroke(); sub(c,0,-4,.72,cc=>iDuck(cc,'G'));
+  c.strokeStyle='#8a8f94'; c.lineWidth=3.5; c.beginPath(); c.moveTo(-46,-4); c.lineTo(46,-4); c.stroke();
+  for(let i=0;i<6;i++){ const x=-28+i*11; c.beginPath(); c.moveTo(x-6,44); c.quadraticCurveTo(x,28-(i%2)*8,x+6,44); c.closePath(); c.fillStyle=i%2?'#ffb02a':'#ff5a1a'; c.fill(); } }
+function iDough(c){ c.beginPath(); c.moveTo(-38,14); c.quadraticCurveTo(-36,-26,0,-28); c.quadraticCurveTo(36,-26,38,14); c.quadraticCurveTo(0,30,-38,14); c.closePath(); fs(c,rg(c,-10,-12,44,'#fdf6e4','#e6d2a6'),'#b89c6a',2.5);
+  c.strokeStyle='rgba(180,150,100,.5)'; c.lineWidth=2; c.beginPath(); c.moveTo(-20,-6); c.quadraticCurveTo(-4,-14,14,-8); c.stroke(); c.fillStyle='rgba(255,255,255,.8)'; for(let k=0;k<12;k++){ circ(c,(hash(k,8)-.5)*64,(hash(9,k)-.5)*40+4,1.6); c.fill(); } }
+function iPullIcon(c){ iPulled(c,16); }
+function iBoardIcon(c){ rr(c,-40,-28,80,56,10); fs(c,lg(c,0,-28,0,28,'#f4ddb0','#e2c38b'),'#a87e45',2.5); circ(c,30,-18,4); c.fillStyle='#a87e45'; c.fill();
+  c.save(); c.translate(6,-2); c.rotate(-.5); rr(c,-4,-30,8,40,3); c.fillStyle='#c9ced2'; c.fill(); rr(c,-5,8,10,22,3); c.fillStyle='#5a3a20'; c.fill(); c.restore(); }
+const STICON={pot:c=>iPotIcon(c),kotlic:c=>iKotlicIcon(c),kazan:c=>iKazanIcon(c),sac:iSacIcon,wok:iWokIcon,steam:iSteamIcon,marin:iCupIcon,spit:iSpitIcon,pull:iPullIcon,board:iBoardIcon};
 (function(){
   const _ing=drawIngIcon; drawIngIcon=function(c,key){ const t=key.slice(0,2), s=key[2];
     if(s==='B'||t==='xx') return _ing(c,key);
     switch(t){
       case 'ps': return iBeans(c); case 'vo': return iBucket(c); case 'pz': return iMessTin(c,0); case 'pg': return iPiglet(c,s); case 'jg': return iLamb(c); case 'jt': return iLambSac(c);
-      case 'kl': return iSremKulen(c,s==='C'); case 'pt': return iPrsut(c); case 'ba': return iBao(c); case 'kk': return iPeanuts(c); case 'lj': return iChili(c,s==='C');
-      case 'kg': return iKungPao(c); case 'rl': return iRolls(c); case 'zl': return iGold(c);
+      case 'kl': return iSremKulen(c,s==='C'); case 'pt': return iPrsut(c); case 'kk': return iPeanuts(c); case 'lj': return iChili(c,s==='C');
+      case 'zl': return iGold(c);
+      case 'pk': return iDuck(c,s); case 'pl': return iChicken(c,s==='C'); case 'sn': return iCarp(c,s==='C'); case 'sl': return iPlums(c); case 'mr': return iCrumbs(c); case 'tz': return iDough(c);
+      case 'dm': return iDimsum(c,s); case 'kn': return iKnedla(c,s); case 'rz': return iPulled(c,64); case 'rv': return iBoiledNoodles(c);
+      case 'gu': return iGulas(c); case 'ss': return iPlumSauce(c); case 'gm': return iMisic(c); case 'sp': return iFriedCarp(c);
     }
     return _ing(c,key); };
   const _dish=dishArt; dishArt=function(c,id){
@@ -1238,9 +1362,16 @@ function iWokIcon(c){ for(let i=0;i<5;i++){ const x=-24+i*12; c.beginPath(); c.m
       case 'jagnjetina': plateBase(c,false); sub(c,0,0,.78,iLambSac); return;
       case 'kulen': rr(c,-46,-34,92,70,12); fs(c,lg(c,0,-34,0,36,'#c8925a','#8a5a2e'),'#5a3a1a',2.5); c.strokeStyle='rgba(90,55,20,.35)'; c.lineWidth=1.5; for(let i=1;i<4;i++){ c.beginPath(); c.moveTo(-40,-34+i*17); c.lineTo(40,-34+i*17); c.stroke(); }
         sub(c,-16,-4,.5,cc=>iSremKulen(cc,true)); sub(c,14,-10,.42,iPrsut); sub(c,18,16,.32,iKajmak); return;
-      case 'cevbao': slateBase(c); sub(c,0,6,.86,iBao); for(let i=0;i<3;i++){ c.save(); c.translate(-12+i*12,-4); c.rotate(.15); rr(c,-4.5,-14,9,28,4.5); fs(c,lg(c,-4,0,4,0,'#9a5228','#6b3216'),'#3e1d0a',2); c.restore(); } sub(c,24,22,.3,iOnionCh); sub(c,-28,-26,.2,cc=>iChili(cc,true)); return;
-      case 'kungpao': slateBase(c); sub(c,0,0,.84,iKungPao); return;
-      case 'rolnice': slateBase(c); sub(c,4,-2,.8,iRolls); return;
+      case 'misic': slateBase(c); sub(c,0,0,.84,iMisic); for(let k=0;k<3;k++){ c.beginPath(); c.moveTo(-8+k*8,-26); c.quadraticCurveTo(-12+k*8,-36,-6+k*8,-42); c.strokeStyle='rgba(255,170,40,.8)'; c.lineWidth=2; c.stroke(); } return;
+      case 'dimsum': slateBase(c); circ(c,-8,2,30); fs(c,'#c8a050','#6a4a1a',2.5); circ(c,-8,2,25); c.fillStyle='#e8d090'; c.fill(); sub(c,-8,4,.6,cc=>iDimsum(cc,'K'));
+        sub(c,28,-20,.3,iKajmak); rr(c,22,6,14,22,3); fs(c,'rgba(230,240,255,.5)','rgba(255,255,255,.9)',1.2); c.fillStyle='rgba(255,250,230,.8)'; c.fillRect(24,14,10,12); return;
+      case 'patka': slateBase(c); sub(c,-8,-2,.7,cc=>iDuck(cc,'C')); for(const [x,y] of [[26,-16],[28,4]]){ c.save(); c.translate(x,y); c.rotate(.3); rr(c,-12,-6,24,12,6); fs(c,lg(c,0,-6,0,6,'#f6d890','#d8a050'),'#a0601e',1.5); c.restore(); } sub(c,24,24,.28,iKajmak); return;
+      case 'lanzou': iBoiledNoodles(c); c.fillStyle='rgba(150,40,10,.75)'; ell(c,4,-1,17,7); c.fill(); for(const [x,y] of [[-6,-4],[8,-2],[2,3],[14,-6]]){ rr(c,x-5,y-4,10,8,3); c.fillStyle='#5a1e0a'; c.fill(); }
+        c.strokeStyle='#2a1a0a'; c.lineWidth=3; c.beginPath(); c.moveTo(18,-34); c.lineTo(42,12); c.moveTo(26,-36); c.lineTo(46,8); c.stroke(); return;
+      case 'saran': slateBase(c); sub(c,-2,-8,.78,iFriedCarp); c.strokeStyle='#7a1a5a'; c.lineWidth=4; c.beginPath(); c.moveTo(-30,12); c.bezierCurveTo(-10,22,10,2,30,14); c.stroke();
+        for(const [x,y] of [[-18,16],[16,10]]){ circ(c,x,y,2.4); c.fillStyle='#e8202a'; c.fill(); } return;
+      case 'knedle': slateBase(c); for(const [x,y] of [[-14,8],[14,8],[0,-12]]){ circ(c,x,y,15); fs(c,rg(c,x-4,y-5,17,'#e8b860','#b07028'),'#7a4a10',2); for(let k=0;k<6;k++){ ell(c,x+(hash(k,7)-.5)*18,y+(hash(9,k)-.5)*18,2,1.1,k); c.fillStyle='#f6ecd4'; c.fill(); } }
+        c.beginPath(); c.ellipse(28,-22,9,10,0,0,Math.PI*2); fs(c,'#6a3a9a','#2a1040',1.5); circ(c,28,-22,4); c.fillStyle='#e8c030'; c.fill(); return;
     }
     return _dish(c,id); };
   const _plate=drawPlateIcon; drawPlateIcon=function(c,item,L){ const done=plateDishOf(L,item.c);
@@ -1258,26 +1389,29 @@ const FX={parts:[],floats:[],toast:null,shake:0,scorePulse:0,hx:new Map(),warnT:
 const mkIng=(t,s)=>({k:'i',t,s:s||'R',n:0,b:0});
 const mkPlate=()=>({k:'p',c:[]});
 const mkVessel=kind=>({k:'t',kind,c:[],ph:'i',cook:0,burn:0,dish:null});
-function resetV(v){ v.c=[]; v.ph='i'; v.cook=0; v.burn=0; v.dish=null; v.por=0; v.thin=0; v.need=0; v.fw=0; v.toss=0; }
+function resetV(v){ v.c=[]; v.ph='i'; v.cook=0; v.burn=0; v.dish=null; v.por=0; v.thin=0; v.need=0; v.fw=0; v.toss=0; v.fl=0; }
 
 function isSub(a,b){ const m={}; for(const k of b) m[k]=(m[k]||0)+1; for(const k of a){ if(!m[k]) return false; m[k]--; } return true; }
 /* листићи злата (фјужн): највише један на тањиру, не мењају које је јело */
 const goldCore=c=>{ const i=c.indexOf('zlR'); return i<0?c:[...c.slice(0,i),...c.slice(i+1)]; };
 function plateDishOf(L,c){ if(!L||!c||!c.length) return null; if(L.gold) c=goldCore(c); return L.recipes.find(r=>RECIPES[r].parts.length===c.length&&isSub(c,RECIPES[r].parts))||null; }
 function plateValid(c){ if(S.L.gold&&c.includes('zlR')){ if(c.filter(k=>k==='zlR').length>1) return false; c=goldCore(c); if(!c.length) return true; } return S.L.recipes.some(r=>isSub(c,RECIPES[r].parts)); }
-function vesselValid(kind,c){ return S.L.recipes.some(r=>RECIPES[r].cook===kind&&isSub(c,RECIPES[r].in)); }
-function vesselDish(kind,c,L){ L=L||S.L; const r=L.recipes.find(r=>RECIPES[r].cook===kind&&RECIPES[r].in.length===c.length&&isSub(c,RECIPES[r].in)); return r?RECIPES[r].out:null; }
+/* рецепти нивоа заједно са међупроизводима */
+const lvR=L=>L.preps?L.recipes.concat(L.preps):L.recipes;
+function vesselValid(kind,c){ return lvR(S.L).some(r=>RECIPES[r].cook===kind&&isSub(c,RECIPES[r].in)); }
+function vesselDish(kind,c,L){ L=L||S.L; const r=lvR(L).find(r=>RECIPES[r].cook===kind&&RECIPES[r].in.length===c.length&&isSub(c,RECIPES[r].in)); return r?RECIPES[r].out:null; }
 
 function buildGrid(o,L){
   const rows=L.map.length, cols=L.map[0].length, grid=[];
-  o.start={x:1.5,y:1.5}; o.plateTile=o.dirtyTile=o.windowTile=o.sinkTile=null; o.plateTiles=[];
+  o.start={x:1.5,y:1.5}; o.plateTile=o.dirtyTile=o.windowTile=o.sinkTile=null; o.plateTiles=[]; o.steam=false;
   const CR=Object.assign({},CRATE,L.crates||{});
   for(let y=0;y<rows;y++){ const row=[];
     for(let x=0;x<cols;x++){
       const ch=L.map[y][x], t={x,y,ch,solid:!(ch==='.'||ch==='@'),item:null,kind:'floor'};
       if(ch==='@') o.start={x:x+.5,y:y+.5};
       if(CR[ch]){ t.kind='crate'; t.ing=CR[ch]; } else if(KIND[ch]) t.kind=KIND[ch];
-      if(t.kind==='pot'||t.kind==='kotlic'||t.kind==='kazan'||t.kind==='sac'||t.kind==='wok') t.v=mkVessel(t.kind);
+      if(t.kind==='pot'||t.kind==='kotlic'||t.kind==='kazan'||t.kind==='sac'||t.kind==='wok'||t.kind==='marin') t.v=mkVessel(t.kind);
+      if(t.kind==='steam'){ t.st={b:[null,null,null],w:1,dry:0}; o.steam=true; }
       if(ch==='Q') t.officer=true;
       if(t.kind==='plates'){ t.count=L.plates; o.plateTile=t; o.plateTiles.push(t); }
       if(t.kind==='trays') t.count=L.trays;
@@ -1374,7 +1508,7 @@ const PW=k=>PWM[k][S&&S.L&&S.L.plate]||PWM[k].def;
 function addToPlate(p,plate,ing,t){
   if(ing.k!=='i') return false;
   if(ing.s==='B'){ deny(p,t,'Загорело! Баци у канту.'); return false; }
-  if(ing.t==='vo'){ deny(p,t,'Вода иде у пасуљ!'); return false; }
+  if(ing.t==='vo'){ deny(p,t,S.steam?'Вода иде у парњачу!':'Вода иде у пасуљ!'); return false; }
   if(ing.t==='zl'&&plate.c.includes('zlR')){ deny(p,t,'Довољно је злата!'); return false; }
   const next=[...plate.c,ing.t+ing.s];
   if(!plateValid(next)){ deny(p,t,plateDishOf(S.L,plate.c)?PW('full'):needWhy(plate.c,ing,'plate')); return false; }
@@ -1382,23 +1516,31 @@ function addToPlate(p,plate,ing,t){
 }
 function needWhy(c,ing,ctx){
   const ok=key=>ctx==='plate'?plateValid([...c,key]):vesselValid(ctx,[...c,key]);
-  if(ing.s==='R'&&ING[ing.t].chop&&ok(ing.t+'C')) return ing.t==='si'?'Прво измрви сир!':ing.t==='ri'?'Прво очисти рибу!':'Прво исецкај!';
+  if(ing.t==='mx') return 'Прво заврши смесу на дасци!';
+  if(ing.t==='pk'){ if(ing.s==='R'&&(ok('pkC')||ok('pkM')||ctx==='spit')) return 'Прво глазирај патку у ћупу!'; if(ing.s==='M'&&ok('pkC')) return 'Прво испеци патку на ражњу!'; if(ing.s==='G'&&ok('pkC')) return 'Прво исеци патку на дасци!'; }
+  if(ING[ing.t].steam&&ok(ing.t+'K')) return ing.s==='R'?(ing.t==='dm'?'Прво савиј димсам на дасци!':'Прво обликуј кнедлу на дасци!'):'Прво у парњачу!';
+  if(ing.t==='tz'&&ctx==='pot'&&vesselValid('pot',['rzR'])) return 'Прво развуци тесто на дасци (E)!';
+  if(ing.s==='R'&&ING[ing.t].chop&&ok(ing.t+'C')) return ing.t==='si'?'Прво измрви сир!':ing.t==='ri'?'Прво очисти рибу!':ing.t==='sn'?'Прво зарежи шарана на дасци!':ing.t==='pl'?'Прво исеци пилетину на дасци!':'Прво исецкај!';
   if(ing.s==='R'&&ING[ing.t].grill&&ctx==='plate'&&ok(ing.t+'G')) return 'Прво испеци на роштиљу!';
   if(ing.s==='R'&&ING[ing.t].roast&&(ok(ing.t+'C')||ok(ing.t+'G'))) return 'Прво испеци паприке у бубњу!';
   if(ing.s==='G'&&ING[ing.t].peel&&ok(ing.t+'C')) return 'Прво ољушти паприку (E)!';
   if(ing.s==='C'&&ING[ing.t].pan&&ok(ing.t+'G')) return 'Сад их испеци у тигању!';
   if(ing.s==='R'&&ING[ing.t].griddle&&ok(ing.t+'G')) return 'Прво испеци палачинку!';
   if(ing.s==='R'&&ING[ing.t].spit&&ok(ing.t+'G')) return 'Прво испеци прасе на ражњу!';
-  const where=S.L.recipes.map(r=>RECIPES[r]).find(R=>R.cook&&R.cook!==ctx&&R.in.some(x=>x.slice(0,2)===ing.t));
-  if(where) return {pot:'То иде у лонац!',kotlic:'То иде у котлић!',tray:'То иде у тепсију!',kazan:'То иде у казан!',sac:'То иде под сач!',wok:'То иде у вок!'}[where.cook];
+  const where=lvR(S.L).map(r=>RECIPES[r]).find(R=>R.cook&&R.cook!==ctx&&R.in.some(x=>x.slice(0,2)===ing.t));
+  if(where) return {pot:'То иде у лонац!',kotlic:'То иде у котлић!',tray:'То иде у тепсију!',kazan:'То иде у казан!',sac:'То иде под сач!',wok:'То иде у вок!',marin:'То иде у ћуп!',board:'То се слаже на дасци!'}[where.cook];
   return ctx==='plate'?'То не иде заједно!':ctx==='tray'?'То не иде у тепсију!':'То не иде ту!';
 }
 function addToVessel(p,v,ing,t){
   if(ing.k!=='i') return false;
-  if(ing.t==='vo'){ if(v.kind!=='kazan'||v.dish!=='pz'||(v.ph!=='c'&&v.ph!=='d')){ deny(p,t,v.kind==='kazan'&&v.ph==='i'?'Прво скувај пасуљ!':'Вода иде у пасуљ!'); return false; }
+  if(ing.t==='rk'&&v.kind==='wok'&&lvR(S.L).some(r=>RECIPES[r].flambe)){
+    if(v.ph==='c'&&v.need===2){ v.need=0; v.fw=0; v.fl=1; ev('s','sizzle',-1); ev('b','flambe',t.x+.5,t.y+.3); evF('Фламбирано!','#ffb02a',t,-1,0); return true; }
+    if(v.ph==='c'){ stun(p,t); return true; }
+    deny(p,t,v.ph==='i'?'Ракија иде на крају — фламбирај!':'Касно за фламбирање!'); return false; }
+  if(ing.t==='vo'){ if(v.kind!=='kazan'||v.dish!=='pz'||(v.ph!=='c'&&v.ph!=='d')){ deny(p,t,v.kind==='kazan'&&v.ph==='i'&&!S.steam?'Прво скувај пасуљ!':S.steam?'Вода иде у парњачу!':'Вода иде у пасуљ!'); return false; }
     if((v.thin|0)>=WATER_MAX){ deny(p,t,'Доста воде, ово је већ чај!'); return false; }
     v.thin=(v.thin|0)+1; v.por=(v.por|0)+2; v.burn=0; ev('s','splash',-1); ev('b','splash',t.x+.5,t.y+.4); evF('Развучено! +2 порције','#9fd3ff',t,-1,1); return true; }
-  const nm=v.kind==='tray'?'Тепсија':v.kind==='kotlic'?'Котлић':v.kind==='kazan'?'Казан':v.kind==='sac'?'Сач':v.kind==='wok'?'Вок':'Лонац';
+  const nm=v.kind==='tray'?'Тепсија':v.kind==='kotlic'?'Котлић':v.kind==='kazan'?'Казан':v.kind==='sac'?'Сач':v.kind==='wok'?'Вок':v.kind==='marin'?'Ћуп':'Лонац';
   if(v.ph==='b'){ deny(p,t,v.kind==='tray'?'Прво очисти тепсију!':'Прво испразни!'); return false; }
   if(v.ph!=='i'){ deny(p,t,nm+' је пун'+(v.kind==='tray'?'а!':'!')); return false; }
   if(ing.s==='B'){ deny(p,t,'Загорело! Баци у канту.'); return false; }
@@ -1408,6 +1550,26 @@ function addToVessel(p,v,ing,t){
   if(v.kind!=='tray'){ ev('s','plop',-1); ev('b','splash',t.x+.5,t.y+.4); const d=vesselDish(v.kind,next); if(d){ v.dish=d; v.ph='c'; v.cook=0; if(v.kind==='kazan'){ v.stir=1; v.scorch=0; } } }
   else sndA(p,'place');
   return true;
+}
+/* фламбирање пре времена: ракија плане по кувару — изгореле обрве и две секунде ошамућености */
+function stun(p,t){ p.stun=STUN_T; p.work=null; ev('s','sizzle',-1); ev('b','flambe',p.x,p.y-.2); evF('Изгореле обрве! Прерано!','#ff7a6b',{x:p.x-.5,y:p.y-1},-1,0); }
+/* слагање на дасци: састојци се спајају у смесу, па у сирово јело (сарма-димсам, кнедла) */
+const mixKeys=it=>it.t==='mx'?it.c.slice():[it.t+it.s];
+function boardMix(p,A,B,t){
+  if(A.s==='B'||B.s==='B'){ deny(p,t,'Загорело! Баци у канту.'); return ''; }
+  if((A.st|0)>1||(B.st|0)>1){ deny(p,t,'Тесто је већ развучено!'); return ''; }
+  const c=[...mixKeys(B),...mixKeys(A)], rs=lvR(S.L).map(r=>RECIPES[r]).filter(R=>R.cook==='board'&&isSub(c,R.in));
+  if(!rs.length){ deny(p,t,lvR(S.L).some(r=>RECIPES[r].cook==='board'&&c.some(k=>RECIPES[r].in.includes(k)))?'То не иде заједно!':'Нема места!'); return ''; }
+  const done=rs.find(R=>R.in.length===c.length);
+  t.item=done?mkIng(done.out,'R'):{k:'i',t:'mx',s:'R',n:0,b:0,c}; sndA(p,'place'); return 'h';
+}
+const canPull=()=>lvR(S.L).some(r=>RECIPES[r].in&&RECIPES[r].in.includes('rzR'));
+/* развлачење теста: сваки притисак удвостручи нити; од 64 су резанци, преко 128 пукне */
+function pullDough(p,t,it){
+  it.st=(it.st||1)*2;
+  if(it.st>PULL_MAX){ t.item=mkIng('tz','R'); ev('s','deny',-1); evF('Пукло тесто! Испочетка…','#ff7a6b',t,-1,0); return; }
+  if(it.st>=PULL_OK) it.t='rz';
+  ev('s','flip',-1); evF(it.st>=PULL_MAX?'Савршено! '+it.st+' нити':it.st+' нити','#ffffff',t,-1,1);
 }
 function ovenCheck(t){ const v=t.item; if(v&&v.k==='t'&&v.ph==='i'){ const d=vesselDish('tray',v.c); if(d){ v.dish=d; v.ph='c'; v.cook=0; ev('s','oven',-1); } } }
 function scoop(p,v,plate,t){
@@ -1422,6 +1584,7 @@ function scoop(p,v,plate,t){
   return false;
 }
 function combine(p,A,B,t){
+  if(A.k==='i'&&B.k==='i'&&t&&t.kind==='board') return boardMix(p,A,B,t);
   if(A.k==='p'&&B.k==='i') return addToPlate(p,A,B,t)?'t':'';
   if(A.k==='i'&&B.k==='p') return addToPlate(p,B,A,t)?'h':'';
   if(A.k==='t'&&B.k==='i') return addToVessel(p,A,B,t)?'t':'';
@@ -1432,7 +1595,7 @@ function combine(p,A,B,t){
   deny(p,t,'Нема места!'); return '';
 }
 function simGrab(p){
-  const t=p.target; if(!t) return; const h=p.hold;
+  const t=p.target; if(!t||p.stun>0) return; const h=p.hold;
   switch(t.kind){
     case 'counter': case 'board': {
       const it=t.item;
@@ -1452,24 +1615,43 @@ function simGrab(p){
       const it=t.item, C=COOKERS[t.kind];
       if(!h&&it){ if(t.kind==='griddle'&&it.s!=='G'&&it.s!=='B'){ say(p,t,it.s==='F'?'Окрени је (E)!':'Још се пече…'); return; }
         p.hold=it; t.item=null; if(t.kind==='roaster'&&it.s==='G') it.h=1; sndA(p,'pick'); return; }
-      if(h&&h.k==='i'&&!it){ if(C.ok(h)){ t.item=h; p.hold=null; if(t.kind==='spit'&&h.s==='R'&&!(h.tu>0)) h.tu=1; ev('s','sizzle',-1); return; } deny(p,t,C.no(h)); return; }
+      if(h&&h.k==='i'&&!it){ if(C.ok(h)){ t.item=h; p.hold=null; if(t.kind==='spit'&&SPIT_FROM[h.t]===h.s&&!(h.tu>0)) h.tu=1; ev('s','sizzle',-1); return; } deny(p,t,C.no(h)); return; }
       if(h&&h.k==='p'&&it){ if(it.s!=='G'&&it.s!=='B'){ say(p,t,it.s==='F'?'Окрени је (E)!':'Још се пече…'); return; } if(addToPlate(p,h,it,t)) t.item=null; return; }
       if(h&&it){ deny(p,t,it.s==='B'?'Загорело! Баци у канту.':C.busy); return; }
       if(h) deny(p,t,C.no(h));
       return;
     }
-    case 'pot': case 'kotlic': case 'kazan': case 'sac': case 'wok': {
+    case 'pot': case 'kotlic': case 'kazan': case 'sac': case 'wok': case 'marin': {
       const v=t.v;
       if(h&&h.k==='i'){ if(addToVessel(p,v,h,t)) p.hold=null; return; }
-      if(h&&h.k==='p'){ scoop(p,v,h,t); return; }
+      if(h&&h.k==='p'){ if(v.kind==='marin'){ deny(p,t,v.ph==='d'?'Патку узми рукама!':'Још се глазира…'); return; } scoop(p,v,h,t); return; }
       if(!h){
         if(v.ph==='b'){ p.hold=mkIng('xx','B'); resetV(v); sndA(p,'pick'); return; }
+        if(v.ph==='d'&&v.kind==='marin'){ p.hold=mkIng(v.dish,'M'); resetV(v); sndA(p,'pick'); return; }
         if(v.ph==='d'){ say(p,t,PW('need')); return; }
         if(v.ph==='c'){ say(p,t,'Још се кува…'); return; }
         if(v.c.length){ const k=v.c.pop(); p.hold=mkIng(k.slice(0,2),k[2]); sndA(p,'pick'); }
         return;
       }
       deny(p,t,'То не иде ту!'); return;
+    }
+    case 'steam': {
+      const st=t.st, b=st.b;
+      if(h&&h.k==='i'&&h.t==='vo'){ if(st.w>=.98){ say(p,t,'Парњача је пуна воде.'); return; } st.w=1; st.dry=0; p.hold=null; ev('s','splash',-1); ev('b','splash',t.x+.5,t.y+.4); evF('Вода сипана!','#9fd3ff',t,-1,1); return; }
+      if(h&&h.k==='i'){
+        if(h.s==='B'){ deny(p,t,'Загорело! Баци у канту.'); return; }
+        if(!ING[h.t]||!ING[h.t].steam){ deny(p,t,'То не иде у парњачу!'); return; }
+        if(h.s==='R'){ deny(p,t,h.t==='dm'?'Прво савиј димсам на дасци!':'Прво обликуј кнедлу на дасци!'); return; }
+        if(h.s!=='C'){ deny(p,t,'То је већ испарено!'); return; }
+        const i=b.indexOf(null); if(i<0){ deny(p,t,'Парњача је пуна!'); return; }
+        h.n=0; h.b=0; b[i]=h; p.hold=null; ev('s','plop',-1); if(st.w<=0) say(p,t,'Нема воде! Сипај воду.'); return; }
+      if(h&&h.k==='p'){ const i=b.findIndex(x=>x&&x.s==='K');
+        if(i<0){ say(p,t,b.some(x=>x&&x.s==='C')?'Још се пари…':b.some(x=>x&&x.s==='B')?'Загорело!':'Празно је.'); return; }
+        if(addToPlate(p,h,b[i],t)) b[i]=null; return; }
+      if(!h){ let i=b.findIndex(x=>x&&(x.s==='K'||x.s==='B')); if(i<0) i=b.findIndex(x=>x);
+        if(i<0){ say(p,t,st.w>0?'Стави димсам или кнедлу.':'Нема воде! Сипај воду.'); return; }
+        p.hold=b[i]; b[i]=null; sndA(p,'pick'); return; }
+      deny(p,t,'То не иде у парњачу!'); return;
     }
     case 'oven': {
       const tr=t.item;
@@ -1528,11 +1710,14 @@ function simGrab(p){
 }
 function startWash(p,t){ if(p.hold){ deny(p,t,'Прво спусти то што држиш!'); return; } p.work={tile:t,kind:'wash'}; }
 function simWork(p){
-  const t=p.target; if(!t) return;
+  const t=p.target; if(!t||p.stun>0) return;
   if(t.kind==='board'){
     const it=t.item;
-    if(it&&it.k==='i'&&((ING[it.t].chop&&it.s==='R')||(ING[it.t].peel&&it.s==='G'))){ if(p.hold){ deny(p,t,'Прво спусти то што држиш!'); return; }
-      if(it.s==='G'&&!(it.h>0)) say(p,t,'Охладила се — споро се љушти!'); p.work={tile:t,kind:'chop'}; return; }
+    if(it&&it.k==='i'&&(it.t==='tz'||it.t==='rz')&&it.s==='R'&&canPull()){ if(p.hold){ deny(p,t,'Прво спусти то што држиш!'); return; } pullDough(p,t,it); return; }
+    if(it&&it.k==='i'&&it.t==='pk'&&(it.s==='R'||it.s==='M')){ say(p,t,it.s==='R'?'Прво глазирај патку у ћупу!':'Прво испеци патку на ражњу!'); return; }
+    if(it&&it.k==='i'&&it.t==='mx'){ say(p,t,'Фали још састојака.'); return; }
+    if(it&&it.k==='i'&&((ING[it.t].chop&&it.s==='R')||(ING[it.t].peel&&it.s==='G')||(ING[it.t].carve&&it.s==='G'))){ if(p.hold){ deny(p,t,'Прво спусти то што држиш!'); return; }
+      if(it.s==='G'&&ING[it.t].peel&&!(it.h>0)) say(p,t,'Охладила се — споро се љушти!'); p.work={tile:t,kind:'chop'}; return; }
     if(it&&it.k==='i'&&it.s==='R'&&ING[it.t].peel){ say(p,t,'Прво је испеци у бубњу!'); return; }
     if(it&&it.k==='i'&&it.s==='C'){ say(p,t,'Већ је исецкано.'); return; }
     if(it){ deny(p,t,'То се не сецка.'); return; }
@@ -1542,8 +1727,9 @@ function simWork(p){
   if(t.kind==='griddle'){ const it=t.item; if(!it){ say(p,t,'Прво сипај тесто.'); return; }
     if(it.s==='F'){ it.s='H'; it.n=0; it.fw=0; ev('s','flip',-1); ev('b','sparkle',t.x+.5,t.y+.4); return; }
     say(p,t,it.s==='R'?'Још није време за окретање.':'Већ је окренута.'); return; }
-  if(t.kind==='spit'){ const it=t.item; if(it&&it.k==='i'&&it.t==='pg'&&it.s==='R'){ if(p.hold){ deny(p,t,'Прво спусти то што држиш!'); return; } p.work={tile:t,kind:'turn'}; return; }
-    say(p,t,it?(it.s==='G'?'Готово је — узми тањир!':'Нема шта да се окреће.'):'Стави прасе на ражањ.'); return; }
+  if(t.kind==='spit'){ const it=t.item; if(it&&it.k==='i'&&SPIT_FROM[it.t]===it.s){ if(p.hold){ deny(p,t,'Прво спусти то што држиш!'); return; } p.work={tile:t,kind:'turn'}; return; }
+    say(p,t,it?(it.s==='G'?(it.t==='pk'?'Готово је — исеци је на дасци!':'Готово је — узми тањир!'):'Нема шта да се окреће.'):(S.L.recipes.includes('patka')?'Стави патку на ражањ.':'Стави прасе на ражањ.')); return; }
+  if(t.kind==='wok'&&t.v.ph==='c'&&t.v.need===2){ say(p,t,'Сад ракија — фламбирај!'); return; }
   if(t.kind==='wok'){ const v=t.v; if(v.ph==='c'&&v.need){ v.need=0; v.fw=0; v.toss=(v.toss|0)+1; ev('s','flip',-1); ev('b','flame',t.x+.5,t.y+.35); return; }
     say(p,t,v.ph==='c'?'Још није време за протресање.':v.ph==='d'?'Готово је — узми тањир!':'Нема шта да се протресе.'); return; }
   if(t.kind==='kazan'){ const v=t.v; if(v.ph!=='c'){ say(p,t,v.ph==='d'?(S.L.plate==='jar'?'Готово је — узми теглу!':'Готово је — узми порцију!'):'Нема шта да се меша.'); return; }
@@ -1555,12 +1741,12 @@ function updateWork(p,dt){
   if(p.target!==w.tile||p.hold||p.moving){ p.work=null; return; }
   const t=w.tile;
   if(w.kind==='chop'){
-    const it=t.item, peel=it&&it.k==='i'&&it.s==='G'&&ING[it.t].peel; if(!it||it.k!=='i'||!(peel||(it.s==='R'&&ING[it.t].chop))){ p.work=null; return; }
+    const it=t.item, peel=it&&it.k==='i'&&it.s==='G'&&ING[it.t].peel, carve=it&&it.k==='i'&&it.s==='G'&&ING[it.t].carve; if(!it||it.k!=='i'||!(peel||carve||(it.s==='R'&&ING[it.t].chop))){ p.work=null; return; }
     it.n+=dt/(CHOP_T*(peel?(it.h>0?1:3):1)); if(it.n>=1){ it.s='C'; it.n=0; it.b=0; it.h=0; p.work=null; ev('s','done',-1); }
   } else if(w.kind==='stir'){
     const v=t.v; if(!v||v.ph!=='c'){ p.work=null; return; } v.stir=Math.min(1,(v.stir||0)+dt*1.8);
   } else if(w.kind==='turn'){
-    const it=t.item; if(!it||it.k!=='i'||it.t!=='pg'||it.s!=='R'){ p.work=null; return; } it.tu=Math.min(1,(it.tu||0)+dt*1.8);
+    const it=t.item; if(!it||it.k!=='i'||SPIT_FROM[it.t]!==it.s){ p.work=null; return; } it.tu=Math.min(1,(it.tu||0)+dt*1.8);
   } else {
     if(t.dirty<=0){ p.work=null; return; }
     t.prog+=dt/WASH_T;
@@ -1631,10 +1817,11 @@ function pickSeat(ct){ const n=SEATS[S.L.theme]||0; if(!n||ct==='voj') return -1
   return free.length?free[Math.floor(Math.random()*free.length)]:Math.floor(Math.random()*n); }
 function spawnOrder(forceCt){
   const L=S.L; let r, tries=0;
-  const draw=()=>{ if(!L.rw) return L.recipes[Math.floor(Math.random()*L.recipes.length)]; let x=Math.random()*L.recipes.reduce((a,k)=>a+(L.rw[k]||1),0); for(const k of L.recipes){ x-=L.rw[k]||1; if(x<0) return k; } return L.recipes[0]; };
+  const pool=L.waves?L.waves.filter(w=>S.time>=w[0]).flatMap(w=>w[1]):L.recipes; // мени се шири током вечери
+  const draw=()=>{ if(!L.rw) return pool[Math.floor(Math.random()*pool.length)]; let x=Math.random()*pool.reduce((a,k)=>a+(L.rw[k]||1),0); for(const k of pool){ x-=L.rw[k]||1; if(x<0) return k; } return pool[0]; };
   do{ r=draw(); tries++; } while(tries<6&&S.orders.filter(o=>o.r===r).length>=((L.dup&&L.dup[r])||2));
   const ct=forceCt||pickCt(r); if(ct==='pro'&&L.recipes.includes('burek')) r='burek';
-  let max=S.patience+(RECIPES[r].cook?15:0); if(ct==='bec') max=Math.round(max*.6); if(ct==='dete'||ct==='dsp') max=Math.round(max*.72); if(ct==='rol') max=Math.round(max*.82);
+  let max=S.patience+(RECIPES[r].cook?15:0)+(RECIPES[r].pat||0); if(ct==='bec') max=Math.round(max*.6); if(ct==='dete'||ct==='dsp') max=Math.round(max*.72); if(ct==='rol') max=Math.round(max*.82);
   if(ct==='ofi'||ct==='tek') max=Math.round(max*.85); if(ct==='taj') max=Math.round(max*.6); const seat=pickSeat(ct);
   const tb=isQ(L.theme)||ct==='voj'?(++S.ticketNo):L.theme==='kafana'||L.theme==='fusion'?Math.floor(seat/4)+1:(seat<4?1:2);
   S.orders.push({id:++S.seq,r,t:max,max,tb,ct,seat}); ev('s','order',-1);
@@ -1667,13 +1854,24 @@ const COOKERS={
   roaster:{from:'R',T:ROAST_T,burn:ROAST_BURN,ok:it=>it.t==='pp'&&(it.s==='R'||it.s==='G'),no:it=>it&&it.t==='pp'?'Ова је већ испечена!':'У бубањ иду само паприке!',busy:'Бубањ је пун!'},
   pan:{from:'C',T:PAN_T,burn:PAN_BURN,ok:it=>it.t==='ke'&&(it.s==='C'||it.s==='G'),no:it=>it&&it.t==='ke'&&it.s==='R'?'Прво зарежи кестене!':'У тигањ иду кестени!',busy:'Тигањ је пун!'},
   griddle:{ok:it=>it.t==='te'&&it.s==='R',no:()=>'На палачинкару иде само тесто!',busy:'Палачинкара је заузета!'},
-  spit:{from:'R',T:SPIT_T,burn:SPIT_BURN,ok:it=>it.t==='pg'&&(it.s==='R'||it.s==='G'),no:()=>'На ражањ иде само прасе!',busy:'Ражањ је заузет!'}
+  spit:{from:'R',T:SPIT_T,burn:SPIT_BURN,ok:it=>!!SPIT_FROM[it.t]&&(it.s===SPIT_FROM[it.t]||it.s==='G'),no:it=>it&&it.t==='pk'?(it.s==='R'?'Прво глазирај патку у ћупу!':'Ова је већ испечена!'):S&&S.L.recipes.includes('patka')?'На ражањ иде само патка!':'На ражањ иде само прасе!',busy:'Ражањ је заузет!'}
 };
+/* парњача: три корпе, вода се троши док се пари; без воде корпе загоре */
+function steamStep(t,dt){
+  const st=t.st; if(!st.b.some(x=>x&&(x.s==='C'||x.s==='K'))) return;
+  if(st.w>0){ st.dry=0; st.w=Math.max(0,st.w-dt/STEAM_WATER); if(st.w<=0){ ev('s','pop',-1); evF('Нестало воде у парњачи!','#9fd3ff',t,-1,0); }
+    for(const x of st.b){ if(!x) continue;
+      if(x.s==='C'){ x.n+=dt/STEAM_T; if(x.n>=1){ x.s='K'; x.n=0; x.b=0; ev('s','done',-1); } }
+      else if(x.s==='K'){ x.b+=dt; if(x.b>=STEAM_BURN){ x.s='B'; ev('s','burn',-1); evF('Распарило се!','#ff7a6b',t,-1,0); } } } }
+  else { st.dry+=dt; if(st.dry>=STEAM_DRY){ st.dry=0; for(const x of st.b) if(x) x.s='B'; ev('s','burn',-1); evF('Загорело! Парњача без воде!','#ff7a6b',t,-1,0); } }
+}
+const flambeOf=dish=>RKEYS.some(r=>RECIPES[r].out===dish&&RECIPES[r].flambe);
 function vesselStep(v,dt,t){
-  const burnTxt=S.L.theme==='docek'?'Прокувало!':'Загорело!';
+  const burnTxt=v.kind==='marin'?'Укиселило се!':S.L.theme==='docek'?'Прокувало!':'Загорело!';
   if(v.ph==='c'){
-    if(v.kind==='wok'){ if(v.need){ v.fw=(v.fw||0)+dt; if(v.fw>=WOK_TOSS){ v.ph='b'; v.need=0; ev('s','burn',-1); evF('Загорело! Протреси вок на време!','#ff7a6b',t,-1,0); } return; }
-      if((v.toss|0)<WOK_TOSSES&&v.cook>=((v.toss|0)+1)/(WOK_TOSSES+1)){ v.need=1; v.fw=0; ev('s','pop',-1); return; } }
+    if(v.kind==='wok'){ if(v.need){ v.fw=(v.fw||0)+dt; if(v.fw>=(v.need===2?FLAMBE_WIN:WOK_TOSS)){ v.ph='b'; ev('s','burn',-1); evF(v.need===2?'Загорело! Фламбирај на време!':'Загорело! Протреси вок на време!','#ff7a6b',t,-1,0); v.need=0; } return; }
+      if((v.toss|0)<WOK_TOSSES&&v.cook>=((v.toss|0)+1)/(WOK_TOSSES+1)){ v.need=1; v.fw=0; ev('s','pop',-1); return; }
+      if(!v.fl&&(v.toss|0)>=WOK_TOSSES&&v.cook>=FLAMBE_AT&&flambeOf(v.dish)){ v.need=2; v.fw=0; ev('s','pop',-1); return; } }
     if(v.kind==='kazan'){ v.stir=Math.max(0,(v.stir===undefined?1:v.stir)-dt/STIR_DRAIN);
       if(v.stir<=0){ v.scorch=(v.scorch||0)+dt; if(v.scorch>1.8){ v.ph='b'; ev('s','burn',-1); evF('Загорело! Мешај казан!','#ff7a6b',t,-1,0); return; } }
       else v.scorch=Math.max(0,(v.scorch||0)-dt); }
@@ -1711,11 +1909,12 @@ function updateStations(dt){
       if(it.s===C.from){ it.n+=dt/C.T; if(it.n>=1){ it.s='G'; it.n=0; it.b=0; ev('s','done',-1); } }
       else if(it.s==='G'){ it.b+=dt; if(it.b>=C.burn){ it.s='B'; ev('s','burn',-1); evF('Загорело!','#ff7a6b',t,-1,0); } }
     } else if(t.kind==='spit'){
-      const it=t.item; if(!it||it.k!=='i'||it.t!=='pg') continue;
-      if(it.s==='R'){ it.tu=Math.max(0,(it.tu===undefined?1:it.tu)-dt/TURN_DRAIN);
+      const it=t.item; if(!it||it.k!=='i'||!SPIT_FROM[it.t]) continue;
+      if(it.s===SPIT_FROM[it.t]){ it.tu=Math.max(0,(it.tu===undefined?1:it.tu)-dt/TURN_DRAIN);
         if(it.tu<=0){ it.sc=(it.sc||0)+dt; if(it.sc>1.8){ it.s='B'; it.tu=0; ev('s','burn',-1); evF('Загорело! Окрећи ражањ!','#ff7a6b',t,-1,0); continue; } } else it.sc=Math.max(0,(it.sc||0)-dt);
         it.n+=dt/SPIT_T; if(it.n>=1){ it.s='G'; it.n=0; it.b=0; it.tu=0; ev('s','done',-1); } }
       else if(it.s==='G'){ it.b+=dt; if(it.b>=SPIT_BURN){ it.s='B'; ev('s','burn',-1); evF('Загорело!','#ff7a6b',t,-1,0); } }
+    } else if(t.kind==='steam'){ steamStep(t,dt);
     } else if(t.kind==='griddle'){
       const it=t.item; if(!it||it.k!=='i'||it.t!=='te') continue;
       if(it.s==='R'){ it.n+=dt/GRID_T1; if(it.n>=1){ it.s='F'; it.n=0; it.fw=0; ev('s','pop',-1); } }
@@ -1760,6 +1959,7 @@ function updateNpcs(dt){
 }
 function simStep(dt){
   S.time+=dt; S.timeLeft-=dt; S.goT=Math.max(0,S.goT-dt);
+  for(const p of S.players) if(p.stun>0) p.stun=Math.max(0,p.stun-dt);
   for(const p of S.players) updateWork(p,dt);
   updateNpcs(dt); updateStations(dt); heatStep(dt); levelEvents(dt); updateOrders(dt); updatePending(dt);
   if(S.L.theme==='kafana'&&S.time>=S.nextTrubac){ S.nextTrubac=S.time+30+Math.random()*15;
@@ -1982,7 +2182,7 @@ function onClientInput(c,inp){
 const wkCode=w=>!w?0:w.kind==='chop'?1:(w.kind==='stir'||w.kind==='turn')?3:2;
 function enc(it){
   if(!it) return 0;
-  if(it.k==='i') return it.t+it.s+(it.n>0?'%'+Math.round(it.n*99):'')+(it.b>0?'^'+Math.round(it.b*10):'')+(it.h>0?'~'+Math.max(1,Math.round(it.h*9)):'')+(it.fw>0?'!'+Math.round(it.fw*10):'')+(it.tu>0?'@'+Math.max(1,Math.round(it.tu*9)):'');
+  if(it.k==='i') return it.t+it.s+(it.n>0?'%'+Math.round(it.n*99):'')+(it.b>0?'^'+Math.round(it.b*10):'')+(it.h>0?'~'+Math.max(1,Math.round(it.h*9)):'')+(it.fw>0?'!'+Math.round(it.fw*10):'')+(it.tu>0?'@'+Math.max(1,Math.round(it.tu*9)):'')+(it.st>1?'#'+it.st:'')+(it.c?'='+it.c.join(''):'');
   if(it.k==='p') return 'P'+it.c.join('')+(it.h>0?'~'+Math.max(1,Math.round(it.h*9)):'');
   if(it.k==='d') return 'D'+it.n;
   if(it.k==='t') return encV(it,'T');
@@ -1992,27 +2192,29 @@ function encV(v,tag){ const a=[tag,v.ph,v.dish||'',Math.round(v.cook*99),Math.ro
 const chunk3=s=>{ const o=[]; for(let i=0;i+2<s.length;i+=3) o.push(s.slice(i,i+3)); return o; };
 function dec(c,kind){
   if(!c) return null;
-  if(Array.isArray(c)){ const k=c[0]==='T'?'tray':kind, o={k:'t',kind:k,ph:c[1],dish:c[2]||null,cook:c[3]/99,burn:c[4]/10,c:chunk3(c[5]||''),stir:1,por:0,thin:0,need:0,fw:0,toss:0};
+  if(Array.isArray(c)){ const k=c[0]==='T'?'tray':kind, o={k:'t',kind:k,ph:c[1],dish:c[2]||null,cook:c[3]/99,burn:c[4]/10,c:chunk3(c[5]||''),stir:1,por:0,thin:0,need:0,fw:0,toss:0,fl:0};
     if(k==='kazan') Object.assign(o,{stir:c[6]===undefined?1:c[6]/99,por:c[7]|0,thin:c[8]|0}); else if(k==='wok') Object.assign(o,{need:c[6]|0,fw:(c[7]|0)/10,toss:c[8]|0}); return o; }
   c=String(c);
   if(c[0]==='P'){ const ti=c.indexOf('~'); return {k:'p',c:chunk3(c.slice(1,ti<0?undefined:ti)),h:ti<0?0:+c.slice(ti+1)/9}; }
   if(c[0]==='D') return {k:'d',n:+c.slice(1)||1};
-  const o={k:'i',t:c.slice(0,2),s:c[2],n:0,b:0,h:0,fw:0,tu:0}, rest=c.slice(3);
-  for(const m of rest.matchAll(/([%^~!@])(\d+)/g)){ const v=+m[2]; if(m[1]==='%') o.n=v/99; else if(m[1]==='^') o.b=v/10; else if(m[1]==='~') o.h=v/9; else if(m[1]==='@') o.tu=v/9; else o.fw=v/10; }
+  const eq=c.indexOf('='), o={k:'i',t:c.slice(0,2),s:c[2],n:0,b:0,h:0,fw:0,tu:0}, rest=c.slice(3,eq<0?undefined:eq);
+  if(eq>=0) o.c=chunk3(c.slice(eq+1));
+  for(const m of rest.matchAll(/([%^~!@#])(\d+)/g)){ const v=+m[2]; if(m[1]==='%') o.n=v/99; else if(m[1]==='^') o.b=v/10; else if(m[1]==='~') o.h=v/9; else if(m[1]==='@') o.tu=v/9; else if(m[1]==='#') o.st=v; else o.fw=v/10; }
   return o;
 }
 function buildSnap(){
   const s={f:++Game.snapSeq,ph:Game.phase,lv:Game.li};
   if(S&&['countdown','play','pause','ending','end'].includes(Game.phase)){
     s.rs=S.rs; s.tl=Math.round(S.timeLeft*10); s.sc=S.score; s.cd=Math.round(S.countdown*10); s.go=Math.round(S.goT*10);
-    s.pl=S.players.map(p=>[p.slot,p.ch,Math.round(p.x*100),Math.round(p.y*100),Math.round(p.fx*100),Math.round(p.fy*100),enc(p.hold),wkCode(p.work),p.target?p.target.x:-1,p.target?p.target.y:-1]);
+    s.pl=S.players.map(p=>[p.slot,p.ch,Math.round(p.x*100),Math.round(p.y*100),Math.round(p.fx*100),Math.round(p.fy*100),enc(p.hold),wkCode(p.work),p.target?p.target.x:-1,p.target?p.target.y:-1,Math.round((p.stun||0)*10)]);
     s.np=S.npcs.map(n=>[Math.round(n.x*100),Math.round(n.y*100),Math.round(n.fx*10),Math.round(n.fy*10),n.gone?1:0]);
     s.o=S.orders.map(o=>[o.id,RKEYS.indexOf(o.r),Math.round(o.t*10),o.max,o.tb,Math.max(0,CTS.indexOf(o.ct)),o.seat]);
     const t=[];
     for(const row of S.grid) for(const x of row){ if(!x.solid) continue;
       switch(x.kind){
         case 'counter': case 'board': case 'grill': case 'oven': case 'roaster': case 'pan': case 'griddle': case 'spit': if(x.item) t.push([x.x,x.y,enc(x.item)]); break;
-        case 'pot': case 'kotlic': case 'kazan': case 'sac': case 'wok': if(x.v.c.length||x.v.ph!=='i') t.push([x.x,x.y,encV(x.v,'V')]); break;
+        case 'pot': case 'kotlic': case 'kazan': case 'sac': case 'wok': case 'marin': if(x.v.c.length||x.v.ph!=='i') t.push([x.x,x.y,encV(x.v,'V')]); break;
+        case 'steam': t.push([x.x,x.y,['S',Math.round(x.st.w*99),Math.round(x.st.dry*10),...x.st.b.map(enc)]]); break;
         case 'plates': case 'trays': case 'dirtyret': t.push([x.x,x.y,x.count]); break;
         case 'sink': if(x.dirty||x.prog) t.push([x.x,x.y,[x.dirty,Math.round(x.prog*99)]]); break;
       } }
@@ -2104,7 +2306,7 @@ function onSnap(s){
   for(const a of s.pl||[]){
     const slot=a[0]; seen.add(slot); let p=V.pmap[slot];
     if(!p){ p=V.pmap[slot]={slot,dx:a[2]/100,dy:a[3]/100,walk:0}; }
-    p.ch=a[1]; p.x=a[2]/100; p.y=a[3]/100; p.fx=a[4]/100; p.fy=a[5]/100; p.hold=dec(a[6]); p.wk=a[7]; p.tx=a[8]; p.ty=a[9];
+    p.ch=a[1]; p.x=a[2]/100; p.y=a[3]/100; p.fx=a[4]/100; p.fy=a[5]/100; p.hold=dec(a[6]); p.wk=a[7]; p.tx=a[8]; p.ty=a[9]; p.stun=(a[10]|0)/10;
     if(slot===Game.mySlot&&!me){ me={x:p.x,y:p.y,fx:p.fx,fy:p.fy,walk:0,dashT:0,dashCd:0,moving:false,target:null}; }
   }
   for(const k of Object.keys(V.pmap)) if(!seen.has(+k)) delete V.pmap[k];
@@ -2115,7 +2317,8 @@ function onSnap(s){
   for(const row of V.grid) for(const t of row){ if(!t.solid) continue; t.item=null; if(t.v) resetV(t.v); if('count' in t) t.count=0; if(t.kind==='sink'){ t.dirty=0; t.prog=0; } }
   for(const [x,y,c] of s.t||[]){ const t=tileAt(V,x,y); if(!t) continue;
     switch(t.kind){ case 'counter': case 'board': case 'grill': case 'oven': case 'roaster': case 'pan': case 'griddle': case 'spit': t.item=dec(c); break;
-      case 'pot': case 'kotlic': case 'kazan': case 'sac': case 'wok': Object.assign(t.v,dec(c,t.kind),{kind:t.kind,k:'t'}); break;
+      case 'pot': case 'kotlic': case 'kazan': case 'sac': case 'wok': case 'marin': Object.assign(t.v,dec(c,t.kind),{kind:t.kind,k:'t'}); break;
+      case 'steam': t.st={w:c[1]/99,dry:c[2]/10,b:[dec(c[3]),dec(c[4]),dec(c[5])]}; break;
       case 'plates': case 'trays': case 'dirtyret': t.count=+c||0; break;
       case 'sink': t.dirty=c[0]; t.prog=c[1]/99; break; } }
   for(const e of s.e||[]){ if(e[0]>Net.lastEv){ Net.lastEv=e[0]; playEvent(e); } }
@@ -2263,6 +2466,7 @@ const BITS={pa:'#e2392d',kr:'#5fb04f',si:'#fbf8ef',lu:'#f1e2d0',ri:'#f3d2c4',km:
 function burst(kind,x,y){
   if(kind==='sparkle') for(let i=0;i<14;i++){ const a=Math.random()*Math.PI*2, s=1+Math.random()*2; FX.parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-1,g:3,t:0,life:.8,kind:'star',r:.07,c:i%2?'#ffd34d':'#fff3b0'}); }
   if(kind==='flame') for(let i=0;i<16;i++){ const a=-Math.PI/2+(Math.random()-.5)*1.6, v=1.5+Math.random()*2.2; FX.parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,g:-1,t:0,life:.55,kind:'dot',r:.05+Math.random()*.05,c:i%3?'#ffb02a':'#ff4a1a'}); }
+  if(kind==='flambe') for(let i=0;i<34;i++){ const a=-Math.PI/2+(Math.random()-.5)*2.4, v=1.8+Math.random()*3.4; FX.parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,g:-1.5,t:0,life:.8,kind:'dot',r:.06+Math.random()*.08,c:['#ffd34d','#ff7a1a','#5ab0ff'][i%3]}); }
   if(kind==='splash') for(let i=0;i<6;i++) FX.parts.push({x,y,vx:(Math.random()-.5)*2,vy:-1.2-Math.random(),g:5,t:0,life:.5,kind:'dot',r:.045,c:'#bfe0f5'});
 }
 function puff(x,y){ FX.parts.push({x,y,vx:(Math.random()-.5)*.4,vy:-.2,t:0,life:.45,kind:'puff',r:.1,c:'rgba(255,255,255,'}); }
@@ -2282,7 +2486,7 @@ function ambient(dt){
     if(t.kind==='grill'&&t.item&&t.item.k==='i'&&t.item.t==='me'){ const it=t.item, warn=it.s==='G'&&GRILL_BURN-it.b<3.5;
       if(warn) warnTick(t.x+','+t.y,dt); if(Math.random()<dt*(it.s==='B'?7:warn?5:2.5)) smoke(t,warn||it.s==='B'); }
     if((t.kind==='roaster'||t.kind==='pan'||t.kind==='griddle')&&t.item&&t.item.k==='i'&&t.item.s==='B'&&Math.random()<dt*6) smoke(t,true);
-    if(t.kind==='spit'&&t.item&&t.item.k==='i'&&t.item.t==='pg'){ const it=t.item, warn=(it.s==='R'&&(it.tu||0)<.3)||(it.s==='G'&&SPIT_BURN-it.b<3.5);
+    if(t.kind==='spit'&&t.item&&t.item.k==='i'&&SPIT_FROM[t.item.t]){ const it=t.item, warn=(it.s===SPIT_FROM[it.t]&&(it.tu||0)<.3)||(it.s==='G'&&SPIT_BURN-it.b<3.5);
       if(warn) warnTick(t.x+','+t.y,dt); if(Math.random()<dt*(it.s==='B'?7:warn?5:2)) smoke(t,warn||it.s==='B'); }
     const v=t.v||(t.kind==='oven'&&t.item&&t.item.k==='t'?t.item:null);
     if(v&&(t.kind!=='oven'||true)&&v.ph!=='i'){ const warn=v.ph==='d'&&BURN_T[v.kind]-v.burn<4;
@@ -2384,7 +2588,7 @@ function hostUpdate(dt){
     if(p) p.target=findTarget(S,p); return;
   }
   if(Game.phase==='play'){
-    if(p){ const i=readInput(), pc=(p.ch|0)===PANDUR, sl=pc&&nearNpc(p.x,p.y)?.78:1; stepMove(S,p,i.x*sl,i.y*sl,dt,othersFor(p,S.players,pc),chefSpeed(p.ch)); p.target=findTarget(S,p); }
+    if(p){ const i=p.stun>0?{x:0,y:0}:readInput(), pc=(p.ch|0)===PANDUR, sl=pc&&nearNpc(p.x,p.y)?.78:1; stepMove(S,p,i.x*sl,i.y*sl,dt,othersFor(p,S.players,pc),chefSpeed(p.ch)); p.target=findTarget(S,p); }
     simStep(dt); if(Game.phase==='ending') uiDirty(); return;
   }
   if(Game.phase==='ending'){ S.endT-=dt; if(S.endT<=0) finishLevel(); }
@@ -2394,7 +2598,7 @@ function clientUpdate(dt){
   if(Game.phase==='play'){ V.timeLeft=Math.max(0,V.timeLeft-dt); V.goT=Math.max(0,V.goT-dt); }
   if(Game.phase==='countdown') V.countdown-=dt;
   if(me&&(Game.phase==='play'||Game.phase==='countdown')){
-    if(Game.phase==='play'){ const myc=(V.players.find(q=>q.slot===Game.mySlot)||{}).ch|0, i=readInput(), pc=myc===PANDUR, sl=pc&&nearNpc(me.x,me.y)?.78:1; stepMove(V,me,i.x*sl,i.y*sl,dt,othersFor(null,DP.filter(p=>p.slot!==Game.mySlot),pc),chefSpeed(myc)); }
+    if(Game.phase==='play'){ const mp=V.players.find(q=>q.slot===Game.mySlot)||{}, myc=mp.ch|0, i=mp.stun>0?{x:0,y:0}:readInput(), pc=myc===PANDUR, sl=pc&&nearNpc(me.x,me.y)?.78:1; stepMove(V,me,i.x*sl,i.y*sl,dt,othersFor(null,DP.filter(p=>p.slot!==Game.mySlot),pc),chefSpeed(myc)); }
     me.target=findTarget(V,me);
   }
 }
@@ -3012,6 +3216,8 @@ function drawTileStatic(b,t,th){
       b.strokeStyle='#4a4440'; b.lineWidth=Math.max(2,s*.05); b.beginPath(); for(const sx of [.14,.86]){ b.moveTo(x+s*sx,y+h*.86); b.lineTo(x+s*sx,y+h*.28); b.moveTo(x+s*sx-s*.06,y+h*.2); b.lineTo(x+s*sx,y+h*.3); b.lineTo(x+s*sx+s*.06,y+h*.2); } b.stroke(); break;
     case 'sac':
       circ(b,cx,cy+s*.02,s*.42); b.fillStyle='#1d1817'; b.fill(); circ(b,cx,cy,s*.36); b.fillStyle='#3a3634'; b.fill(); b.strokeStyle='#14100e'; b.lineWidth=lw; b.stroke(); break;
+    case 'marin': case 'steam':
+      circ(b,cx,cy+s*.06,s*.42); b.fillStyle='rgba(0,0,0,.2)'; b.fill(); break;
     case 'wok':
       circ(b,cx,cy,s*.38); b.fillStyle='#16181a'; b.fill(); circ(b,cx,cy,s*.2); b.strokeStyle='#5a6064'; b.lineWidth=Math.max(1.5,s*.04); b.stroke();
       for(let i=0;i<4;i++){ const a=i*Math.PI/2+.4; b.fillStyle='#4a5054'; b.fillRect(cx+Math.cos(a)*s*.27-s*.04,cy+Math.sin(a)*s*.27-s*.04,s*.08,s*.08); } break;
@@ -3034,7 +3240,7 @@ function drawKazan(t,cx,cy,s,lw){
   for(let i=0;i<7;i++){ const a=i/7*Math.PI*2+G_anim*.8, f=.75+.3*Math.sin(G_anim*13+i*2), fx=cx+Math.cos(a)*s*.36, fy=cy+s*.05+Math.sin(a)*s*.3;
     ctx.beginPath(); ctx.moveTo(fx-s*.05,fy); ctx.quadraticCurveTo(fx,fy-s*.16*f,fx+s*.05,fy); ctx.closePath(); ctx.fillStyle=i%2?'rgba(255,170,40,.9)':'rgba(255,90,20,.85)'; ctx.fill(); }
   circ(ctx,cx,cy,s*.36); ctx.fillStyle=lg(ctx,cx-s*.36,cy-s*.36,cx+s*.36,cy+s*.36,'#e09a5a','#8a4a1e'); ctx.fill(); ctx.strokeStyle='#5a2e10'; ctx.lineWidth=lw*1.2; ctx.stroke();
-  circ(ctx,cx,cy,s*.29); const col=v.dish==='pz'?['#8a4a22','#a8703c','#c9a273'][Math.min(2,v.thin|0)]:{av:'#c8381e',pn:'#a8301e'}[v.dish]||'#c8381e';
+  circ(ctx,cx,cy,s*.29); const col=v.dish==='pz'?['#8a4a22','#a8703c','#c9a273'][Math.min(2,v.thin|0)]:{av:'#c8381e',pn:'#a8301e',gu:'#7a3216',ss:'#5a1a48'}[v.dish]||'#c8381e';
   if(v.ph==='b'){ ctx.fillStyle='#2a1a10'; ctx.fill(); }
   else if(hot){ ctx.fillStyle=col; ctx.fill(); ctx.fillStyle='rgba(255,170,120,.35)'; for(let k=0;k<5;k++){ const ph=(G_anim*1.4+k*.27)%1; circ(ctx,cx+Math.sin(k*2.3)*s*.15,cy+Math.cos(k*1.7)*s*.12,s*.03*(.4+ph)); ctx.fill(); } }
   else { ctx.fillStyle='#4a2a14'; ctx.fill(); const n=v.c.length; v.c.forEach((k,i)=>{ const a=i/Math.max(1,n)*Math.PI*2-1.2; drawKeyAt(ctx,k,cx+Math.cos(a)*s*(n>1?.12:0),cy+Math.sin(a)*s*(n>1?.1:0),s*.24); }); }
@@ -3068,6 +3274,24 @@ function drawWok(t,cx,cy,s,lw){
   if(v.ph==='i'){ const n=v.c.length; v.c.forEach((k,i)=>{ const a=i/Math.max(1,n)*Math.PI*2-1.2; drawKeyAt(ctx,k,cx+Math.cos(a)*s*(n>1?.11:0),cy+Math.sin(a)*s*(n>1?.1:0),s*.26); }); }
   else if(hot){ ctx.globalAlpha=v.ph==='d'?1:.35+.65*v.cook; drawKeyAt(ctx,v.dish+'K',cx,cy-jump,s*.48); ctx.globalAlpha=1; }
   else if(v.ph==='b') drawFnAt(ctx,'burnt',iBurnt,cx,cy,s*.4); }
+/* ћуп: патка се глазира у шљивама под поклопцем */
+function drawCup(t,cx,cy,s){
+  const v=t.v; drawFnAt(ctx,'cupst',iCupIcon,cx,cy+s*.04,s*.78);
+  if(v.ph==='i'){ const n=v.c.length; v.c.forEach((k,i)=>drawKeyAt(ctx,k,cx+(i-(n-1)/2)*s*.2,cy-s*.26,s*.3)); }
+  else if(v.ph==='c'){ ell(ctx,cx,cy-s*.27,s*.17,s*.06); ctx.fillStyle='#3a1406'; ctx.fill();
+    for(let k=0;k<3;k++){ const ph=(G_anim*.8+k*.33)%1; circ(ctx,cx+(k-1)*s*.1,cy-s*.32-ph*s*.2,s*.025*(1-ph)+1); ctx.fillStyle=`rgba(150,90,200,${.8-ph*.7})`; ctx.fill(); } }
+  else if(v.ph==='d') drawKeyAt(ctx,'pkM',cx,cy-s*.22,s*.62);
+  else if(v.ph==='b'){ for(let k=0;k<4;k++){ const ph=(G_anim+k*.25)%1; circ(ctx,cx+(k-1.5)*s*.08,cy-s*.3-ph*s*.22,s*.03); ctx.fillStyle=`rgba(140,200,60,${.9-ph*.8})`; ctx.fill(); } }
+}
+/* парњача: три бамбусове корпе на лонцу са водом */
+const STEAM_POS=[[-.17,-.08],[.17,-.08],[0,.17]];
+function drawSteamer(t,cx,cy,s,lw){
+  const st=t.st, act=st.w>0&&st.b.some(x=>x&&(x.s==='C'||x.s==='K'));
+  circ(ctx,cx,cy+s*.04,s*.4); ctx.fillStyle='#24282b'; ctx.fill(); circ(ctx,cx,cy+s*.04,s*.35); ctx.fillStyle=st.w>0?`rgba(90,160,220,${.35+.5*st.w})`:'#3a2a20'; ctx.fill();
+  st.b.forEach((it,i)=>{ const bx=cx+STEAM_POS[i][0]*s, by=cy+STEAM_POS[i][1]*s; circ(ctx,bx,by,s*.18); ctx.fillStyle='#c8a050'; ctx.fill(); ctx.strokeStyle='#6a4a1a'; ctx.lineWidth=lw; ctx.stroke();
+    circ(ctx,bx,by,s*.14); ctx.fillStyle='#e6cc88'; ctx.fill(); if(it) drawItemAt(ctx,it,bx,by,s*.26); });
+  if(act) for(let k=0;k<4;k++){ const ph=(G_anim*.9+k*.25)%1, sx=cx+(k-1.5)*s*.14; ctx.strokeStyle=`rgba(255,255,255,${.7*(1-ph)})`; ctx.lineWidth=Math.max(1.5,s*.04); ctx.beginPath(); ctx.moveTo(sx,cy-s*.1-ph*s*.3); ctx.quadraticCurveTo(sx-s*.06,cy-s*.2-ph*s*.3,sx,cy-s*.3-ph*s*.3); ctx.stroke(); }
+}
 function drawRobot(c,px,py,s,n){
   const f=n.fx||1, bob=Math.sin(G_anim*10)*s*.01; c.fillStyle='rgba(0,0,0,.22)'; ell(c,px,py+s*.25,s*.3,s*.1); c.fill();
   for(const k of [-1,0,1]){ for(const sg of [-1,1]){ circ(c,px+k*s*.16,py+s*.18+sg*s*.03,s*.06); c.fillStyle='#222'; c.fill(); } }
@@ -3096,7 +3320,7 @@ function drawVessel(t,cx,cy,s,lw){
   const ir=s*(kot?.25:.27); circ(ctx,cx,cy,ir);
   let f=kot?'#2a2a28':'#454b50';
   if(v.ph==='i'&&v.c.length) f='#8fbfdc';
-  if(hot) f=v.dish==='co'?'#d94a1e':'#b54428';
+  if(hot) f=v.dish==='co'?'#d94a1e':v.dish==='rv'?'#e8d8a8':'#b54428';
   if(v.ph==='b') f='#2a2421';
   ctx.fillStyle=f; ctx.fill();
   ctx.save(); circ(ctx,cx,cy,ir); ctx.clip();
@@ -3185,6 +3409,8 @@ function drawTileDyn(t){
     case 'spit': drawSpit(t,x,y,s,h,cx,cy,lw); break;
     case 'sac': drawSac(t,cx,cy,s,lw); break;
     case 'wok': drawWok(t,cx,cy,s,lw); break;
+    case 'marin': drawCup(t,cx,cy,s); break;
+    case 'steam': drawSteamer(t,cx,cy,s,lw); break;
     case 'oven': {
       const tr=t.item, hot=tr&&tr.ph==='c', fl=.55+.25*Math.sin(G_anim*9+t.y)+(hot?.25:0), mx=cx, my=y+h*.72;
       const g=ctx.createRadialGradient(mx,my+s*.08,s*.02,mx,my,s*.3); g.addColorStop(0,`rgba(255,210,90,${fl})`); g.addColorStop(.6,`rgba(255,100,20,${fl*.7})`); g.addColorStop(1,'rgba(120,30,0,0)');
@@ -3210,7 +3436,7 @@ function trashIcon(cx,y){ const r=Math.max(9,ts*.19)*(1+.1*Math.sin(G_anim*10));
 function checkIcon(cx,y){ const r=Math.max(7,ts*.14); circ(ctx,cx,y,r); fs(ctx,'#2e9b4f','#fff',Math.max(1.5,r*.18));
   ctx.strokeStyle='#fff'; ctx.lineWidth=Math.max(1.6,r*.28); ctx.beginPath(); ctx.moveTo(cx-r*.45,y); ctx.lineTo(cx-r*.1,y+r*.35); ctx.lineTo(cx+r*.45,y-r*.35); ctx.stroke(); }
 function vesselStatus(v,cx,y,bx,by,bw,bh){
-  if(v.ph==='i'&&v.c.length){ const rs=V.L.recipes.map(r=>RECIPES[r]).filter(R=>R.cook===v.kind&&isSub(v.c,R.in)), need=rs.length?Math.min(...rs.map(R=>R.in.length)):3; for(let i=0;i<need;i++){ circ(ctx,cx+(i-(need-1)/2)*ts*.18,y-ts*.1,Math.max(3,ts*.06)); fs(ctx,i<v.c.length?'#f2a93b':'rgba(20,12,6,.6)','#fff',1.5); } }
+  if(v.ph==='i'&&v.c.length){ const rs=lvR(V.L).map(r=>RECIPES[r]).filter(R=>R.cook===v.kind&&isSub(v.c,R.in)), need=rs.length?Math.min(...rs.map(R=>R.in.length)):3; for(let i=0;i<need;i++){ circ(ctx,cx+(i-(need-1)/2)*ts*.18,y-ts*.1,Math.max(3,ts*.06)); fs(ctx,i<v.c.length?'#f2a93b':'rgba(20,12,6,.6)','#fff',1.5); } }
   if(v.ph==='c') bar(bx,by,bw,bh,v.cook,'#f2a93b');
   if(v.ph==='d'){ if(BURN_T[v.kind]-v.burn<4) warnIcon(cx,y-ts*.12); else checkIcon(cx,y-ts*.1); }
 }
@@ -3218,18 +3444,24 @@ function drawStatus(){
   for(const row of V.grid) for(const t of row){
     if(!t.solid) continue;
     const s=ts, x=ox+t.x*s, y=oy+t.y*s, cx=x+s/2, bw=s*.78, bx=x+s*.11, by=y-s*.2, bh=Math.max(6,s*.15), it=t.item;
-    if((t.kind==='board'||t.kind==='counter')&&it&&it.k==='i'&&it.s==='R'&&it.n>0&&ING[it.t].chop) bar(bx,by,bw,bh,it.n,'#58c26a');
+    if((t.kind==='board'||t.kind==='counter')&&it&&it.k==='i'&&it.n>0&&((it.s==='R'&&ING[it.t].chop)||(it.s==='G'&&ING[it.t].carve))) bar(bx,by,bw,bh,it.n,'#58c26a');
+    if(t.kind==='board'&&it&&it.k==='i'&&it.st>1) badge(x+s*.84,y+s*.16,it.st);
+    if(t.kind==='board'&&it&&it.k==='i'&&it.t==='mx'){ const rs=lvR(V.L).map(r=>RECIPES[r]).filter(R=>R.cook==='board'&&isSub(it.c,R.in)), need=rs.length?Math.min(...rs.map(R=>R.in.length)):3; for(let i=0;i<need;i++){ circ(ctx,cx+(i-(need-1)/2)*s*.18,y-s*.1,Math.max(3,s*.06)); fs(ctx,i<it.c.length?'#f2a93b':'rgba(20,12,6,.6)','#fff',1.5); } }
+    if(t.kind==='marin') vesselStatus(t.v,cx,y,bx,by,bw,bh);
+    if(t.kind==='steam'){ const st=t.st, act=st.b.some(q=>q&&(q.s==='C'||q.s==='K')); bar(bx,by,bw,bh*.75,st.w,st.w<.2?'#e85050':'#5fb0e8'); if(act&&st.w<.2) warnIcon(x+s*.9,y+s*.05);
+      st.b.forEach((q,i)=>{ if(!q) return; const qx=cx+STEAM_POS[i][0]*s, qy=y+s*.5+STEAM_POS[i][1]*s-s*.24;
+        if(q.s==='C') bar(qx-s*.15,qy,s*.3,Math.max(4,s*.08),q.n,'#f2a93b'); else if(q.s==='B') trashIcon(qx,qy); else if(q.s==='K'){ if(STEAM_BURN-q.b<4) warnIcon(qx,qy); else checkIcon(qx,qy); } }); }
     if(t.kind==='grill'&&it&&it.t==='me'){ if(it.s==='R') bar(bx,by,bw,bh,it.n,'#f2a93b'); else if(it.s==='G'){ if(GRILL_BURN-it.b<3.5) warnIcon(cx,y-s*.12); else if(it.b<2.5) checkIcon(cx,y-s*.1); } }
     if(t.kind==='pot'||t.kind==='kotlic'||t.kind==='sac') vesselStatus(t.v,cx,y,bx,by,bw,bh);
-    if(t.kind==='wok'){ const v=t.v; if(v.ph==='c'&&v.need) flipIcon(cx,y-s*.14,1-(v.fw||0)/WOK_TOSS); else vesselStatus(v,cx,y,bx,by,bw,bh); }
-    if(t.kind==='spit'&&it&&it.k==='i'&&it.t==='pg'){ if(it.s==='R'){ bar(bx,by,bw,bh,it.n,'#f2a93b'); const tu=it.tu||0; bar(bx,by+bh+2,bw,bh*.75,tu,tu<.3?'#e85050':'#5fb0e8'); if(tu<.3) warnIcon(x+s*.9,y+s*.05); } else if(it.s==='G'){ if(SPIT_BURN-it.b<3.5) warnIcon(cx,y-s*.12); else if(it.b<2.5) checkIcon(cx,y-s*.1); } }
+    if(t.kind==='wok'){ const v=t.v; if(v.ph==='c'&&v.need===2){ flipIcon(cx,y-s*.14,1-(v.fw||0)/FLAMBE_WIN); drawKeyAt(ctx,'rkR',cx,y-s*.14,s*.24); } else if(v.ph==='c'&&v.need) flipIcon(cx,y-s*.14,1-(v.fw||0)/WOK_TOSS); else vesselStatus(v,cx,y,bx,by,bw,bh); }
+    if(t.kind==='spit'&&it&&it.k==='i'&&SPIT_FROM[it.t]){ if(it.s===SPIT_FROM[it.t]){ bar(bx,by,bw,bh,it.n,'#f2a93b'); const tu=it.tu||0; bar(bx,by+bh+2,bw,bh*.75,tu,tu<.3?'#e85050':'#5fb0e8'); if(tu<.3) warnIcon(x+s*.9,y+s*.05); } else if(it.s==='G'){ if(SPIT_BURN-it.b<3.5) warnIcon(cx,y-s*.12); else if(it.b<2.5) checkIcon(cx,y-s*.1); } }
     if(t.kind==='oven'&&it&&it.k==='t') vesselStatus(it,cx,y,bx,by,bw,bh);
     if((t.kind==='counter'||t.kind==='board')&&it&&it.k==='t'&&it.ph==='i'&&it.c.length&&vesselDish('tray',it.c,V.L)) checkIcon(x+s*.85,y+s*.12);
     if(t.kind==='sink'&&t.prog>0) bar(bx,by,bw,bh,t.prog,'#5fb0e8');
     if((t.kind==='roaster'||t.kind==='pan')&&it&&it.k==='i'){ const C=COOKERS[t.kind]; if(it.s===C.from) bar(bx,by,bw,bh,it.n,'#f2a93b'); else if(it.s==='G'){ if(C.burn-it.b<3.5) warnIcon(cx,y-s*.12); else if(it.b<2.5) checkIcon(cx,y-s*.1); } }
     if((t.kind==='grill'||t.kind==='roaster'||t.kind==='pan'||t.kind==='griddle'||t.kind==='spit')&&it&&it.k==='i'&&it.s==='B'){ trashIcon(cx,y-s*.14); continue; }
     if(t.kind==='griddle'&&it&&it.t==='te'){ if(it.s==='R') bar(bx,by,bw,bh,it.n,'#f2d13b'); else if(it.s==='F') flipIcon(cx,y-s*.14,1-(it.fw||0)/GRID_FLIP); else if(it.s==='H') bar(bx,by,bw,bh,it.n,'#f2a93b'); else if(it.s==='G'){ if(GRID_BURN-it.b<3) warnIcon(cx,y-s*.12); else if(it.b<2) checkIcon(cx,y-s*.1); } }
-    if(t.kind==='kazan'&&t.v.dish==='pz'&&t.v.ph==='d'&&t.v.por>1) badge(x+s*.84,y+s*.16,t.v.por);
+    if(t.kind==='kazan'&&t.v.ph==='d'&&t.v.por>1) badge(x+s*.84,y+s*.16,t.v.por);
     if(t.kind==='kazan'){ vesselStatus(t.v,cx,y,bx,by,bw,bh); if(t.v.ph==='c'){ const st=t.v.stir===undefined?1:t.v.stir; bar(bx,by+bh+2,bw,bh*.75,st,st<.3?'#e85050':'#5fb0e8'); if(st<.3) warnIcon(x+s*.9,y+s*.05); } }
     if(t.kind==='board'&&it&&it.k==='i'&&it.s==='G'&&it.n>0&&ING[it.t].peel) bar(bx,by,bw,bh,it.n,it.h>0?'#e8604a':'#8aa0b8');
   }
@@ -5018,7 +5250,7 @@ function drawTicket(o,x,y,w,h){
   const bh=Math.max(5,h*.075); rr(ctx,sx+5,y+5,w-10,bh,bh/2); ctx.fillStyle='#ece0c8'; ctx.fill();
   const col=frac>.5?'#3aa655':frac>.25?'#e0a01e':'#d63a2e';
   if(frac>0){ rr(ctx,sx+5,y+5,Math.max(bh,(w-10)*frac),bh,bh/2); ctx.fillStyle=col; ctx.fill(); }
-  const rc=RECIPES[o.r]; const row=rc.cook?[...rc.in.map(k=>['k',k]),['s',rc.cook],...rc.parts.filter(p=>p!==rc.out+'K').map(k=>['k',k])]:rc.parts.map(k=>['k',k]);
+  const rc=RECIPES[o.r]; const row=rc.card?rc.card.map(k=>k[0]==='@'?['s',k.slice(1)]:['k',k]):rc.cook?[...rc.in.map(k=>['k',k]),['s',rc.cook],...rc.parts.filter(p=>p!==rc.out+'K').map(k=>['k',k])]:rc.parts.map(k=>['k',k]);
   const n=row.length, iu=Math.min(h*.3,(w-8)/n), iy=y+h-iu/2-5;
   const du=Math.min(h-bh-iu-18,w*.7); drawFnAt(ctx,'dish:'+o.r,cc=>dishArt(cc,o.r),sx+w/2,y+bh+7+du/2,du);
   const fsz=Math.max(9,Math.round(h*.105)); ctx.font=`700 ${fsz}px Rubik, system-ui, sans-serif`; ctx.fillStyle='#8a6d52'; ctx.textAlign='left'; ctx.textBaseline='top';
@@ -5029,7 +5261,7 @@ function drawTicket(o,x,y,w,h){
     ctx.fillStyle='#6a4a08'; ctx.font=`900 ${Math.round(R*1.3)}px Rubik, system-ui, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('€',cx,cy+.5); }
   rr(ctx,sx+4,iy-iu/2-2,w-8,iu+4,5); ctx.fillStyle='#efe2c8'; ctx.fill();
   let ix=sx+w/2-(n*iu)/2+iu/2;
-  for(const [kind,k] of row){ if(kind==='k') drawKeyAt(ctx,k[2]==='C'?k.slice(0,2)+'R':k,ix,iy,iu*.96); else drawFnAt(ctx,'st:'+k,k==='pot'?iPotIcon:k==='kotlic'?iKotlicIcon:k==='kazan'?iKazanIcon:k==='sac'?iSacIcon:k==='wok'?iWokIcon:iOvenIcon,ix,iy,iu*.88); ix+=iu; }
+  for(const [kind,k] of row){ if(kind==='k') drawKeyAt(ctx,k[2]==='C'?k.slice(0,2)+'R':k,ix,iy,iu*.96); else drawFnAt(ctx,'st:'+k,STICON[k]||iOvenIcon,ix,iy,iu*.88); ix+=iu; }
 }
 function pill(x,y,w,h,bg1,fg,text,icon){
   ctx.fillStyle='rgba(0,0,0,.32)'; rr(ctx,x+2,y+3,w,h,h/2); ctx.fill();
@@ -5180,7 +5412,7 @@ function hydrateIcon(cnv){
   const c=cnv.getContext('2d'); c.scale(d,d); c.lineJoin='round'; c.lineCap='round';
   if(kind==='char'){ portrait(c,size,+arg,cnv.dataset.dim==='1'); return; }
   c.translate(size/2,size/2); c.scale(size*.9/100,size*.9/100);
-  if(kind==='dish') dishArt(c,arg); else if(kind==='ing') drawIngIcon(c,arg); else if(kind==='pot') iPotIcon(c); else if(kind==='kotlic') iKotlicIcon(c); else if(kind==='kazan') iKazanIcon(c); else if(kind==='sac') iSacIcon(c); else if(kind==='wok') iWokIcon(c); else if(kind==='tray') iOvenIcon(c);
+  if(kind==='dish') dishArt(c,arg); else if(kind==='ing') drawIngIcon(c,arg); else if(kind==='pot') iPotIcon(c); else if(kind==='kotlic') iKotlicIcon(c); else if(kind==='kazan') iKazanIcon(c); else if(STICON[kind]) STICON[kind](c); else if(kind==='tray') iOvenIcon(c);
 }
 const starsHTML=n=>[0,1,2].map(i=>`<span class="${i<n?'on':''}">★</span>`).join('');
 function levelList(){
@@ -5248,7 +5480,11 @@ const BUILD={
       ${host?levelList():'<p class="wait">Домаћин бира ниво…</p>'}
       <div class="row end" style="margin-top:14px"><button class="btn quiet" data-act="leave">${host?'Затвори игру':'Напусти игру'}</button></div></div></div>`; },
   intro:()=>{ const L=LEVELS[Game.li], host=Game.role!=='client', thr=scaledStars(L);
+    const stepChip=x=>x==='+'||x==='→'?`<span class="plus">${x}</span>`:x==='/'?'<span class="brk"></span>':x[0]==='t'?`<b class="rec-sub">${esc(x[1])}</b>`
+      :x[0]==='s'?`<span class="part"><canvas data-icon="${x[1]}:x" data-size="26"></canvas><span>${esc(x[2])}</span></span>`
+      :`<span class="part"><canvas data-icon="ing:${x[1]}" data-size="26"></canvas><span>${esc(ING[x[1].slice(0,2)].n)}</span>${x[2]?`<em>${esc(x[2])}</em>`:''}</span>`;
     const recs=L.recipes.map(rid=>{ const rc=RECIPES[rid], src=rc.cook?rc.in:rc.parts;
+      if(rc.steps) return `<div class="rec"><canvas data-icon="dish:${rid}" data-size="58"></canvas><div><div class="rec-name">${esc(rc.n)} <span class="rec-price">${fmt(rc.price)} дин.</span></div><div class="rec-parts">${rc.steps.map(stepChip).join('')}</div></div></div>`;
       const chips=src.map(k=>{ const t=k.slice(0,2), s=k[2], verb=s==='C'?(ING[t].verb||'сецкај'):s==='G'?(ING[t].spit?'на ражањ':'пеци'):'';
         return `<span class="part"><canvas data-icon="ing:${t}R" data-size="26"></canvas><span>${esc(ING[t].n)}</span>${verb?`<em>${verb}</em>`:''}</span>`; }).join('<span class="plus">+</span>');
       const st=rc.cook?`<span class="plus">→</span><span class="part"><canvas data-icon="${rc.cook}:x" data-size="26"></canvas><span>${rc.cook==='pot'?'у лонац':rc.cook==='kotlic'?'у котлић':rc.cook==='kazan'?'у казан, мешај!':rc.cook==='sac'?'под сач':rc.cook==='wok'?'у вок, протреси!':'тепсија у фуруну'}</span></span>`:'';
@@ -5336,7 +5572,7 @@ V=viewForLevel(0); resize(); applyLang();
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ bgKey=''; iconCache.clear(); });
 netInit();
 requestAnimationFrame(frame);
-window.__kb={tr,setLang,SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
+window.__kb={tr,setLang,SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,simStep,enc,dec,buildSnap,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
 })();
 </script>
 </body>
