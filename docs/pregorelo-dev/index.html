@@ -5730,7 +5730,10 @@ addEventListener('keydown',e=>{
 addEventListener('keyup',e=>keys.delete(e.code));
 addEventListener('pointerdown',audioInit,{passive:true});
 addEventListener('blur',()=>{ keys.clear(); if((Game.role==='solo'||Game.role==='couch')&&Game.phase==='play') pauseGame(); });
-document.addEventListener('visibilitychange',()=>{ if(document.hidden&&Game.role!=='client'&&Game.phase==='play') pauseGame(); });
+// скривен таб домаћина нема петљу (requestAnimationFrame стоји), па гостима одмах шаље паузу или крај нивоа: без снимака би их после 8 s избацило
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden||Game.role==='client') return;
+  if(Game.role==='host'&&Game.phase==='ending') finishLevel(); else pauseGame();
+  netTick(0); });
 const stick={active:false,id:null,x:0,y:0,cx:0,cy:0};
 const zone=$('#stickZone'), base=$('#stickBase'), knob=$('#stickKnob');
 zone.addEventListener('pointerdown',e=>{ e.preventDefault(); stick.active=true; stick.id=e.pointerId; const r=zone.getBoundingClientRect();
@@ -8975,7 +8978,7 @@ function standTick(th,dt,on){
   const sc=SCN.sc, P=SCN.panels[0]; if(!P) return; STAND.t=(STAND.t||0)+dt;
   STAND.flash=Math.max(0,(STAND.flash||0)-dt);
   if(th==='zimnica'){
-    if(on&&Math.random()<dt*3.5) spart({kind:'smoke',x:P.x+P.w*(.75+Math.random()*.2),y:SCN.awning.y-sc*.1,vx:-6-Math.random()*8,vy:-16-Math.random()*8,life:2.6});
+    if(on&&Math.random()<dt*3.5) spart({kind:'smoke',x:P.x+P.w*(.75+Math.random()*.2),y:(SCN.awning?SCN.awning.y:SCN.sky.y+SCN.sky.h)-sc*.1,vx:-6-Math.random()*8,vy:-16-Math.random()*8,life:2.6});
     if(on&&(STAND.yell=(STAND.yell===undefined?7:STAND.yell)-dt)<=0){ STAND.yell=14+Math.random()*8; STAND.yellT=2.4; STAND.yellTxt=tr(pick(['Дим ми улази у веш!','Опет ми смрди веш на паприку!','Затворите тај бубањ!'])); }
     STAND.yellT=Math.max(0,(STAND.yellT||0)-dt);
   } else if(th==='ada'){
