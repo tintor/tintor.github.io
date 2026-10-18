@@ -4592,7 +4592,8 @@ function simGrab(p){
 function startWash(p,t){ if(p.hold){ deny(p,t,'Прво спусти то што држиш!'); return; } p.work={tile:t,kind:'wash'}; }
 function simWork(p){
   const t=p.target; if(p.stun>0) return;
-  if(!t){ if((p.ch|0)===TRUBAC&&!p.hold&&!(p.toot>0)){ p.toot=TOOT_T; ev('s','trumpet'); } return; } // трубач ван станице дува у трубу
+  if(!t){ if(!p.hold&&!(p.toot>0)){ // ван станице: трубач дува у трубу, Ник на свадби пуца у небо
+    if((p.ch|0)===TRUBAC){ p.toot=TOOT_T; ev('s','trumpet'); } else if((p.ch|0)===NICK&&S.L.theme==='salas'){ p.toot=SHOT_T; ev('g','N',p.slot); } } return; }
   if(t.kind==='board'){
     const it=t.item;
     if(it&&it.k==='i'&&it.s==='R'&&pullOf(it.t)&&canPull(pullOf(it.t))){ if(p.hold){ deny(p,t,'Прво спусти то што држиш!'); return; } pullDough(p,t,it); return; }
@@ -5634,7 +5635,7 @@ function ambient(dt){
     if(v&&(t.kind!=='oven'||true)&&v.ph!=='i'){ const warn=v.ph==='d'&&BURN_T[v.kind]-v.burn<4;
       if(warn) warnTick(t.x+','+t.y,dt); if(Math.random()<dt*(v.ph==='b'?6:3)) smoke(t,warn||v.ph==='b'); }
   }
-  for(const p of V.players||[]) if(p.toot>0){ p.note=(p.note||0)-dt; if(p.note<=0){ p.note=.18+Math.random()*.12; FX.parts.push({x:(p.dx??p.x)+p.fx*.5,y:(p.dy??p.y)-.5,vx:p.fx*.5+(Math.random()-.5)*.4,vy:-.8,t:0,life:1.1,kind:'note',ch:Math.random()<.5?'♪':'♫'}); } }
+  for(const p of V.players||[]) if(p.toot>0&&(p.ch|0)===TRUBAC){ p.note=(p.note||0)-dt; if(p.note<=0){ p.note=.18+Math.random()*.12; FX.parts.push({x:(p.dx??p.x)+p.fx*.5,y:(p.dy??p.y)-.5,vx:p.fx*.5+(Math.random()-.5)*.4,vy:-.8,t:0,life:1.1,kind:'note',ch:Math.random()<.5?'♪':'♫'}); } }
   for(const p of DP){ if(!p.wk) continue; const t=tileAt(V,p.tx,p.ty); if(!t) continue; const key='w'+p.slot, v=(FX.chopT.get(key)||0)+dt;
     if(p.wk===1&&v>.2){ FX.chopT.set(key,0); sfx('chop'); const ty=t.item&&t.item.t; for(let i=0;i<4;i++) FX.parts.push({x:t.x+.5,y:t.y+.45-surf45(t),vx:(Math.random()-.5)*2.2,vy:-1-Math.random()*1.2,g:6,t:0,life:.45,kind:'dot',r:.05,c:BITS[ty]||'#fff'}); }
     else if(p.wk===2&&v>.3){ FX.chopT.set(key,0); sfx('wash'); for(let i=0;i<3;i++) FX.parts.push({x:t.x+.3+Math.random()*.4,y:t.y+.45-surf45(t),vx:(Math.random()-.5)*.3,vy:-.6-Math.random()*.4,t:0,life:.8,kind:'bubble',r:.05+Math.random()*.05}); }
@@ -5857,7 +5858,7 @@ function shoveStep(o,a,slot,guards,dt){
   for(const g of guards||[]){ if(g.o===slot) continue; const dx=a.x-g.x, dy=a.y-g.y, d=Math.hypot(dx,dy); if(d>=SHOVE_R) continue;
     let ux=dx, uy=dy; if(d<1e-3){ ux=g.fx||0; uy=g.fy||1; } const m=Math.hypot(ux,uy)||1; a.kvx=ux/m*SHOVE_V; a.kvy=uy/m*SHOVE_V; a.kvT=SHOVE_T; return; }
 }
-const TRUBAC=6, TOOT_T=1.2; // трубач ван станице на E засвира
+const TRUBAC=6, TOOT_T=1.2, SHOT_T=.7; // ван станице на E: трубач засвира, Ник на свадби пуца у небо (p.toot траје толико)
 const PANDUR=5, nearNpc=(x,y)=>((V&&V.npcs)||[]).some(n=>n.kind!=='car'&&!n.gone&&Math.hypot(n.x-x,n.y-y)<PR+NPC_R+.08);
 function hostUpdate(dt){
   if(!S||V!==S) return;
@@ -7556,6 +7557,7 @@ function body(c,px,py,s0,fx,fy,walk,st,o,A){
   const armOf=sg=>{ const Sx=px+nx*sg*B.sh*s*w*.92, Sy=yS+.05*s+ny*sg*.016*s; let hx2,hy2;
     if(pose==='upboth'){ const wv=Math.sin(t*12+sg)*.025*s; hx2=px+nx*sg*.32*s+(side>.5?sg*.12*s:0)+wv; hy2=yS-.26*s+Math.abs(wv); }
     else if(pose==='trumpet'){ hx2=px+fx*.2*s+nx*sg*.06*s; hy2=my+.05*s+fy*.06*s; }
+    else if((pose==='gunup'||pose==='gunfire')&&sg===gsg){ hx2=px+nx*sg*.2*s+fx*.04*s; hy2=yS-.3*s; }
     else if(pose==='gunrun'){ const sup=sg!==gsg; hx2=px+fx*s*(sup?.2:.25)+nx*sg*.03*s; hy2=yS+.1*s+fy*.1*s+(sup?.03*s:0); }
     else if(o.knife!==undefined){ const lift=Math.sin(Math.PI*Math.min(1,o.knife)); if(sg>0){ hx2=px+fx*.3*s+nx*.07*s; hy2=byN+fy*.13*s-.02*s-lift*.17*s; } else { hx2=px+fx*.27*s-nx*.12*s; hy2=byN+fy*.15*s+.01*s; } }
     else if(pose==='violin'){ if(sg<0){ hx2=px+nx*sg*.34*s; hy2=yS+.02*s; } else { const bw=Math.sin(t*6)*.09*s; hx2=px+nx*sg*.02*s+bw; hy2=yS+.1*s-bw*.3; } }
@@ -7585,7 +7587,8 @@ function body(c,px,py,s0,fx,fy,walk,st,o,A){
   for(const Ar of front) handDraw(c,Ar,s,st);
   const hands=arms.map(Ar=>[Ar.hx,Ar.hy]);
   if(st.gun&&!sit){ const knife=o.knife!==undefined, h=hands[knife?0:gsg>0?1:0];
-    if(pose==='gunrun'){ if(!back) drawRevolver(c,h[0],h[1],s0*.62,Math.atan2(fx+nx*gsg*.7*(1-Math.abs(fx)),Math.max(.25,fy)),0,st.skin,INK); }
+    if(pose==='gunup'||pose==='gunfire') drawRevolver(c,h[0],h[1],s0*.7,.12*gsg,pose==='gunfire'?1:0,st.skin,INK);
+    else if(pose==='gunrun'){ if(!back) drawRevolver(c,h[0],h[1],s0*.62,Math.atan2(fx+nx*gsg*.7*(1-Math.abs(fx)),Math.max(.25,fy)),0,st.skin,INK); }
     else if(knife||pose==='busy'){ if(!back) drawRevolver(c,h[0],h[1],s0*.78,knife?.11:.12*nx*gsg,0,st.skin,INK); }
     else drawRevolver(c,h[0],h[1],s0*.7,Math.PI-.3*clamp(nx*gsg+fx*.6,-1,1),0,st.skin,INK); }
   const hold=[(hands[0][0]+hands[1][0])/2,(hands[0][1]+hands[1][1])/2-.03*s];
@@ -8105,6 +8108,7 @@ function sceneEvent(e){
   else if(k==='M') startPeace(e[3],e[4]);
   else if(k==='T') startTrubac(e[3]);
   else if(k==='B') startBand();
+  else if(k==='N') nickShot(e[3]);
   else if(k==='S'){ const w=e[3]; if(w===2){ fireShooter(0); fireShooter(1); } else fireShooter(w|0); }
 }
 function startBrawl(a,b){
@@ -8420,12 +8424,19 @@ function fireShooter(k){
   else s.fire=true;
 }
 function bang(s){
-  sfxS('bang'); SCN.duckT=.9; if(Game.phase==='play') FX.shake=Math.max(FX.shake,.12);
+  bangReact();
   const mz=s.mz||[s.x+SCN.sc*.25,s.y-SCN.sc*1.05]; spart({kind:'bang',x:mz[0],y:mz[1]-SCN.sc*.12,life:.7}); for(let i=0;i<5;i++) spart({kind:'smoke',x:mz[0],y:mz[1],vx:(Math.random()-.5)*15,vy:-20,life:1.2});
+}
+// пуцањ у небо: сала се сагне, деда се тргне или баба грди
+function bangReact(){
+  sfxS('bang'); SCN.duckT=.9; if(Game.phase==='play') FX.shake=Math.max(FX.shake,.12);
   if(SCN.dedaEnt) SCN.dedaEnt.wake=2.6;
   if(SCN.dedaEnt&&Math.random()<.5) setTimeout(()=>{ if(SCN.dedaEnt) bubble(SCN.dedaEnt,pick(['Шта?! Ко пуца?!','Ко је то, бре?!','Јел’ стигла млада?!']),1.9); },250);
   else setTimeout(()=>{ if(SCN.babaEnt) bubble(SCN.babaEnt,pick(SCOLD),2.1); },650);
 }
+function nickShot(slot){ bangReact(); const p=V&&(V.players||[]).find(q=>q.slot===slot); if(!p) return;
+  const l=Math.hypot(p.fx,p.fy)||1, fx=p.fx/l, fy=p.fy/l, g=(!(fy<-.35)&&Math.abs(fx)>.35)?Math.sign(fx):1, x=(p.dx??p.x)-fy*g*.2+fx*.04, y=(p.dy??p.y)-1.05; // изнад подигнуте шаке (body: nx=-fy)
+  for(let i=0;i<5;i++) FX.parts.push({x:x+(Math.random()-.5)*.1,y,vx:(Math.random()-.5)*.5,vy:-.5-Math.random()*.4,t:0,life:.9,kind:'puff',r:.07,c:'rgba(200,200,200,'}); }
 /* ---- свадба: смешне ситнице ---- */
 const DEDA={tag:'#555',skin:'#ecc4a0',shirt:'#f2ede0',vest:'#3a3a3a',trim:'#3a3a3a',apron:null,hat:'sajkaca',hatC:'#4a4636',hair:'#e8e8e8',stache:true};
 const UJAK={tag:'#555',skin:'#f0b892',shirt:'#ffffff',vest:'#4a5a7a',trim:'#c8202b',apron:null,hat:'hair',hatC:'#222',hair:'#3a2a1a',stache:true,redNose:true,blush:true};
@@ -11883,7 +11894,7 @@ function render(dt){
     for(const e of ents){
       if(e.f){ e.f(); continue; }
       if(e.p){ const p=e.p, s=ts, hx=p.hold, kt=isChina(V.L)&&chinaKettle(p), ge=V.L.street&&eggOf('souvenir'), cst=ge&&ge.slot===p.slot?{...chefLook(p.ch),scarf:EGG_SCARF}:chefLook(p.ch);
-        drawChar(ctx,ox+p.x*ts,oy+p.y*ts,s*((CHARS[p.ch]||CHARS[0]).scale||1),p.fx,p.fy,p.walk,cst,{ent:PENT[p.slot]||(PENT[p.slot]={}),hero:true,pose:kt?'up':(CHARS[p.ch]||CHARS[0]).gun&&p.mv&&!hx&&!(p.wk===1||p.wk===2)?'gunrun':undefined,prop:kt?((c,i)=>propTeaKettle(c,i,true)):undefined,trumpet:p.toot>0,holding:!!hx||p.toot>0,working:p.wk===1||p.wk===2,knife:p.wk===1?(FX.chopT.get('w'+p.slot)||0)/.2:undefined,
+        drawChar(ctx,ox+p.x*ts,oy+p.y*ts,s*((CHARS[p.ch]||CHARS[0]).scale||1),p.fx,p.fy,p.walk,cst,{ent:PENT[p.slot]||(PENT[p.slot]={}),hero:true,pose:kt?'up':p.toot>0&&(p.ch|0)===NICK?(p.toot>SHOT_T-.12?'gunfire':'gunup'):(CHARS[p.ch]||CHARS[0]).gun&&p.mv&&!hx&&!(p.wk===1||p.wk===2)?'gunrun':undefined,prop:kt?((c,i)=>propTeaKettle(c,i,true)):undefined,trumpet:p.toot>0&&(p.ch|0)===TRUBAC,holding:!!hx||(p.toot>0&&(p.ch|0)===TRUBAC),working:p.wk===1||p.wk===2,knife:p.wk===1?(FX.chopT.get('w'+p.slot)||0)/.2:undefined,
           drawHold:hx?((x,y)=>drawItemAt(ctx,hx,x,y,s*.52)):null,label:multi?tr(Game.role==='couch'?'Играч '+(p.slot+1):p.me?'Ти':slotName(p.slot)):null}); }
       else { const n=e.n; if(n.kind==='ped'||n.kind==='cust'){ drawStreetNpc(n); continue; } if(n.kind==='car'){ if(!n.gone) drawKitchenCar(n); } else if(n.kind==='squad') drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk*1.4,SQUAD,{ent:n}); else if(n.kind==='zmaj') drawZmaj(ctx,[n,...DN.filter(o=>o.kind==='zmajr')].map(o=>({x:ox+o.dx*ts,y:oy+o.dy*ts,walk:o.walk})),ts); else if(n.kind==='zmajr'){} else if(n.kind==='caj') drawCajMajstor(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n); else if(n.kind==='guard') drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk,GUARD,{ent:n}); else if(n.kind==='rider') drawRider(n); else drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk,BAND,{ent:n,trumpet:true,holding:true}); }
     }
