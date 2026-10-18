@@ -10,6 +10,10 @@
 //        ALLOWED_ORIGIN      (text)    = your site's origin, e.g. https://yourname.github.io
 //                                        (comma-separated for several; no trailing slash)
 //   4. In index.html set:  const TURN_URL='https://<worker-name>.<your-subdomain>.workers.dev/';
+//   5. Optional but recommended: ALLOWED_ORIGIN only stops other web pages. A script outside a browser
+//      can send any Origin header and mint credentials on your account. To cap that, add a Rate Limiting
+//      binding named LIMITER (Worker → Settings → Bindings → Rate limiting, e.g. 10 requests per 60 s);
+//      the worker then allows that many requests per client IP.
 
 const TTL_SECONDS = 6 * 60 * 60; // credentials last 6 hours, longer than any game session
 
@@ -29,15 +33,25 @@ export default {
     if (request.method !== 'GET') return new Response('Method not allowed', { status: 405, headers: cors });
     if (!originOk) return new Response('Forbidden: set ALLOWED_ORIGIN to your site', { status: 403, headers: cors });
     if (!env.TURN_KEY_ID || !env.TURN_KEY_API_TOKEN) return json({ error: 'worker_not_configured' }, 500, cors);
+    if (env.LIMITER) {
+      const { success } = await env.LIMITER.limit({ key: request.headers.get('CF-Connecting-IP') || 'unknown' });
+      if (!success) return json({ error: 'rate_limited' }, 429, cors);
+    }
 
-    const upstream = await fetch(
-      `https://rtc.live.cloudflare.com/v1/turn/keys/${env.TURN_KEY_ID}/credentials/generate-ice-servers`,
-      {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${env.TURN_KEY_API_TOKEN}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ttl: TTL_SECONDS }),
-      },
-    );
+    let upstream;
+    try {
+      upstream = await fetch(
+        `https://rtc.live.cloudflare.com/v1/turn/keys/${env.TURN_KEY_ID}/credentials/generate-ice-servers`,
+        {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${env.TURN_KEY_API_TOKEN}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ttl: TTL_SECONDS }),
+        },
+      );
+    } catch (e) {
+      // without this, Cloudflare answers with its own 500 that has no CORS headers, and the browser reports a CORS error
+      return json({ error: 'turn_unavailable', status: 0 }, 502, cors);
+    }
     if (!upstream.ok) return json({ error: 'turn_unavailable', status: upstream.status }, 502, cors);
 
     // Shape: { iceServers: [ {urls:[stun...]}, {urls:[turn...], username, credential} ] }

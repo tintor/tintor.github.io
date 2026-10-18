@@ -583,6 +583,7 @@ try{ const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); if(s&&Array.isA
    ниво може да промени место у LEVELS, а звездице остају његове. Обука (ниво 0) чува звездице у својим пољима. */
 const SAVE_SLOT=['kafana','pekara','salas','zimnica','ada','docek','kasarna','fusion','selo','chengdu','hutong'];
 for(const L of LEVELS) if(!L.tutorial&&!SAVE_SLOT.includes(L.theme)) throw new Error('SAVE_SLOT нема тему '+L.theme);
+if(!Array.isArray(save.best)) save.best=[]; // оштећен сачувани запис не сме да заустави игру
 while(save.stars.length<SAVE_SLOT.length) save.stars.push(0); while(save.best.length<SAVE_SLOT.length) save.best.push(0);
 if(!save.bestT||typeof save.bestT!=='object') save.bestT={};
 const slotOf=li=>SAVE_SLOT.indexOf(LEVELS[li].theme);
@@ -4962,7 +4963,7 @@ const RTC_CFG={iceServers:[{urls:['stun:stun.l.google.com:19302','stun:stun.clou
 const Net={avail:null, room:null, user:null, chan:null, chanIsLobby:false, code:null, myPeer:null, myId:null,
   slots:[], conns:new Map(), answers:[], adverts:[], names:{}, snapT:0, relayT:0, relayOn:false,
   hostPeer:null, hostSeen:false, pc:null, dc:null, dcOpen:false, oid:null, appliedOid:null, offerAt:0, lastF:0, lastEv:0, lastSnapAt:0,
-  joinT0:0, joining:false, routes:{}, rinfo:{}, inSeq:0, g:0, w:0, inT:0, presT:0, rtcState:'', unsub:[]};
+  joinT0:0, joining:false, gone:new Map(), hostLeftAt:0, routes:{}, rinfo:{}, inSeq:0, g:0, w:0, inT:0, presT:0, rtcState:'', unsub:[]};
 const rid=()=>Math.random().toString(36).slice(2,10);
 const encSdp=s=>{ const t=s.replace(/\r\n/g,'|'), out=[]; for(let i=0;i<t.length;i+=900) out.push(t.slice(i,i+900)); return out; };
 const decSdp=a=>(Array.isArray(a)?a.join(''):String(a||'')).replace(/\|/g,'\r\n');
@@ -5195,7 +5196,7 @@ function inviteLink(){ return !Net.standalone?ART_URL+'#igra='+Net.code:/^https?
 function setMyName(v){ save.name=String(v||'').replace(/[\u0000-\u001f]/g,'').slice(0,16); persist();
   if(Game.role==='host'){ const s=Net.slots.find(x=>x.peer==='me'); if(s) s.nm=save.name; hostPresence(); } else if(Game.role==='client') chanPres({nm:save.name}); uiDirty(); }
 function chanPres(o){ if(!Net.chan) return; if(Game.role==='client'){ Net.myPres=Object.assign(Net.myPres||{},o); o=Net.myPres; } Net.chan.presence(Object.assign({k:Game.role==='host'?'h':'c',code:Net.code,v:2},o)).catch(()=>{}); }
-function freeCh(want){ const used=new Set(Net.slots.map(s=>s.ch)); if(want>=0&&want<CHARS.length&&!used.has(want)) return want; for(let i=0;i<CHARS.length;i++) if(!used.has(i)) return i; return 0; }
+function freeCh(want){ const used=new Set(Net.slots.map(s=>s.ch)); if(Number.isInteger(want)&&want>=0&&want<CHARS.length&&!used.has(want)) return want; for(let i=0;i<CHARS.length;i++) if(!used.has(i)) return i; return 0; }
 function setMyChef(i){ i=i|0; if(!chefOpen(i)) return; save.ch=i; persist();
   if(Game.role==='host'){ const me=Net.slots.find(x=>x.peer==='me'); if(me&&joinable()&&!Net.slots.some(s=>s!==me&&s.ch===i)){ me.ch=i; hostPresence(); } }
   else if(Game.role==='client') chanPres({ch:i});
@@ -5203,9 +5204,10 @@ function setMyChef(i){ i=i|0; if(!chefOpen(i)) return; save.ch=i; persist();
 
 /* -------- домаћин -------- */
 async function hostGame(){
-  if(!Net.room) return;
+  if(!Net.room||Net.hostWait) return; Net.hostWait=true; // двоклик би отворио две собе
   const code=Net.standalone?code6():String(1000+Math.floor(Math.random()*9000)); diagReset();
-  let chan=null; try{ chan=await Net.room.join('kb-'+code); }catch(e){ chan=null; }
+  let chan=null; try{ chan=await Net.room.join('kb-'+code); }catch(e){ chan=null; } finally{ Net.hostWait=false; }
+  if(Game.role==='client'||Game.role==='host'){ if(chan) chan.leave().catch(()=>{}); return; } // док се чекало, играч је ушао у другу игру
   Net.chanIsLobby=!chan; Net.chan=chan||Net.room; Net.code=code;
   Game.role='host'; Game.mySlot=0; Net.slots=[{slot:0,ch:myPrefCh(),peer:'me',by:Net.myId,nm:save.name||''}]; Net.conns.clear(); Net.answers=[];
   Net.unsub.push(Net.chan.onPeers(onHostPeers,()=>{}));
@@ -5217,7 +5219,7 @@ function hostPresence(snap){
   if(Game.role!=='host'||!Net.chan) return;
   const o={k:'h',code:Net.code,v:2,ph:Game.phase,lv:Game.li,sl:Net.slots.map(s=>Net.standalone?[s.slot,s.peer==='me'?(Net.myPeer||''):s.peer,s.ch,String(s.nm||'').slice(0,16)]:[s.slot,s.peer==='me'?(Net.myPeer||''):s.peer,s.ch]),an:Net.answers.map(a=>[a.peer,a.o,a.s])};
   if(snap!==undefined) o.st=snap;
-  if(snap&&JSON.stringify(o).length>3900) o.st=null;
+  if(snap&&!Net.standalone&&JSON.stringify(o).length>3900) o.st=null; // граница собе на claude.ai; Trystero сам дели велике поруке
   Net.chan.presence(o).catch(()=>{});
 }
 const joinable=()=>['lobby','intro','end'].includes(Game.phase);
@@ -5226,14 +5228,17 @@ function onHostPeers(ch){
   let changed=false;
   for(const p of ch.peers){
     if(p.isMe&&p.sameTab){ if(Net.myPeer!==p.peer){ Net.myPeer=p.peer; changed=true; } continue; }
-    const pr=p.presence||{}; if(pr.k!=='c'||String(pr.code)!==Net.code) continue;
+    const pr=p.presence||{}; if(pr.k!=='c'||String(pr.code)!==Net.code){ const c=Net.conns.get(p.peer); if(c){ dropConn(c); changed=true; } continue; } // гост из заједничке собе одлази бришући присуство
     let c=Net.conns.get(p.peer);
-    if(!c){ const sl=freeSlot(); if(!joinable()||sl<0) continue;
+    if(!c){ const g=Net.gone.get(p.peer), back=!!g&&g.S===S&&!!S&&!Net.slots.some(s=>s.slot===g.s.slot), sl=back?g.s.slot:freeSlot(); if(!back&&(!joinable()||sl<0)) continue;
       c={peer:p.peer,by:p.by,slot:sl,pc:null,dc:null,dcOpen:false,oid:null,inSeq:0,g:0,w:0,since:now()};
-      Net.conns.set(p.peer,c); Net.slots.push({slot:sl,ch:freeCh(pr.ch===undefined||pr.ch===null?-1:+pr.ch),peer:p.peer,by:p.by,nm:''}); Net.slots.sort((a,b)=>a.slot-b.slot);
+      Net.conns.set(p.peer,c); Net.gone.delete(p.peer);
+      if(back){ Net.slots.push(g.s); if(!S.players.includes(g.p)) S.players.push(g.p); }
+      else Net.slots.push({slot:sl,ch:freeCh(pr.ch===undefined||pr.ch===null?-1:+pr.ch),peer:p.peer,by:p.by,nm:''});
+      Net.slots.sort((a,b)=>a.slot-b.slot);
       resolveNames([p.by]); changed=true; ev('s','order',-1); }
     if(Net.standalone){ const nm=String(pr.nm||'').slice(0,16), s=Net.slots.find(x=>x.peer===p.peer); if(s&&s.nm!==nm){ s.nm=nm; changed=true; } }
-    if(pr.ch!==undefined&&pr.ch!==null){ const s=Net.slots.find(x=>x.peer===p.peer), w=+pr.ch; if(s&&s.ch!==w&&joinable()&&w>=0&&w<CHARS.length&&!Net.slots.some(o=>o!==s&&o.ch===w)){ s.ch=w; changed=true; } }
+    if(pr.ch!==undefined&&pr.ch!==null){ const s=Net.slots.find(x=>x.peer===p.peer), w=+pr.ch; if(s&&s.ch!==w&&joinable()&&Number.isInteger(w)&&w>=0&&w<CHARS.length&&!Net.slots.some(o=>o!==s&&o.ch===w)){ s.ch=w; changed=true; } }
     if(pr.of&&pr.of.o&&pr.of.o!==c.oid) hostHandleOffer(c,pr.of);
     if(pr.in) onClientInput(c,pr.in);
   }
@@ -5243,8 +5248,11 @@ function onHostPeers(ch){
 function rescanPeers(){ if(Game.role==='host'&&Net.chan) onHostPeers({peers:Net.chan.peers(),left:[],joined:[],updated:[]}); }
 function dropConn(c){
   try{ c.dc&&c.dc.close(); }catch(e){} try{ c.pc&&c.pc.close(); }catch(e){}
+  const sl=Net.slots.find(s=>s.peer===c.peer);
   Net.conns.delete(c.peer); Net.slots=Net.slots.filter(s=>s.peer!==c.peer); Net.answers=Net.answers.filter(a=>a.peer!==c.peer);
-  if(S){ const i=S.players.findIndex(p=>p.peer===c.peer); if(i>=0){ evF(nameOf(c.by,c.slot)+' више није у кухињи','#fff',tileAt(S,Math.floor(S.players[i].x),Math.floor(S.players[i].y))||S.windowTile,-1,1); S.players.splice(i,1); } }
+  if(S){ const i=S.players.findIndex(p=>p.peer===c.peer); if(i>=0){ evF(nameOf(c.by,c.slot)+' више није у кухињи','#fff',tileAt(S,Math.floor(S.players[i].x),Math.floor(S.players[i].y))||S.windowTile,-1,1);
+    if(sl&&!joinable()) Net.gone.set(c.peer,{S,s:sl,p:S.players[i]}); // кратак прекид везе: исти гост се враћа на своје место до краја нивоа
+    S.players.splice(i,1); } }
 }
 async function hostHandleOffer(c,of){
   c.oid=of.o; c.dcOpen=false;
@@ -5348,6 +5356,7 @@ function netTick(dt){
   if(Game.role==='client'&&Net.chan){
     Net.inT+=dt;
     if(Net.joining&&now()-Net.joinT0>(Net.standalone?25:9)&&!Net.hostSeen){ leaveGame(Net.standalone?joinFailMsg():'Игра са кодом '+Net.code+' није пронађена.'); return; }
+    if(Net.hostLeftAt&&now()-Net.hostLeftAt>6){ leaveGame('Домаћин је напустио игру.'); return; }
     if(Net.hostSeen&&Net.lastSnapAt&&now()-Net.lastSnapAt>8&&['countdown','play','ending'].includes(Game.phase)){ leaveGame('Веза са домаћином је прекинута.'); return; }
     if(Net.pc&&!Net.dcOpen&&Net.offerAt&&now()-Net.offerAt>14&&Net.rtcState!=='relay'){ Net.rtcState='relay'; uiDirty(); }
     const rate=(Net.dcOpen||Net.standalone)?1/25:1/12;
@@ -5362,7 +5371,7 @@ async function joinGame(code){
   diagReset(); Game.role='client'; Net.code=code; Net.joining=true; Net.joinT0=now(); Net.hostSeen=false; Net.hostPeer=null; Net.lastF=0; Net.lastEv=0; Net.lastSnapAt=0;
   Net.dcOpen=false; Net.appliedOid=null; Net.rtcState=''; Game.mySlot=-1; Game.phase='lobby'; S=null; Net.inSeq=0; Net.g=0; Net.w=0; uiDirty();
   let chan=null; try{ chan=await Net.room.join('kb-'+code); }catch(e){ chan=null; }
-  if(Game.role!=='client'||Net.code!==code) return;
+  if(Game.role!=='client'||Net.code!==code){ if(chan) chan.leave().catch(()=>{}); return; }
   Net.chanIsLobby=!chan; Net.chan=chan||Net.room;
   Net.unsub.push(Net.chan.onPeers(onClientPeers,()=>{}));
   Net.myPres={}; chanPres({of:null,in:null,nm:Net.standalone?(save.name||''):null,ch:myPrefCh()});
@@ -5386,27 +5395,31 @@ async function clientStartRTC(){
 function onClientPeers(ch){
   let host=null;
   for(const p of ch.peers){ if(p.isMe&&p.sameTab){ Net.myPeer=p.peer; continue; } const pr=p.presence||{}; if(pr.k==='h'&&String(pr.code)===Net.code) host=p; }
-  if(Net.hostPeer&&ch.left.some(p=>p.peer===Net.hostPeer)){ leaveGame('Домаћин је напустио игру.'); return; }
+  if(Net.hostPeer&&ch.left.some(p=>p.peer===Net.hostPeer)){ if(!Net.standalone){ leaveGame('Домаћин је напустио игру.'); return; } Net.hostLeftAt=Net.hostLeftAt||now(); } // Trystero и кратак прекид јавља као одлазак
   if(!host) return;
-  Net.hostPeer=host.peer; Net.hostSeen=true; Net.joining=false;
+  Net.hostLeftAt=0; Net.hostPeer=host.peer; Net.hostSeen=true; Net.joining=false;
   const pr=host.presence, sl=Array.isArray(pr.sl)?pr.sl:[];
-  Net.slots=sl.map(s=>({slot:+s[0],peer:String(s[1]),ch:+s[2],nm:s[3]?String(s[3]).slice(0,16):''}));
+  Net.slots=sl.map(s=>({slot:nIn(s[0],0,3),peer:String(s[1]),ch:nIn(s[2],0,CHARS.length-1),nm:s[3]?String(s[3]).slice(0,16):''}));
   const by={}; for(const p of ch.peers) by[p.peer]=p.by; Net.slots.forEach(s=>{ s.by=by[s.peer]||null; }); resolveNames(Net.slots.map(s=>s.by));
   const mine=Net.slots.find(s=>s.peer===Net.myPeer); const was=Game.mySlot; Game.mySlot=mine?mine.slot:-1; if(was!==Game.mySlot) uiDirty();
   const an=(Array.isArray(pr.an)?pr.an:[]).find(a=>a[0]===Net.myPeer);
   if(an&&an[1]===Net.oid&&Net.appliedOid!==an[1]&&Net.pc){ Net.appliedOid=an[1]; Net.pc.setRemoteDescription({type:'answer',sdp:decSdp(an[2])}).catch(()=>{ Net.rtcState='relay'; }); }
   if(pr.st) onSnap(pr.st);
-  if(!Net.lastSnapAt||now()-Net.lastSnapAt>1.2){ setPhase(String(pr.ph||'lobby'),+pr.lv||0); }
+  if(!Net.lastSnapAt||now()-Net.lastSnapAt>1.2){ setPhase(String(pr.ph||'lobby'),nIn(pr.lv,0,LEVELS.length-1)); }
   uiDirty();
 }
 function setPhase(ph,lv){ if(Game.phase!==ph||Game.li!==lv){ Game.phase=ph; Game.li=lv; if(ph==='lobby'||ph==='intro'){ if(!V||V.li!==lv||V.rs!==-1) V=viewForLevel(lv); } uiDirty(); } }
 let me=null;
+const nIn=(v,lo,hi)=>{ v=Math.floor(+v); return v>=lo&&v<=hi?v:lo; }; // цео број из пакета другог играча, ван опсега lo
+function cleanRes(q){ const n=v=>Number.isFinite(+v)?+v:0, r={};
+  for(const k of ['eg','sc','d','m','tp','n','rec','x','mi','tm']) r[k]=n(q[k]);
+  r.st=nIn(q.st,0,3); r.li=nIn(q.li,0,LEVELS.length-1); r.thr=(Array.isArray(q.thr)?q.thr:[]).slice(0,3).map(n); return r; }
 function onSnap(s){
   if(!s||!(s.f>Net.lastF)) return; Net.lastF=s.f; Net.lastSnapAt=now();
-  const prevPh=Game.phase; Game.phase=s.ph; Game.li=+s.lv||0;
-  if(s.res){ Game.result=s.res; const key=[s.res.li,s.res.sc,s.res.st,s.res.d].join(','); if(Game.resKey!==key){ Game.resKey=key; noteResult(s.res.li,s.res.st); } }
+  const prevPh=Game.phase; Game.phase=s.ph; Game.li=nIn(s.lv,0,LEVELS.length-1);
+  if(s.res&&typeof s.res==='object'){ s.res=cleanRes(s.res); Game.result=s.res; const key=[s.res.li,s.res.sc,s.res.st,s.res.d].join(','); if(Game.resKey!==key){ Game.resKey=key; noteResult(s.res.li,s.res.st); } }
   if(s.ph==='countdown'||s.ph==='play') Game.reward=null;
-  if(prevPh!==s.ph) uiDirty();
+  if(prevPh!==s.ph){ if(s.ph==='countdown'||s.ph==='end') Game.localMenu=false; uiDirty(); } // мени госта не сме да сакрије резултат ни да закочи следећи ниво
   if(s.rs===undefined){ if(s.ph==='lobby'||s.ph==='intro'){ if(!V||V.li!==Game.li||V.rs!==-1) V=viewForLevel(Game.li); } return; }
   if(!V||V.rs!==s.rs||V.li!==Game.li){ V=viewForLevel(Game.li); V.rs=s.rs; V.pmap={}; me=null; FX.hx.clear(); }
   V.timeLeft=s.tl/10; if(s.el!==undefined) V.time=s.el/10; V.score=s.sc; V.delivered=s.dl|0; V.eggs=s.eg?Object.fromEntries(EGG_KEYS.map((k,i)=>[k,s.eg[i]?{slot:s.eg[i][0],ch:s.eg[i][1],c:s.eg[i][2].split(',')}:null])):null; V.countdown=s.cd/10; V.goT=s.go/10;
@@ -5456,7 +5469,7 @@ async function leaveGame(msg){
   try{ Net.dc&&Net.dc.close(); }catch(e){} try{ Net.pc&&Net.pc.close(); }catch(e){}
   if(Game.role==='host'&&Net.room) Net.room.presence({adv:null}).catch(()=>{});
   if(chan){ if(wasLobby) chan.presence({k:null,code:null,of:null,in:null,st:null,sl:null,an:null,ph:null,lv:null,v:null}).catch(()=>{}); else chan.leave().catch(()=>{}); }
-  Object.assign(Net,{chan:null,chanIsLobby:false,code:null,conns:new Map(),slots:[],answers:[],pc:null,dc:null,dcOpen:false,hostPeer:null,hostSeen:false,joining:false,relayOn:false,rtcState:''});
+  Object.assign(Net,{chan:null,chanIsLobby:false,code:null,conns:new Map(),slots:[],answers:[],pc:null,dc:null,dcOpen:false,hostPeer:null,hostSeen:false,joining:false,relayOn:false,rtcState:'',gone:new Map(),hostLeftAt:0});
   Game.role='solo'; Game.mySlot=0; Game.localMenu=false; S=null; me=null; musicStop();
   Game.phase='menu'; Game.notice=msg||null; V=viewForLevel(Game.li); uiDirty();
   if(hashCode()) try{ history.replaceState(null,'',gameBase()); }catch(e){}
@@ -5506,7 +5519,6 @@ const SFX={
   trash:()=>{ N({d:.18,v:.3,f:500,q:.8}); T({f:160,d:.1,type:'triangle',v:.15}); }, dash:()=>N({d:.15,v:.16,f:900,q:.6}),
   order:()=>{ T({f:988,d:.08,type:'triangle',v:.12}); T({f:1319,d:.12,type:'triangle',v:.12,at:.08}); },
   count:()=>T({f:523,d:.16,v:.13}), go:()=>{ T({f:1047,d:.35,v:.13}); T({f:1568,d:.35,v:.08}); },
-  whistle:()=>{ T({f:1900,to:2300,d:.25,type:'sine',v:.2}); T({f:2300,to:1700,d:.35,type:'sine',v:.2,at:.27}); },
   star:()=>T({f:1319,to:1760,d:.18,type:'triangle',v:.18}),
   clink:()=>{ T({f:2637,d:.12,type:'sine',v:.12}); T({f:3520,d:.1,type:'sine',v:.08,at:.035}); },
   crash:()=>{ N({d:.35,v:.32,f:3600,q:.6}); T({f:2400,to:1300,d:.18,type:'triangle',v:.05}); },
@@ -5810,11 +5822,11 @@ function pollPad(dt){
   if(!pad.held){ pad.held=true; pad.navT=.4; padNav(d); } else if((pad.navT-=dt)<=0){ pad.navT=.15; padNav(d); }
 }
 function couchPads(dt){
-  const playing=inPlay(), jn=couchJoinable()&&!Game.notice;
+  const playing=inPlay(), jn=couchJoinable()&&!Game.notice, ph0=Game.phase; let menu=false; // Start се примењује после петље, да остали гејмпадови не изгубе притисак из истог кадра
   for(const [i,st] of pads){ const hit=k=>st.hit[k], c=couchBy('p'+i);
     if(!st.down.some(Boolean)&&!st.x&&!st.y){ st.held=false; continue; }
     audioInit();
-    if(hit(9)&&['countdown','play','ending','pause'].includes(Game.phase)&&!Game.notice){ menuKey(); return; }
+    if(hit(9)&&['countdown','play','ending','pause'].includes(Game.phase)&&!Game.notice){ menu=true; continue; }
     if(playing){ if(c){ if(hit(0)) doAction('grab',c.slot); if(hit(2)) doAction('work',c.slot); if(hit(1)||hit(5)) doAction('dash',c.slot); if(hit(3)&&helpLevel(V&&V.L)) toggleHelp(); } else padHint(i,'Овај гејмпад није у кухињи: уђи из менија.'); continue; }
     if(ov.hidden) continue;
     if(jn&&!c&&hit(0)){ couchJoin('p'+i); continue; }
@@ -5826,6 +5838,7 @@ function couchPads(dt){
     st.navT=st.held?.15:.4; st.held=true;
     if((d==='left'||d==='right')&&c&&jn) couchCycle(c.slot,d==='left'?-1:1); else padNav(d);
   }
+  if(menu&&Game.phase===ph0) menuKey();
 }
 if(TOUCH) document.body.classList.add('touch');
 $('#pauseBtn').addEventListener('click',e=>{ e.currentTarget.blur(); menuKey(); });
@@ -5869,7 +5882,7 @@ function hostUpdate(dt){
   if(Game.phase==='countdown'){
     const b=S.countdown; S.countdown-=dt;
     if(Math.ceil(b)!==Math.ceil(S.countdown)&&S.countdown>0) ev('s','count',-1);
-    if(S.countdown<=0){ Game.phase='play'; S.goT=.9; ev('s','go',-1); if(S.L.feast) S.L.feast.forEach((_,k)=>spawnOrder(null,k>0)); else spawnOrder(); if(S.guards.length) setTimeout(()=>{ if(Game.phase==='play'&&S) ev('o','Тајкун је у кухињи — са обезбеђењем!'); },2600); if(S.L.band) [...new Set(S.L.band.map(b=>b.kind||'band'))].filter(k=>NPC_HELLO[k]).forEach((k,i)=>setTimeout(()=>{ if(Game.phase==='play'&&S) ev('o',NPC_HELLO[k]); },900+i*2600)); uiDirty(); }
+    if(S.countdown<=0){ Game.phase='play'; S.goT=.9; ev('s','go',-1); if(S.L.feast) S.L.feast.forEach((_,k)=>spawnOrder(null,k>0)); else spawnOrder(); const s0=S; if(S.guards.length) setTimeout(()=>{ if(Game.phase==='play'&&S===s0) ev('o','Тајкун је у кухињи — са обезбеђењем!'); },2600); if(S.L.band) [...new Set(S.L.band.map(b=>b.kind||'band'))].filter(k=>NPC_HELLO[k]).forEach((k,i)=>setTimeout(()=>{ if(Game.phase==='play'&&S===s0) ev('o',NPC_HELLO[k]); },900+i*2600)); uiDirty(); }
     for(const p of ps) p.target=findTarget(S,p); return;
   }
   if(Game.phase==='play'){
@@ -6488,7 +6501,8 @@ function pP(c,pts,close){ c.beginPath(); c.moveTo(pts[0][0],pts[0][1]); for(let 
 // soft elliptical spot: color fading to transparent
 function spot(c,x,y,rx,ry,col,a,rot){ c.save(); c.translate(x,y); c.rotate(rot||0); c.scale(rx,ry); const g=c.createRadialGradient(0,0,0,0,0,1); g.addColorStop(0,col.replace(')',`,${a})`).replace('rgb(','rgba(')); g.addColorStop(1,col.replace(')',',0)').replace('rgb(','rgba(')); c.fillStyle=g; c.beginPath(); c.arc(0,0,1,0,Math.PI*2); c.fill(); c.restore(); }
 // soft stroke: blurred line via shadow, drawn far off-canvas so only the shadow lands
-function softLine(c,fn,col,w,blur){ c.save(); const m=c.getTransform(), k=Math.hypot(m.a,m.b); c.lineCap='round'; c.lineJoin='round'; c.strokeStyle='#000'; c.lineWidth=w; c.shadowColor=col; c.shadowBlur=blur*k; c.shadowOffsetX=5000*k; c.translate(-5000,0); fn(); c.stroke(); c.restore(); }
+// потез се црта 5000 јединица лево, а враћа га само сенка; помак сенке је у пикселима екрана, па се рачуна из целе матрице (и кад је платно ротирано или пресликано)
+function softLine(c,fn,col,w,blur){ c.save(); const m=c.getTransform(), k=Math.hypot(m.a,m.b); c.lineCap='round'; c.lineJoin='round'; c.strokeStyle='#000'; c.lineWidth=w; c.shadowColor=col; c.shadowBlur=blur*k; c.shadowOffsetX=5000*m.a; c.shadowOffsetY=5000*m.b; c.translate(-5000,0); fn(); c.stroke(); c.restore(); }
 function lgr(c,x0,y0,x1,y1,stops){ const g=c.createLinearGradient(x0,y0,x1,y1); stops.forEach((s,i)=>g.addColorStop(s[0],s[1])); return g; }
 function fitT(c,txt,font,size,maxW){ c.font=font.replace('$',size); const w=c.measureText(txt).width; if(w>maxW) c.font=font.replace('$',size*maxW/w); }
 const RGB={dk:'rgb(94,40,18)',dp:'rgb(60,24,10)',lt:'rgb(255,214,170)',rim:'rgb(255,190,110)',stub:'rgb(40,36,46)',hair:'rgb(20,16,20)',hsh:'rgb(150,165,190)',shirtDk:'rgb(8,30,70)',shirtLt:'rgb(140,190,240)'};
@@ -8032,7 +8046,7 @@ const SCN={key:'',rs:null,li:-1,mode:'none',panels:[],sc:30,tables:[],seats:[],c
   guests:new Map(),out:new Map(),dish:new Map(),waiters:[],bubbles:[],parts:[],trubac:null,bandEv:null,shot:null,brawls:[],standoff:null,peace:[],tumble:null,passers:[],
   t:0,nextCheer:5,nextSing:8,nextSmash:22,nextPass:4,nextChant:5,kolo:0,cut:{i:0,t:0},boostT:0,duckT:0,fwT:0,compOn:[]};
 function sceneReset(){
-  SCN.guests.clear(); SCN.out.clear(); SCN.dish.clear(); SCN.waiters=[]; SCN.bubbles=[]; SCN.parts=[]; SCN.trubac=null; SCN.bandEv=null; SCN.shot=null; SCN.brawls=[]; SCN.standoff=null; SCN.peace=[]; SCN.tumble=null; SCN.passers=[];
+  SCN.gen=(SCN.gen|0)+1; SCN.guests.clear(); SCN.out.clear(); SCN.dish.clear(); SCN.waiters=[]; SCN.bubbles=[]; SCN.parts=[]; SCN.trubac=null; SCN.bandEv=null; SCN.shot=null; SCN.brawls=[]; SCN.standoff=null; SCN.peace=[]; SCN.tumble=null; SCN.passers=[];
   SCN.sestDone=false; SCN.tvT=undefined; SCN.tvDrama=0; SCN.priceStepSeen=undefined; SCN.priceAnimT=undefined; SCN.shooters=null; SCN.kum=null; SCN.rooster=null; SCN.ujak=null; SCN.roastSt=null; SCN.dedaEnt=null; SCN.kumT=Infinity; SCN.roosterT=Infinity; SCN.auntT=Infinity; SCN.dir=null; SCN.cloud=null; SCN.nextCloud=4; SCN.smT=0; SCN.t=0; SCN.nextCheer=4; SCN.nextSing=7; SCN.nextSmash=18; SCN.nextPass=3; SCN.nextChant=5; SCN.boostT=0; SCN.duckT=0; SCN.fwT=0;
   const seed=(V&&V.rs>0?V.rs:7)*13+(V?V.li:0); SCN.compOn=[0,1,2,3,4,5].map(i=>hash(seed,i)<.65); if(V&&V.L&&V.L.theme==='kafana') SCN.compOn[1]=true;
 }
@@ -8096,6 +8110,8 @@ function spotFor(g){
 }
 const exitFor=s=>({x:s.x,y:s.p.y+s.p.h+SCN.sc*.9});
 function waiterEntry(s){ const p=s.p, sc=SCN.sc, R=SCN.river; if(R) return {x:p.x+p.w+sc*.4,y:R.y+R.h+sc*.35}; if(SCN.mode==='left') return {x:p.x+p.w-sc*.55,y:p.y+sc*.45}; return {x:p.x+sc*.6,y:p.y+sc*.35}; }
+// одложени догађај сцене: пропада ако је сцена у међувремену почела изнова (Поново, следећи ниво)
+function later(fn,ms){ const g=SCN.gen|0; setTimeout(()=>{ if((SCN.gen|0)===g) fn(); },ms); }
 function bubble(ent,text,life){ if(!live()) return; SCN.bubbles=SCN.bubbles.filter(b=>b.ent!==ent); SCN.bubbles.push({ent,text:tr(text),src:text,t:0,life:life||2.3}); if(SCN.bubbles.length>7) SCN.bubbles.shift(); }
 function spart(o){ SCN.parts.push(Object.assign({t:0,vx:0,vy:0,g:0,life:1},o)); if(SCN.parts.length>300) SCN.parts.shift(); }
 function moveTo(e,dt,spd){ const dx=e.tx-e.x, dy=e.ty-e.y, d=Math.hypot(dx,dy); if(d<1.2){ e.x=e.tx; e.y=e.ty; e.walk=(e.walk||0)*.8; return true; }
@@ -8119,10 +8135,11 @@ function startBrawl(a,b){
   const ga=SCN.guests.get(a), gb=SCN.guests.get(b), q=SCN.queue[3]||{x:VW/2,y:VH/2};
   const x=ga&&gb?(ga.x+gb.x)/2:(ga||gb||q).x, y=ga&&gb?(ga.y+gb.y)/2:(ga||gb||q).y;
   for(const g of [ga,gb]) if(g){ g.state='brawl'; g.hide=true; }
-  const priest=[...SCN.guests.values()].find(q=>q.ct==='pop'&&q.state==='wait'); if(priest) setTimeout(()=>bubble(priest,'Мир Божји, децо!',2.2),400);
+  const priest=[...SCN.guests.values()].find(q=>q.ct==='pop'&&q.state==='wait'); if(priest) later(()=>bubble(priest,'Мир Божји, децо!',2.2),400);
   SCN.brawls.push({a,b,x,y,t:0,pt:0});
 }
-function startPeace(a,b){ for(const id of [a,b]){ const g=SCN.guests.get(id); if(g) g.dead=true; } if(SCN.curb.length) SCN.peace.push({la:lookFor(a,'pro'),lb:lookFor(b,'pol'),k:SCN.peace.length%SCN.curb.length,t:0}); }
+function startPeace(a,b){ for(const id of [a,b]){ const g=SCN.guests.get(id); if(g) g.dead=true; } if(SCN.curb.length){ if(SCN.peace.length>=SCN.curb.length) SCN.peace.shift(); // нови пар заузима место најстаријег, не седа преко њега
+    const used=new Set(SCN.peace.map(p=>p.k)); let k=0; while(used.has(k)) k++; SCN.peace.push({la:lookFor(a,'pro'),lb:lookFor(b,'pol'),k,t:0}); } }
 function startTrubac(ti){
   if(!SCN.tables.length) return; const T=SCN.tables[(ti|0)%SCN.tables.length], P=T.p, sc=SCN.sc, side=SCN.mode==='left', tx=side?Math.min(P.x+P.w-sc*.35,T.x+T.r+sc*.95):T.x, ty=side?T.y+sc*.35:T.y+T.r+sc*.95;
   const ax=side?P.x+P.w-sc*.42:tx, bottom=P.y+P.h+sc*.9;
@@ -8202,7 +8219,7 @@ function leave(g,angry){ const s=spotFor(g)||{x:g.x,y:g.y,p:SCN.panels[0]}; g.st
 function served(g,th){
   if(guestQ(g)){
     g.carry=SCN.dish.get(g.id)||g.r; leave(g,false); g.wait=.3;
-    if(g.ct==='pol'){ g.wait=2; bubble(g,'Документа, молим.',2); setTimeout(()=>{ g.visorUp=true; g.grease=true; },900); }
+    if(g.ct==='pol'){ g.wait=2; bubble(g,'Документа, молим.',2); later(()=>{ g.visorUp=true; g.grease=true; },900); }
     else if(g.ct==='pen'){ g.wait=1.6; bubble(g,'Имате ли ситно?',1.8); }
     else if(g.ct==='pro') bubble(g,'Хвала, колега!',1.6);
     else if(g.ct==='diz'){ g.wait=1.2; bubble(g,'Поздрав за мајсторе!',1.8); }
@@ -8260,7 +8277,7 @@ function smokeTick(dt,on){
   if(C){ C.t+=dt; const k=Math.min(1,C.t/2.6), e=k*k*(3-2*k); C.x=C.x0+(C.tx-C.x0)*e; C.y=C.y0+(C.ty-C.y0)*e+Math.sin(C.t*1.7)*SCN.sc*.08;
     if(C.t>2.6&&!C.said){ C.said=true; const vic=[...seated().filter(g=>SCN.seats[g.seat%SCN.seats.length].ti===C.ti),...(SCN.compOn[C.ti]?[SCN.compEnt[C.ti]]:[])];
       for(const v of vic) v.coughT=3; if(vic.length){ bubble(pick(vic),pick(COUGH),2.2); sfxS('cough'); }
-      if(vic.length&&Math.random()<.45) setTimeout(()=>{ if(SCN.compEnt&&SCN.compOn[1]) bubble(SCN.compEnt[1],'Па ја сам у пушачком!',2); },1500); }
+      if(vic.length&&Math.random()<.45) later(()=>{ if(SCN.compEnt&&SCN.compOn[1]) bubble(SCN.compEnt[1],'Па ја сам у пушачком!',2); },1500); }
     if(C.t>6.5) SCN.cloud=null; }
   for(const g of SCN.guests.values()) if(g.coughT>0) g.coughT-=dt; for(const c of SCN.compEnt) if(c.coughT>0) c.coughT-=dt;
 }
@@ -8421,6 +8438,7 @@ function shooterTick(dt){
   }
 }
 function fireShooter(k){
+  if(!SCN.panels.length) return; // сцене нема (уски прозор), стрелци из претходног распореда немају где да изађу
   if(!SCN.shooters) shooterTick(0); const s=SCN.shooters&&SCN.shooters[k]; if(!s) return;
   if(s.state==='idle'){ s.shootT=1.3; s.idle=Math.max(s.idle,2.5); }
   else if(s.state==='out'){ s.state='in'; const P=SCN.panels[0]; s.tx=P.x+P.w*(.16+Math.random()*.68); s.fire=true; }
@@ -8434,8 +8452,8 @@ function bang(s){
 function bangReact(){
   sfxS('bang'); SCN.duckT=.9; if(Game.phase==='play') FX.shake=Math.max(FX.shake,.12);
   if(SCN.dedaEnt) SCN.dedaEnt.wake=2.6;
-  if(SCN.dedaEnt&&Math.random()<.5) setTimeout(()=>{ if(SCN.dedaEnt) bubble(SCN.dedaEnt,pick(['Шта?! Ко пуца?!','Ко је то, бре?!','Јел’ стигла млада?!']),1.9); },250);
-  else setTimeout(()=>{ if(SCN.babaEnt) bubble(SCN.babaEnt,pick(SCOLD),2.1); },650);
+  if(SCN.dedaEnt&&Math.random()<.5) later(()=>{ if(SCN.dedaEnt) bubble(SCN.dedaEnt,pick(['Шта?! Ко пуца?!','Ко је то, бре?!','Јел’ стигла млада?!']),1.9); },250);
+  else later(()=>{ if(SCN.babaEnt) bubble(SCN.babaEnt,pick(SCOLD),2.1); },650);
 }
 function nickShot(slot){ bangReact(); const p=V&&(V.players||[]).find(q=>q.slot===slot); if(!p) return;
   const l=Math.hypot(p.fx,p.fy)||1, fx=p.fx/l, fy=p.fy/l, g=(!(fy<-.35)&&Math.abs(fx)>.35)?Math.sign(fx):1, x=(p.dx??p.x)-fy*g*.2+fx*.04, y=(p.dy??p.y)-1.05; // изнад подигнуте шаке (body: nx=-fy)
@@ -8485,7 +8503,7 @@ function weddingFun(dt,on){
   SCN.babaSwat=Math.max(0,(SCN.babaSwat||0)-dt);
   // тетка на челу стола
   if(on&&(SCN.auntT-=dt)<=0){ SCN.auntT=Infinity; const aunt=SCN.endEnt&&SCN.endEnt[0], who=seated(); if(aunt&&who.length){ const tg=who.slice().sort((a,b)=>Math.hypot(a.x-aunt.x,a.y-aunt.y)-Math.hypot(b.x-aunt.x,b.y-aunt.y))[0];
-      bubble(aunt,tg.look.blush?'А кад ћеш ти да се удаш?':'А кад ћеш ти да се жениш?',2.2); setTimeout(()=>bubble(tg,pick(['Тетка, молим те…','Ускоро, ускоро…','Чим стигне моје јело!']),2.2),1900); } }
+      bubble(aunt,tg.look.blush?'А кад ћеш ти да се удаш?':'А кад ћеш ти да се жениш?',2.2); later(()=>bubble(tg,pick(['Тетка, молим те…','Ускоро, ускоро…','Чим стигне моје јело!']),2.2),1900); } }
   // кум баца паре
   if(on&&!SCN.kum&&!SCN.rooster&&!SCN.bandEv&&(SCN.kumT-=dt)<=0){ SCN.kumT=Infinity;
     SCN.kum={x:P.x+P.w+sc,y:Z.y,tx:P.x+P.w*.5,ty:Z.y,fx:-1,fy:0,walk:0,state:'in',t:0,stingy:Math.random()<.55,throwT:0,chant:0,
@@ -8968,7 +8986,7 @@ const KFX=[];
     if(k==='gull'){ KFX.push({type:'gull',x:e[3],y:e[4],t:0}); return; }
     if(k==='pet'){ KFX.push({type:'pet',x:e[3],y:e[4],t:0}); return; }
     if(k==='storm'){ STAND.stormT=+e[3]||20; sfxS('thunder'); STAND.flash=.5; return; }
-    if(k==='cold'){ const g=SCN.guests.get(e[3]); if(g) setTimeout(()=>bubble(g,'Ово је хладно!',1.8),300); return; }
+    if(k==='cold'){ const g=SCN.guests.get(e[3]); if(g) later(()=>bubble(g,'Ово је хладно!',1.8),300); return; }
     return _ev(e); };
   const _reset=sceneReset; sceneReset=function(){ _reset(); for(const k of Object.keys(STAND)) delete STAND[k]; KFX.length=0; };
 })();
@@ -8988,7 +9006,7 @@ function standTick(th,dt,on){
   } else if(th==='docek'){
     if(Math.random()<dt*9) spart({kind:'snow',x:P.x+Math.random()*P.w,y:P.y-4,vx:(Math.random()-.5)*8,vy:14+Math.random()*12,life:P.h/18});
     const tl=V.timeLeft;
-    if(live()&&Game.phase==='play'&&tl<=10.5&&tl>0){ const n=Math.ceil(tl); if(n!==STAND.chant){ STAND.chant=n; const w=[...SCN.guests.values()].filter(g=>g.state==='wait'&&!g.hide);
+    if(live()&&Game.phase==='play'&&tl<=10&&tl>0){ const n=Math.ceil(tl); if(n!==STAND.chant){ STAND.chant=n; const w=[...SCN.guests.values()].filter(g=>g.state==='wait'&&!g.hide);
         const words=['Један!','Два!','Три!','Четири!','Пет!','Шест!','Седам!','Осам!','Девет!','Десет!']; if(w.length) bubble(pick(w),words[n-1],.95); } }
     const fin=(Game.phase==='ending'||Game.phase==='end')&&V.rs!==-1;
     STAND.fw=(STAND.fw===undefined?3:STAND.fw)-dt;
@@ -9007,11 +9025,11 @@ function standTick(th,dt,on){
         const lastB=SCN.bubbles.find(b=>b.ent===g); if(lastB&&lastB.src==='Ајмо коло!'){ for(const n of W.filter(q=>q!==g).sort((p,q)=>Math.hypot(p.x-g.x,p.y-g.y)-Math.hypot(q.x-g.x,q.y-g.y)).slice(0,2)) n.danceT=3.2; } }
       if(on&&!g.jacketAsked&&g.inLine>6){ const giver=W.filter(q=>q!==g&&['irv','nao','sne','pen','stu','g'].includes(q.ct)&&!q.cold).sort((p,q)=>Math.hypot(p.x-g.x,p.y-g.y)-Math.hypot(q.x-g.x,q.y-g.y))[0];
         if(giver){ g.jacketAsked=true; bubble(giver,'Изволи моју јакну, лепотице.',2.2);
-          setTimeout(()=>{ if(g.state!=='wait'&&g.state!=='in') return; g.jacket=true; g.look=Object.assign({},g.look,{vest:giver.look.vest||'#2a3a5a',sleeve:giver.look.vest||'#2a3a5a',trim:giver.look.trim||'#e8e0d0',sequins:false}); bubble(g,'Ау, витез!',1.8);
-            giver.cold=true; giver.look=Object.assign({},giver.look,{vest:giver.look.shirt||'#ffffff',sleeve:giver.look.shirt||'#ffffff',trim:giver.look.shirt||'#ffffff',tie:giver.look.tie}); setTimeout(()=>{ if(giver.state==='wait') bubble(giver,'Брр… шта ми је ово требало.',2.2); },2600); },2000); } } }
+          later(()=>{ if(g.state!=='wait'&&g.state!=='in') return; g.jacket=true; g.look=Object.assign({},g.look,{vest:giver.look.vest||'#2a3a5a',sleeve:giver.look.vest||'#2a3a5a',trim:giver.look.trim||'#e8e0d0',sequins:false}); bubble(g,'Ау, витез!',1.8);
+            giver.cold=true; giver.look=Object.assign({},giver.look,{vest:giver.look.shirt||'#ffffff',sleeve:giver.look.shirt||'#ffffff',trim:giver.look.shirt||'#ffffff',tie:giver.look.tie}); later(()=>{ if(giver.state==='wait') bubble(giver,'Брр… шта ми је ово требало.',2.2); },2600); },2000); } } }
     if(on&&Game.phase==='play'&&(STAND.gag=(STAND.gag===undefined?5:STAND.gag)-dt)<=0){ STAND.gag=8+Math.random()*5; docekGag(W); }
     for(const b of STAND.balls||[]){ b.t+=dt; if(b.t>=.6&&!b.hit){ b.hit=true; for(let i=0;i<8;i++) spart({kind:'snow',x:b.x1,y:b.y1,vx:(Math.random()-.5)*60,vy:-20-Math.random()*30,g:60,life:.8});
-        if(b.b.state==='wait') bubble(b.b,pick(['Еј!','Ко то баца?!','Ау!','Сад ћеш да видиш!']),1.6); setTimeout(()=>{ if(b.a.state==='wait') bubble(b.a,'Хахаха!',1.3); },600); } }
+        if(b.b.state==='wait') bubble(b.b,pick(['Еј!','Ко то баца?!','Ау!','Сад ћеш да видиш!']),1.6); later(()=>{ if(b.a.state==='wait') bubble(b.a,'Хахаха!',1.3); },600); } }
     if(STAND.balls) STAND.balls=STAND.balls.filter(b=>b.t<.8);
     if(STAND.ny) STAND.nyT+=dt;
   }
@@ -9029,10 +9047,10 @@ function docekGag(W){
   if(by('dm').some(g=>(g.drunk|0)>=2)) opts.push('beard');
   if(!opts.length) return; const k=pick(opts);
   if(k==='snowball'){ const a=pick(W), b=pick(W.filter(g=>g!==a)); (STAND.balls=STAND.balls||[]).push({x0:a.x,y0:a.y-sc*.7,x1:b.x,y1:b.y-sc*.62,t:0,a,b}); }
-  else if(k==='early'){ const a=pick(W), b=pick(W.filter(g=>g!==a)); bubble(a,'Десет! Девет! Осам!…',1.8); setTimeout(()=>{ if(b.state==='wait') bubble(b,'Није још поноћ, бре!',1.8); },1500); }
-  else if(k==='gift'){ const kid=pick(by('dsp')), dm=pick(by('dm')); bubble(kid,'Деда Мразе, где ми је поклон?',2); setTimeout(()=>{ if(dm.state==='wait') bubble(dm,'Хо-хо… стиже из Беча, хик!',2); },1800); }
-  else if(k==='horn'){ const h=pick(by('nao')); h.hornT=1.3; bubble(h,'ТУУУУУУ!',1.3); sfxS('horn'); const n=W.filter(g=>g!==h).sort((p,q)=>Math.hypot(p.x-h.x,p.y-h.y)-Math.hypot(q.x-h.x,q.y-h.y))[0]; if(n) setTimeout(()=>{ if(n.state==='wait') bubble(n,'Ау, уво!',1.6); },900); }
-  else if(k==='selfie'){ const s=pick(by('sel')); s.flashT=.7; bubble(s,'Сви кажите: сааарма!',1.8); setTimeout(()=>{ s.flashT=.4; for(const g of W.filter(q=>q!==s&&q.state==='wait').slice(0,3)) bubble(g,'Сааарма!',1.4); },1300); }
+  else if(k==='early'){ const a=pick(W), b=pick(W.filter(g=>g!==a)); bubble(a,'Десет! Девет! Осам!…',1.8); later(()=>{ if(b.state==='wait') bubble(b,'Није још поноћ, бре!',1.8); },1500); }
+  else if(k==='gift'){ const kid=pick(by('dsp')), dm=pick(by('dm')); bubble(kid,'Деда Мразе, где ми је поклон?',2); later(()=>{ if(dm.state==='wait') bubble(dm,'Хо-хо… стиже из Беча, хик!',2); },1800); }
+  else if(k==='horn'){ const h=pick(by('nao')); h.hornT=1.3; bubble(h,'ТУУУУУУ!',1.3); sfxS('horn'); const n=W.filter(g=>g!==h).sort((p,q)=>Math.hypot(p.x-h.x,p.y-h.y)-Math.hypot(q.x-h.x,q.y-h.y))[0]; if(n) later(()=>{ if(n.state==='wait') bubble(n,'Ау, уво!',1.6); },900); }
+  else if(k==='selfie'){ const s=pick(by('sel')); s.flashT=.7; bubble(s,'Сви кажите: сааарма!',1.8); later(()=>{ s.flashT=.4; for(const g of W.filter(q=>q!==s&&q.state==='wait').slice(0,3)) bubble(g,'Сааарма!',1.4); },1300); }
   else if(k==='beard'){ const d=pick(by('dm').filter(g=>(g.drunk|0)>=2)); d.beardSlip=2.6; bubble(d,'Пст! Брада је лажна!',2.2); }
 }
 /* ---- статичко: тло, тезга, ужад, доњи појас ---- */
@@ -9353,8 +9371,8 @@ function drawStandBackdrop(th){
     const tx=x0+w*.8, ty=y0+h*.98, tH=h*.82; for(let k=0;k<4;k++){ const yy=ty-tH*(.12+k*.22), ww=tH*(.42-k*.09); ctx.fillStyle='#1f5a32'; ctx.beginPath(); ctx.moveTo(tx-ww,yy); ctx.lineTo(tx+ww,yy); ctx.lineTo(tx,yy-tH*.34); ctx.closePath(); ctx.fill(); }
     for(let i=0;i<14;i++){ const a=hash(i,51), yy=ty-tH*(.1+a*.75), ww=tH*.38*(1-a*.8), xx=tx+(hash(53,i)-.5)*ww*1.6; ctx.fillStyle=['#ff4a6a','#ffd34d','#7fd0ff','#9be36e'][i%4]; ctx.globalAlpha=.5+.5*Math.abs(Math.sin(t*3+i)); circ(ctx,xx,yy,2.2); ctx.fill(); } ctx.globalAlpha=1;
     ctx.fillStyle='#ffd34d'; ctx.font=`900 ${Math.round(h*.14)}px Rubik, sans-serif`; ctx.fillText('★',tx,ty-tH*.92);
-    const el=live()?Math.max(0,V.L.time-V.timeLeft):0, tot=V.L.time, secs=Math.max(0,Math.round(tot-el)), mm=Math.floor(secs/60), ss=secs%60;
-    const clk=secs<=0?'00:00':`23:${String(59-mm).padStart(2,'0')}:${String(59-ss<0?0:(60-ss)%60).padStart(2,'0')}`;
+    const el=live()?Math.max(0,V.L.time-V.timeLeft):0, tot=V.L.time, secs=Math.max(0,Math.round(tot-el)), ss=secs%60;
+    const clk=secs<=0?'00:00':`23:${String(60-Math.ceil(secs/60)).padStart(2,'0')}:${String((60-ss)%60).padStart(2,'0')}`;
     const cw=w*.36, ch=h*.24, cx=x0+w*.06, cy=y0+h*.06; rr(ctx,cx,cy,cw,ch,4); fs(ctx,'#111','#c9a227',1.5); ctx.fillStyle=secs<=10?'#ff4a4a':'#ff9a2a'; ctx.font=`900 ${Math.round(ch*.62)}px "Courier New", monospace`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(secs<=0?'00:00:00':clk,cx+cw/2,cy+ch/2+1);
     if(STAND.ny){ const k=Math.min(1,STAND.nyT/.6); ctx.globalAlpha=k; ctx.fillStyle='#ffd34d'; ctx.strokeStyle='#5a1010'; ctx.lineWidth=3; ctx.font=`900 ${Math.round(h*.2)}px Lobster, Georgia, serif`; ctx.strokeText(tr('Срећна Нова година!'),x0+w/2,y0+h*.45); ctx.fillText(tr('Срећна Нова година!'),x0+w/2,y0+h*.45); ctx.globalAlpha=1; }
   }
@@ -9791,16 +9809,16 @@ function fusionTick(dt,on){
     const L=LINES.arrive[g.ct]; if(L){ const fresh=L.filter(t=>!SCN.bubbles.some(b=>b.src===t)); bubble(g,pick(fresh.length?fresh:L),2.2); return; } _arrive(g); };
   const _served=served; served=function(g,th){ _served(g,th);
     if(g.ct==='voj'){ bubble(g,['Корбаст, баш како треба.','Ово је чај од пасуља.','Видим дно порције.'][Math.min(2,SCN.thin.get(g.id)|0)],1.9); g.wait=Math.max(g.wait||0,1.1); return; }
-    const L=LINES.served[g.ct]; if(L) setTimeout(()=>{ if(!g.dead) bubble(g,pick(L),1.9); if(g.ct==='inf') g.flashT=.6; },1600); };
+    const L=LINES.served[g.ct]; if(L) later(()=>{ if(!g.dead) bubble(g,pick(L),1.9); if(g.ct==='inf') g.flashT=.6; },1600); };
   const _expired=expired; expired=function(g){ _expired(g); const L=LINES.expired[g.ct]; if(L) bubble(g,pick(L),2); };
   const _ev=sceneEvent; sceneEvent=function(e){ const k=e[2];
     if(k==='d'&&e[5]!==undefined) SCN.thin.set(e[3],e[5]|0);
     if(k==='loot'){ const g=SCN.guests.get(e[3]); sfxS('whistle');
       if(g&&g.state==='wait'){ g.carry=e[4]; g.lootT=6; bubble(g,pick(['Живела Србија!','Хвала, кувару, памтићу те док сам жив!','Ово је најлепши дан у мојој служби!']),2.4); }
       else if(KAS.vod){ bubble(KAS.vod,'Ово ћу ја… да проверим.',2.2); KAS.vodT=1.2; } return; }
-    if(k==='rob'){ const g=SCN.guests.get(e[3]); if(g) setTimeout(()=>{ if(!g.dead) bubble(g,ROB_LINES[e[4]]||'Издаја!',2.4); },900); return; }
+    if(k==='rob'){ const g=SCN.guests.get(e[3]); if(g) later(()=>{ if(!g.dead) bubble(g,ROB_LINES[e[4]]||'Издаја!',2.4); },900); return; }
     if(k==='gen'){ const w=e[3]|0, sc=SCN.sc, P=SCN.panels[0], at=SCN.genSpot;
-      if(w===0&&P&&at){ KAS.gen={x:at.x,y:P.y+P.h+sc,route:[{x:at.x,y:at.y}],state:'in',t:0,fx:0,fy:-1,walk:0,look:lookFor(4242,'gen')}; setTimeout(()=>{ if(KAS.gen) bubble(KAS.gen,'Смотра! Мирно!',2); },1800); }
+      if(w===0&&P&&at){ KAS.gen={x:at.x,y:P.y+P.h+sc,route:[{x:at.x,y:at.y}],state:'in',t:0,fx:0,fy:-1,walk:0,look:lookFor(4242,'gen')}; later(()=>{ if(KAS.gen) bubble(KAS.gen,'Смотра! Мирно!',2); },1800); }
       else if(KAS.gen){ const G=KAS.gen; G.state='done'; G.wait=2.6; G.salute=w===1?1.6:0; bubble(G,w===1?'Свака част, војско!':'Шта је ово загорело?! Казна!',2.4); }
       return; }
     return _ev(e); };
@@ -11878,8 +11896,8 @@ function render(dt){
   const live=['countdown','play','pause','ending','end'].includes(Game.phase)&&V.rs!==-1;
   const mine=DP.filter(p=>p.me);
   G_ready=live&&mine.some(m=>m.hold&&m.hold.k==='p'&&(()=>{ const d=plateDishOf(V.L,m.hold.c); return d&&V.orders.some(o=>o.r===d); })());
-  ctx.save();
-  if(FX.shake>0) ctx.translate((Math.random()-.5)*7*FX.shake,(Math.random()-.5)*7*FX.shake);
+  const shx=FX.shake>0?(Math.random()-.5)*7*FX.shake:0, shy=FX.shake>0?(Math.random()-.5)*7*FX.shake:0;
+  ctx.save(); ctx.translate(shx,shy);
   ctx.drawImage(bg,0,0,VW,VH);
   drawScene(); if(V.fm) farmBack();
   for(const row of V.grid) for(const t of row) if(t.solid&&!ext45(t)) drawTileDyn(t);
@@ -11910,7 +11928,7 @@ function render(dt){
   else { const g=ctx.createRadialGradient(ox+w/2,oy+h/2,Math.min(w,h)*.35,ox+w/2,oy+h/2,Math.max(w,h)*.75);
   g.addColorStop(0,'rgba(255,190,110,0)'); g.addColorStop(1,'rgba(40,15,0,.22)'); ctx.fillStyle=g; ctx.fillRect(ox-8,oy-wallH-4,w+16,h+wallH+18); }
   ctx.restore();
-  drawSceneTop();
+  ctx.save(); ctx.translate(shx,shy); drawSceneTop(); ctx.restore(); // ТВ, табла и ватромет стоје на зиду, па се тресу с њим
   if(live){ drawHUD(dt); drawCenter(); }
 }
 
@@ -11947,11 +11965,11 @@ function ui(){
   const k=overlayKind(), playing=['countdown','play','ending'].includes(Game.phase)&&(!k||k==='cmenu');
   $('#pauseBtn').hidden=!(playing&&!k); placeHelpBtn(playing&&!k); $('#touch').hidden=!(playing&&!k&&TOUCH&&!pad.on&&Game.role!=='couch');
   if(!uiForce) return; uiForce=false;
-  const sig=k+'#'+LANG+'#'+sigFor(k); if(sig===uiSig) return; uiSig=sig;
-  if(!k){ ov.hidden=true; ov.innerHTML=''; try{ cv.focus({preventScroll:true}); }catch(e){} return; }
+  const sig=k+'#'+LANG+'#'+sigFor(k); if(sig===uiSig) return; uiSig=''; // постаје sig тек кад се екран сагради, па изузетак значи нови покушај
+  if(!k){ ov.hidden=true; ov.innerHTML=''; uiSig=sig; try{ cv.focus({preventScroll:true}); }catch(e){} return; }
   const ae=document.activeElement, focusId=ae&&ae.id, keep={}; ov.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const wasHidden=ov.hidden;
-  ov.hidden=false; ov.innerHTML=BUILD[k](); trDom(ov);
+  ov.hidden=false; ov.innerHTML=BUILD[k](); uiSig=sig; trDom(ov);
   ov.querySelectorAll('canvas[data-icon]').forEach(hydrateIcon);
   for(const id in keep){ const i=ov.querySelector('#'+id); if(i&&!i.readOnly) i.value=keep[id]; }
   const f=(focusId&&ov.querySelector('#'+focusId))||(wasHidden||!ov.contains(document.activeElement)?ov.querySelector('[data-primary]'):null);
