@@ -188,6 +188,8 @@ body.padnav #ov :focus{outline:3px solid var(--brass); outline-offset:2px}
 .slot small{display:block; color:var(--muted); font-size:12px; line-height:1.35}
 .slot{position:relative; min-width:0}
 .slot small.off{color:var(--red); font-weight:700}
+.slot.ready{border-color:var(--ok)}
+.slot.ready small{color:var(--ok); font-weight:700}
 .slot .cpick{display:flex; align-items:center; justify-content:center; gap:4px; margin-top:4px}
 .slot .cpick small{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink); font-weight:800}
 .cbtn{flex:none; font:inherit; font-weight:900; font-size:15px; line-height:1; width:24px; height:24px; padding:0; border-radius:50%; border:1px solid var(--chip-edge); background:var(--chip); color:var(--ink); cursor:pointer}
@@ -714,6 +716,7 @@ const EN={
   'На свом уређају лево и десно бираш кувара, а B на гејмпаду или × на картици излази из кухиње.':'On your own device, left and right pick your cook; B on a controller or × on the card leaves the kitchen.',
   'Лево:':'Left:','Десно:':'Right:','Тастатура':'Keyboard','Гејмпад':'Controller','стрелице':'arrow keys','Сам на тастатури? Ради цела тастатура.':'Alone on the keyboard? The whole keyboard works.',
   'Тастатура: WASD':'Keyboard: WASD','Тастатура: стрелице':'Keyboard: arrows','Изађи из кухиње':'Leave the kitchen','Претходни кувар':'Previous cook','Следећи кувар':'Next cook',
+  'Има више гејмпадова: изабери „Заједно“ и сваки добија свог кувара.':'More than one controller: pick “Couch” and each one gets its own cook.','притисни A':'press A','За два кувара изабери „Заједно“ у менију.':'For two cooks, pick “Couch” in the menu.','Овај гејмпад није у кухињи: уђи из менија.':'This controller isn’t in the kitchen: join from the menu.',
   'Звук':'Sound','Музика':'Music','Српска кухиња ↗':'Serbian cuisine ↗',
   '♥ Подржи игру':'♥ Support the game','♥ Хвала на подршци':'♥ Thanks for your support','Подржи игру':'Support the game',
   'Прегорело је бесплатно. Ако ти се допада, части нас кафом: откључаћеш све нивое и све куваре.':'Pregorelo is free. If you like it, buy us a coffee: it unlocks every level and every cook.',
@@ -1102,6 +1105,7 @@ XL.es={
   'На свом уређају лево и десно бираш кувара, а B на гејмпаду или × на картици излази из кухиње.':'En tu propio dispositivo, izquierda y derecha eligen tu cocinero; B en un control o × en la tarjeta te saca de la cocina.',
   'Лево:':'Izquierda:','Десно:':'Derecha:','Тастатура':'Teclado','Гејмпад':'Control','стрелице':'flechas','Сам на тастатури? Ради цела тастатура.':'¿Solo con el teclado? Funciona todo el teclado.',
   'Тастатура: WASD':'Teclado: WASD','Тастатура: стрелице':'Teclado: flechas','Изађи из кухиње':'Salir de la cocina','Претходни кувар':'Cocinero anterior','Следећи кувар':'Cocinero siguiente',
+  'Има више гејмпадова: изабери „Заједно“ и сваки добија свог кувара.':'Hay más de un control: elige “Juntos” y cada uno tendrá su propio cocinero.','притисни A':'presiona A','За два кувара изабери „Заједно“ у менију.':'Para dos cocineros, elige “Juntos” en el menú.','Овај гејмпад није у кухињи: уђи из менија.':'Este control no está en la cocina: únete desde el menú.',
   'Звук':'Sonido','Музика':'Música','Српска кухиња ↗':'Cocina serbia ↗',
   '♥ Подржи игру':'♥ Apoya el juego','♥ Хвала на подршци':'♥ Gracias por tu apoyo','Подржи игру':'Apoya el juego',
   'Прегорело је бесплатно. Ако ти се допада, части нас кафом: откључаћеш све нивое и све куваре.':'Pregorelo es gratis. Si te gusta, invítanos a un café: desbloquearás todos los niveles y todos los cocineros.',
@@ -1457,6 +1461,7 @@ XL.zh={
   'На свом уређају лево и десно бираш кувара, а B на гејмпаду или × на картици излази из кухиње.':'在自己的设备上按左右选择厨师；按手柄上的 B 或卡片上的 × 离开厨房。',
   'Лево:':'左：','Десно:':'右：','Тастатура':'键盘','Гејмпад':'手柄','стрелице':'方向键','Сам на тастатури? Ради цела тастатура.':'一个人用键盘？整个键盘都能用。',
   'Тастатура: WASD':'键盘：WASD','Тастатура: стрелице':'键盘：方向键','Изађи из кухиње':'离开厨房','Претходни кувар':'上一位厨师','Следећи кувар':'下一位厨师',
+  'Има више гејмпадова: изабери „Заједно“ и сваки добија свог кувара.':'有多个手柄：选择“同屏”，每个手柄都有自己的厨师。','притисни A':'按 A','За два кувара изабери „Заједно“ у менију.':'想要两名厨师？请在菜单中选择“同屏”。','Овај гејмпад није у кухињи: уђи из менија.':'这个手柄还没加入厨房：请在菜单中加入。',
   'Звук':'音效','Музика':'音乐','Српска кухиња ↗':'塞尔维亚美食 ↗',
   '♥ Подржи игру':'♥ 支持本游戏','♥ Хвала на подршци':'♥ 感谢你的支持','Подржи игру':'支持本游戏',
   'Прегорело је бесплатно. Ако ти се допада, части нас кафом: откључаћеш све нивое и све куваре.':'Pregorelo 是免费的。如果你喜欢，就请我们喝杯咖啡吧：所有关卡和所有厨师都会解锁。',
@@ -1812,6 +1817,7 @@ XL.hi={
   'На свом уређају лево и десно бираш кувара, а B на гејмпаду или × на картици излази из кухиње.':'अपने डिवाइस पर लेफ़्ट और राइट से शेफ़ चुनो; कंट्रोलर पर B या कार्ड पर × दबाकर किचन से निकलो।',
   'Лево:':'बायाँ:','Десно:':'दायाँ:','Тастатура':'कीबोर्ड','Гејмпад':'कंट्रोलर','стрелице':'ऐरो कीज़','Сам на тастатури? Ради цела тастатура.':'कीबोर्ड पर अकेले? पूरा कीबोर्ड काम करता है।',
   'Тастатура: WASD':'कीबोर्ड: WASD','Тастатура: стрелице':'कीबोर्ड: ऐरो','Изађи из кухиње':'किचन से निकलो','Претходни кувар':'पिछला शेफ़','Следећи кувар':'अगला शेफ़',
+  'Има више гејмпадова: изабери „Заједно“ и сваки добија свог кувара.':'एक से ज़्यादा कंट्रोलर हैं: “साथ में” चुनो, हर कंट्रोलर को अपना शेफ़ मिलेगा।','притисни A':'A दबाओ','За два кувара изабери „Заједно“ у менију.':'दो शेफ़ के लिए मेनू में “साथ में” चुनो।','Овај гејмпад није у кухињи: уђи из менија.':'यह कंट्रोलर किचन में नहीं है: मेनू से जुड़ो।',
   'Звук':'साउंड','Музика':'म्यूज़िक','Српска кухиња ↗':'सर्बियाई खाना ↗',
   '♥ Подржи игру':'♥ गेम को सपोर्ट करो','♥ Хвала на подршци':'♥ सपोर्ट के लिए शुक्रिया','Подржи игру':'गेम को सपोर्ट करो',
   'Прегорело је бесплатно. Ако ти се допада, части нас кафом: откључаћеш све нивое и све куваре.':'Pregorelo मुफ़्त है। अगर पसंद आया, तो हमें एक कॉफ़ी पिलाओ: इससे सारे लेवल और सारे शेफ़ अनलॉक हो जाते हैं।',
@@ -2167,6 +2173,7 @@ XL.pt={
   'На свом уређају лево и десно бираш кувара, а B на гејмпаду или × на картици излази из кухиње.':'No seu dispositivo, esquerda e direita escolhem o cozinheiro; B no controle ou × no cartão sai da cozinha.',
   'Лево:':'Esquerda:','Десно:':'Direita:','Тастатура':'Teclado','Гејмпад':'Controle','стрелице':'setas','Сам на тастатури? Ради цела тастатура.':'Sozinho no teclado? O teclado inteiro funciona.',
   'Тастатура: WASD':'Teclado: WASD','Тастатура: стрелице':'Teclado: setas','Изађи из кухиње':'Sair da cozinha','Претходни кувар':'Cozinheiro anterior','Следећи кувар':'Próximo cozinheiro',
+  'Има више гејмпадова: изабери „Заједно“ и сваки добија свог кувара.':'Mais de um controle: escolha “Juntos” e cada um ganha seu próprio cozinheiro.','притисни A':'aperte A','За два кувара изабери „Заједно“ у менију.':'Para dois cozinheiros, escolha “Juntos” no menu.','Овај гејмпад није у кухињи: уђи из менија.':'Este controle não está na cozinha: entre pelo menu.',
   'Звук':'Som','Музика':'Música','Српска кухиња ↗':'Culinária sérvia ↗',
   '♥ Подржи игру':'♥ Apoie o jogo','♥ Хвала на подршци':'♥ Obrigado pelo apoio','Подржи игру':'Apoie o jogo',
   'Прегорело је бесплатно. Ако ти се допада, части нас кафом: откључаћеш све нивое и све куваре.':'Pregorelo é gratuito. Se você gostar, pague um café pra gente: isso desbloqueia todas as fases e todos os cozinheiros.',
@@ -2522,6 +2529,7 @@ XL.ja={
   'На свом уређају лево и десно бираш кувара, а B на гејмпаду или × на картици излази из кухиње.':'自分のデバイスの左右でコックを選択します。コントローラーのB、またはカードの×でキッチンから抜けます。',
   'Лево:':'左：','Десно:':'右：','Тастатура':'キーボード','Гејмпад':'コントローラー','стрелице':'矢印キー','Сам на тастатури? Ради цела тастатура.':'キーボードでひとりプレイ？キーボード全体が使えます。',
   'Тастатура: WASD':'キーボード：WASD','Тастатура: стрелице':'キーボード：矢印キー','Изађи из кухиње':'キッチンを出る','Претходни кувар':'前のコック','Следећи кувар':'次のコック',
+  'Има више гејмпадова: изабери „Заједно“ и сваки добија свог кувара.':'コントローラーが複数あります：「みんなで」を選ぶと、それぞれに自分のコックがつきます。','притисни A':'Aを押して参加','За два кувара изабери „Заједно“ у менију.':'コック2人で遊ぶなら、メニューで「みんなで」を選んでください。','Овај гејмпад није у кухињи: уђи из менија.':'このコントローラーはキッチンに参加していません。メニューで参加してください。',
   'Звук':'サウンド','Музика':'音楽','Српска кухиња ↗':'セルビア料理 ↗',
   '♥ Подржи игру':'♥ ゲームを応援','♥ Хвала на подршци':'♥ ご支援ありがとうございます','Подржи игру':'ゲームを応援',
   'Прегорело је бесплатно. Ако ти се допада, части нас кафом: откључаћеш све нивое и све куваре.':'Pregoreloは無料です。気に入ったら、コーヒーを1杯おごってください。すべてのステージとコックがアンロックされます。',
@@ -2877,6 +2885,7 @@ XL.fr={
   'На свом уређају лево и десно бираш кувара, а B на гејмпаду или × на картици излази из кухиње.':'Sur ton appareil, gauche et droite choisissent ton cuisinier\u202f; B sur une manette ou × sur la carte quitte la cuisine.',
   'Лево:':'Gauche\u202f:','Десно:':'Droite\u202f:','Тастатура':'Clavier','Гејмпад':'Manette','стрелице':'flèches','Сам на тастатури? Ради цела тастатура.':'Seul au clavier\u202f? Tout le clavier fonctionne.',
   'Тастатура: WASD':'Clavier\u202f: WASD','Тастатура: стрелице':'Clavier\u202f: flèches','Изађи из кухиње':'Quitter la cuisine','Претходни кувар':'Cuisinier précédent','Следећи кувар':'Cuisinier suivant',
+  'Има више гејмпадова: изабери „Заједно“ и сваки добија свог кувара.':'Plusieurs manettes\u202f: choisis «\u202fEn local\u202f» et chacune aura son cuisinier.','притисни A':'appuie sur A','За два кувара изабери „Заједно“ у менију.':'Pour deux cuisiniers, choisis «\u202fEn local\u202f» dans le menu.','Овај гејмпад није у кухињи: уђи из менија.':'Cette manette n’est pas dans la cuisine\u202f: rejoins-la depuis le menu.',
   'Звук':'Son','Музика':'Musique','Српска кухиња ↗':'Cuisine serbe ↗',
   '♥ Подржи игру':'♥ Soutenir le jeu','♥ Хвала на подршци':'♥ Merci pour ton soutien','Подржи игру':'Soutenir le jeu',
   'Прегорело је бесплатно. Ако ти се допада, части нас кафом: откључаћеш све нивое и све куваре.':'Pregorelo est gratuit. Si tu l’aimes, offre-nous un café\u202f: ça débloque tous les niveaux et tous les cuisiniers.',
@@ -5128,7 +5137,7 @@ const NOKB=!!(window.matchMedia&&matchMedia('(hover: none) and (pointer: coarse)
 /* гејмпад: лева палица или крстић за кретање, A узми, X ради, B или RB трк, Y рецепти, Start мени.
    У менијима крстић или палица води до најближег дугмета у том смеру, A га притиска, B враћа назад ([data-back]), десна палица помера страну.
    У игри заједно сваки гејмпад води свог кувара; у менију A на слободном гејмпаду улази у кухињу, а њен кувар лево–десно бира кувара, B излази. */
-const pad={x:0,y:0,on:false,prev:[],held:false,navT:0,sig:''};
+const pad={x:0,y:0,on:false,prev:[],held:false,navT:0,sig:'',used:new Set()}; // used: гејмпади које је padHint већ видео у овом нивоу
 const pads=new Map(); // по индексу гејмпада: {x,y,down,hit,prev,held,navT}
 const PAD_BTNS=[0,1,2,3,5,9];
 // поља за текст се прескачу: гејмпадом се не може куцати
@@ -5152,6 +5161,8 @@ function padNav(dir){
 function padPress(){ const f=document.activeElement; if(f&&ov.contains(f)&&f.tagName==='INPUT') return;
   const b=f&&ov.contains(f)&&(f.tagName==='BUTTON'||f.tagName==='A')&&!f.disabled?f:ov.querySelector('[data-primary]:not([disabled])'); if(b) b.click(); }
 function padBack(){ const b=ov.hidden?null:ov.querySelector('[data-back]:not([disabled])'); if(b) b.click(); return !!b; }
+// гејмпад који у нивоу не вози свог кувара (сам: други вози истог, заједно: није ушао у кухињу) добија једном поруку
+function padHint(i,text){ if(pad.used.has(i)) return; pad.used.add(i); if(text) FX.toast={text:tr(text),t:2.4}; }
 const padDir=(x,y)=>Math.abs(x)>.5&&Math.abs(x)>=Math.abs(y)?(x>0?'right':'left'):Math.abs(y)>.5?(y>0?'down':'up'):null;
 function pollPad(dt){
   const ps=navigator.getGamepads?[...navigator.getGamepads()].filter(g=>g&&g.connected!==false):[];
@@ -5172,6 +5183,7 @@ function pollPad(dt){
   if(!pad.on&&(down.some(Boolean)||x||y)){ pad.on=true; document.body.classList.add('padnav'); uiDirty(); }
   if(Game.role==='couch'){ pad.x=pad.y=0; couchPads(dt); return; }
   const playing=inPlay(); pad.x=playing?x:0; pad.y=playing?y:0;
+  if(playing&&Game.role==='solo') for(const [i,st] of pads) if(st.down.some(Boolean)||st.x||st.y) padHint(i,pad.used.size===1&&!pad.used.has(i)?'За два кувара изабери „Заједно“ у менију.':'');
   if(!down.some(Boolean)&&!x&&!y){ pad.held=false; return; }
   audioInit();
   if(hit(9)&&['countdown','play','ending','pause'].includes(Game.phase)&&!Game.notice){ menuKey(); return; }
@@ -5189,7 +5201,7 @@ function couchPads(dt){
     if(!st.down.some(Boolean)&&!st.x&&!st.y){ st.held=false; continue; }
     audioInit();
     if(hit(9)&&['countdown','play','ending','pause'].includes(Game.phase)&&!Game.notice){ menuKey(); return; }
-    if(playing){ if(c){ if(hit(0)) doAction('grab',c.slot); if(hit(2)) doAction('work',c.slot); if(hit(1)||hit(5)) doAction('dash',c.slot); if(hit(3)&&helpLevel(V&&V.L)) toggleHelp(); } continue; }
+    if(playing){ if(c){ if(hit(0)) doAction('grab',c.slot); if(hit(2)) doAction('work',c.slot); if(hit(1)||hit(5)) doAction('dash',c.slot); if(hit(3)&&helpLevel(V&&V.L)) toggleHelp(); } else padHint(i,'Овај гејмпад није у кухињи: уђи из менија.'); continue; }
     if(ov.hidden) continue;
     if(jn&&!c&&hit(0)){ couchJoin('p'+i); continue; }
     if(hit(1)){ if(jn&&c&&Game.phase==='menu') couchLeave(c.slot); else padBack(); continue; }
@@ -5265,7 +5277,7 @@ function beginLevel(i){
   audioInit();
   const slots=Game.role==='host'?Net.slots.map(s=>({slot:s.slot,ch:s.ch,peer:s.peer})):Game.role==='couch'?Couch.players.map(c=>({slot:c.slot,ch:c.ch,peer:'local'})):[{slot:0,ch:myPrefCh(),peer:'me'}];
   S=newSim(i,slots); V=S; Game.li=i; Game.phase='countdown'; Game.result=null; Game.reward=null; Game.localMenu=false;
-  FX.parts.length=0; FX.floats.length=0; FX.toast=null; FX.hx.clear(); musicStop(); keys.clear();
+  FX.parts.length=0; FX.floats.length=0; FX.toast=null; FX.hx.clear(); musicStop(); keys.clear(); pad.used.clear();
   if(document.activeElement&&document.activeElement.blur) document.activeElement.blur();
   try{ cv.focus({preventScroll:true}); }catch(_){}
   uiDirty();
@@ -9037,7 +9049,7 @@ function nPlayers(){ return Game.role==='solo'?1:Math.max(1,(Game.role==='couch'
 function scaledStars(L){ const n=nPlayers(); return L.stars.map(v=>Math.round(v*(1+.35*(n-1))/50)*50); }
 function sigFor(k){
   switch(k){
-    case 'menu': return [pad.on,couchSig(),Game.mode,Net.avail,Net.standalone,JSON.stringify(Net.adverts.map(a=>[a.code,a.n,a.ph,Net.names[a.by]||''])),progSig(),save.sound,save.music,chefSig()].join('|');
+    case 'menu': return [pad.on,pad.sig,couchSig(),Game.mode,Net.avail,Net.standalone,JSON.stringify(Net.adverts.map(a=>[a.code,a.n,a.ph,Net.names[a.by]||''])),progSig(),save.sound,save.music,chefSig()].join('|');
     case 'lobby': return [chefSig(),Game.role,Net.code,Game.li,JSON.stringify(Net.slots.map(s=>[s.slot,s.ch,s.peer===Net.myPeer||s.peer==='me',slotName(s.slot),Game.role==='host'&&s.peer!=='me'?!!(Net.conns.get(s.peer)||{}).dcOpen:''])),Net.rtcState,progSig(),JSON.stringify(Net.routes),TURN.state].join('|');
     case 'intro': return [Game.role,Game.li,nPlayers(),chefSig(),couchSig()].join('|');
     case 'pause': return Game.role+'|'+save.sound+save.music;
@@ -9107,9 +9119,9 @@ const couchSig=()=>Game.role==='couch'?JSON.stringify(Couch.players)+pad.sig:'';
 const couchEmpty=()=>Game.role==='couch'&&!Couch.players.length;
 const devName=d=>d==='kbL'?'Тастатура: WASD':d==='kbR'?'Тастатура: стрелице':'Гејмпад '+(+d.slice(1)+1);
 function couchSlots(size){
-  const fc=[0,1,2,3].filter(k=>!Couch.players.some(c=>c.ch===k));
+  const fc=[0,1,2,3].filter(k=>!Couch.players.some(c=>c.ch===k)), wait=[...pads.keys()].filter(i=>!couchBy('p'+i)).sort((a,b)=>a-b); // повезани гејмпади који још нису ушли
   return `<div class="slots">${[0,1,2,3].map(i=>{ const c=Couch.players.find(q=>q.slot===i);
-    if(!c) return `<div class="slot"><canvas data-icon="char:${fc[i%Math.max(1,fc.length)]??i}" data-size="${size}" data-dim="1"></canvas><b>Слободно</b><small>место за кувара</small></div>`;
+    if(!c){ const p=wait.shift(); return `<div class="slot${p===undefined?'':' ready'}"><canvas data-icon="char:${fc[i%Math.max(1,fc.length)]??i}" data-size="${size}" data-dim="1"></canvas>${p===undefined?'<b>Слободно</b><small>место за кувара</small>':`<b>Гејмпад ${p+1}</b><small>притисни A</small>`}</div>`; }
     const st=CHARS[c.ch], off=c.dev[0]==='p'&&!pads.has(+c.dev.slice(1));
     return `<div class="slot on" style="border-color:${st.tag}"><button class="cbtn cx" data-act="cleave" data-slot="${i}" aria-label="Изађи из кухиње">×</button>
       <canvas data-icon="char:${c.ch}" data-size="${size}"></canvas><b>Играч ${i+1}</b><small${off?' class="off"':''}>${devName(c.dev)}${off?' (искључен)':''}</small>
@@ -9178,7 +9190,7 @@ function langSel(){
 }
 const BUILD={
   menu:()=>{ const m=Game.mode==='mp'?'mp':Game.mode==='couch'?'couch':'solo';
-    return `<div class="sheet"><div class="cloth"></div><div class="sheet-body">${langSel()}<h1 class="logo">Прегорело</h1><p class="tagline">Српска кухиња, гладни гости и до четири кувара.</p>${NOKB&&!pad.on?'<p class="touch-tip" role="note">🎮 Најбоље се игра на уређају са тастатуром или уз гејмпад.</p>':`<p class="padline${pad.on?' on':''}" role="status"><span aria-hidden="true">🎮</span> ${pad.on?'Гејмпад је повезан: крстић бира, A потврђује, B враћа назад.':'Може и гејмпад: повежи га и притисни било које дугме.'}</p>`}<div class="kilim"></div>
+    return `<div class="sheet"><div class="cloth"></div><div class="sheet-body">${langSel()}<h1 class="logo">Прегорело</h1><p class="tagline">Српска кухиња, гладни гости и до четири кувара.</p>${NOKB&&!pad.on?'<p class="touch-tip" role="note">🎮 Најбоље се игра на уређају са тастатуром или уз гејмпад.</p>':`<p class="padline${pad.on?' on':''}" role="status"><span aria-hidden="true">🎮</span> ${!pad.on?'Може и гејмпад: повежи га и притисни било које дугме.':m==='solo'&&pads.size>1?'Има више гејмпадова: изабери „Заједно“ и сваки добија свог кувара.':'Гејмпад је повезан: крстић бира, A потврђује, B враћа назад.'}</p>`}<div class="kilim"></div>
     <div class="seg" role="group" aria-label="Начин игре"><button data-act="mode" data-m="solo" aria-pressed="${m==='solo'}">Сам</button><button data-act="mode" data-m="couch" aria-pressed="${m==='couch'}">Заједно</button><button data-act="mode" data-m="mp" aria-pressed="${m==='mp'}">Онлајн са друштвом</button></div>
     ${m==='couch'?couchPanel()+couchHowto():chefPicker()+(m==='solo'?levelList():mpPanel())+howto()}${toggles(true)}</div></div>`; },
   lobby:()=>{ const host=Game.role==='host', link=inviteLink();
@@ -9312,7 +9324,7 @@ V=viewForLevel(0); resize(); applyLang();
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ bgKey=''; iconCache.clear(); });
 netInit();
 requestAnimationFrame(frame);
-window.__kb={tr,setLang,SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,Couch,padNav,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,simStep,enc,dec,buildSnap,onHostPeers,setMyChef,onSnap,shoveStep,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
+window.__kb={tr,setLang,FX,SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,Couch,padNav,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,simStep,enc,dec,buildSnap,onHostPeers,setMyChef,onSnap,shoveStep,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
 })();
 </script>
 </body>
