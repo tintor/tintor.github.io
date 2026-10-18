@@ -405,13 +405,12 @@ const FLAVORS=['iv','ic','ij','ip'], ICE_PRICE=[0,150,280,400], ICE_KEYS=[];
   if(acc.length<3) for(let i=from;i<FLAVORS.length;i++) add(i,[...acc,FLAVORS[i]]);
 })(0,[]);
 /* сеоско домаћинство: јаја, млеко и поврће се не узимају из гајбе, него се скупљају по дворишту */
-Object.assign(ING,{ml:{n:'Млеко'}, br:{n:'Брашно'}, cv:{n:'Чорба од поврћа'}});
+Object.assign(ING,{ml:{n:'Млеко'}, cv:{n:'Чорба од поврћа'}, nk:{n:'Шненокле'}});
 Object.assign(RECIPES,{
   seosalata:{n:'Сеоска салата', parts:['paC','krC','luC'], price:320},
   corbica:{n:'Чорба од поврћа', cook:'pot', in:['kmC','luC','paC'], out:'cv', parts:['cvK'], price:480},
   seoproja:{n:'Проја са млеком', cook:'tray', in:['kuR','jaR','mlR'], out:'pj', parts:['pjK'], price:450},
-  testo:{n:'Тесто за палачинке', cook:'board', in:['mlR','jaR','brR'], out:'te', parts:[], price:0},
-  selopal:{n:'Палачинке с пекмезом', parts:['teG','dzR'], price:400, card:['mlR','jaR','brR','@board','dzR']}
+  snenokle:{n:'Шненокле', cook:'pot', in:['mlR','jaR','seR'], out:'nk', parts:['nkK'], price:420}
 });
 const RKEYS=Object.keys(RECIPES);
 const CRATE={p:'pa',k:'kr',s:'si',l:'lu',m:'me',h:'le',j:'ka',f:'ko',y:'jo',e:'ja',c:'ku',r:'ri',a:'ap',u:'kp',i:'pi',q:'pr',t:'km'};
@@ -497,10 +496,10 @@ const LEVELS=[
   { name:'Сеоско домаћинство', theme:'selo', tune:'kolo', icon:'seoproja',
     desc:'Слава у селу! Цела родбина долази на ручак. Јаја, млеко и поврће нису у гајбама — скупљај их по дворишту.',
     novo:'Ново: двориште. Кокошке носе јаја, а јаја се котрљају низбрдо — ухвати их (Размак) пре него што упадну у бару! Краву помузи тако што држиш E. Поврће бери у башти кад сазри. Један кувар нека ради напољу, други у кухињи: састојке додај кроз прозор у зиду. Нема гостију за столом, али наруџбине за славску трпезу стижу.',
-    time:240, recipes:['seosalata','corbica','seoproja','selopal'], preps:['testo'], interval:22, maxOrders:4, patience:120, plates:4, trays:2, dirty:false,
-    stars:[900,2200,3600], crates:{c:'ku',b:'br',d:'dz'}, wide:true, farm:{split:17,coop:[1,1,6,6],slope:[-.3,1.1]},
+    time:240, recipes:['seosalata','corbica','seoproja','snenokle'], interval:22, maxOrders:4, patience:120, plates:4, trays:2, dirty:false,
+    stars:[900,2200,3600], crates:{c:'ku',b:'se'}, wide:true, farm:{split:17,coop:[1,1,6,6],slope:[-.3,1.1]},
     kinds:{'=':'fence','~':'pond','I':'wall','E':'coop','^':'tree','%':'hay'}, farmKinds:{'1':'pa','2':'kr','3':'lu','4':'km','A':'cow'},
-    map:['=====^=====^=====I#WW#cbd#',
+    map:['=====^=====^=====I#WW#cb##',
          '=EE...=..........I.......X',
          '=EE...=...AA..%..I.......X',
          '=.....=..........I..##...#',
@@ -510,8 +509,8 @@ const LEVELS=[
          '.................I.......O',
          '.....1133..2244..I.......T',
          '.........@...............#',
-         '~~~..1133..3344..I.......L',
-         '~~~~.............I.......L',
+         '~~~..1133..3344..I.......P',
+         '~~~~.............I.......#',
          '=====^===========IRD#X####']}
 ];
 
@@ -8934,20 +8933,20 @@ function farmStatus(){
 function iMilk(c){ c.beginPath(); c.moveTo(-28,-26); c.lineTo(28,-26); c.lineTo(22,36); c.lineTo(-22,36); c.closePath(); fs(c,lg(c,-28,0,28,0,'#d6dde0','#8a959a'),'#4a5458',2.5);
   ell(c,0,-26,28,8); fs(c,'#ffffff','#4a5458',2.5); c.strokeStyle='#4a5458'; c.lineWidth=3; c.beginPath(); c.arc(0,-26,34,Math.PI*1.1,Math.PI*1.9); c.stroke();
   c.strokeStyle='rgba(60,70,75,.5)'; c.lineWidth=2; for(const yy of [-6,16]){ c.beginPath(); c.moveTo(-25,yy); c.lineTo(25,yy); c.stroke(); } }
-function iFlour(c){ c.beginPath(); c.moveTo(-26,-30); c.quadraticCurveTo(0,-40,26,-30); c.lineTo(34,30); c.quadraticCurveTo(0,42,-34,30); c.closePath(); fs(c,lg(c,-30,0,30,0,'#f6efe0','#d8cbb0'),'#8a7a5a',2.5);
-  c.strokeStyle='#8a5a2a'; c.lineWidth=3; c.beginPath(); c.moveTo(-22,-26); c.lineTo(22,-26); c.stroke(); c.fillStyle='#8a6a3a'; c.font='800 15px Rubik, system-ui, sans-serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillText(tr('БРАШНО'),0,6); }
+function iSnenokle(c){ ell(c,0,8,40,26); fs(c,lg(c,0,-16,0,34,'#f4f0e8','#c8c0b0'),'#6a5a48',2.5); ell(c,0,-2,34,14); fs(c,rg(c,-6,-6,34,'#fbe8a0','#e8c050'),'#a8801e',1.5);
+  for(const [x,y,r] of [[-14,-6,10],[8,-8,11],[2,4,9],[20,0,7]]){ circ(c,x,y,r); fs(c,'#ffffff','#d8d0c0',1.2); } c.strokeStyle='#c87a2a'; c.lineWidth=2; c.beginPath(); c.moveTo(-18,-10); c.lineTo(-10,-4); c.moveTo(4,-12); c.lineTo(12,-6); c.stroke(); }
 function iVegSoup(c){ ell(c,0,6,40,28); fs(c,lg(c,0,-20,0,34,'#f4f0e8','#c8c0b0'),'#6a5a48',2.5); ell(c,0,-4,34,16); fs(c,rg(c,-6,-8,34,'#f0b050','#c8701e'),'#8a4a10',1.5);
   for(const [x,y,col] of [[-14,-6,'#e04a2a'],[8,-8,'#f6e6b0'],[16,0,'#4fa042'],[-4,2,'#e8c050'],[-20,2,'#4fa042']]){ circ(c,x,y,4.5); c.fillStyle=col; c.fill(); } }
 (function(){
   const _ing=drawIngIcon; drawIngIcon=function(c,key){ const t=key.slice(0,2), s=key[2];
-    if(s!=='B'){ if(t==='ml') return iMilk(c); if(t==='br') return iFlour(c); if(t==='cv') return iVegSoup(c); }
+    if(s!=='B'){ if(t==='ml') return iMilk(c); if(t==='cv') return iVegSoup(c); if(t==='nk') return iSnenokle(c); }
     return _ing(c,key); };
   const _dish=dishArt; dishArt=function(c,id){
     switch(id){
       case 'seosalata': plateBase(c,false); sub(c,-12,6,.55,iCucumberCh); sub(c,10,4,.55,iTomatoCh); sub(c,0,-12,.5,iOnionCh); return;
       case 'corbica': return iVegSoup(c);
       case 'seoproja': plateBase(c,false); sub(c,-6,4,.66,iProjaPiece); sub(c,22,-16,.3,iMilk); return;
-      case 'selopal': return _dish(c,'paldzem');
+      case 'snenokle': return iSnenokle(c);
     }
     return _dish(c,id); };
 })();
@@ -8955,8 +8954,7 @@ Object.assign(EN,{
   'Сеоско домаћинство':'The Village Homestead',
   'Слава у селу! Цела родбина долази на ручак. Јаја, млеко и поврће нису у гајбама — скупљај их по дворишту.':'A slava in the village! The whole family is coming to lunch. Eggs, milk and vegetables don\'t come in crates: gather them around the yard.',
   'Ново: двориште. Кокошке носе јаја, а јаја се котрљају низбрдо — ухвати их (Размак) пре него што упадну у бару! Краву помузи тако што држиш E. Поврће бери у башти кад сазри. Један кувар нека ради напољу, други у кухињи: састојке додај кроз прозор у зиду. Нема гостију за столом, али наруџбине за славску трпезу стижу.':'New: the yard. Hens lay eggs, and the eggs roll downhill: catch them (Space) before they fall into the pond! Milk the cow by holding E. Pick vegetables in the garden when they are ripe. Let one cook work outside and the other in the kitchen: pass ingredients through the hatch in the wall. No guests at the tables, but orders for the slava feast keep coming.',
-  'Млеко':'Milk', 'Брашно':'Flour', 'БРАШНО':'FLOUR', 'Чорба од поврћа':'Vegetable soup', 'Сеоска салата':'Village salad', 'Проја са млеком':'Cornbread with milk (Proja)',
-  'Тесто за палачинке':'Crêpe batter', 'Палачинке с пекмезом':'Crêpes with jam',
+  'Млеко':'Milk', 'Шненокле':'Floating islands (Šnenokle)', 'Чорба од поврћа':'Vegetable soup', 'Сеоска салата':'Village salad', 'Проја са млеком':'Cornbread with milk (Proja)',
   'Кокодак!':'Cluck!', 'Ко-ко-да!':'Bok-bok!', 'Снела сам!':'Laid one!', 'Пљус! Јаје у бари.':'Splash! Egg in the pond.', 'Још расте…':'Still growing…',
   'Држи E да помузеш краву!':'Hold E to milk the cow!', 'Крава пасе, још нема млека.':'The cow is grazing, no milk yet.', 'Муу!':'Moo!'
 });
