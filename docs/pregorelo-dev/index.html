@@ -6050,7 +6050,7 @@ function drawZmaj(c,D,s){
   // тело: злато, светао трбух, сенка доле и одсјај на гребену
   const run=(oy,wk,col)=>{ c.strokeStyle=col; for(let i=0;i<N-1;i++){ const a=pts[i], b=pts[i+1]; c.lineWidth=Math.max(1,(a.w+b.w)/2*wk); c.beginPath(); c.moveTo(a.x,a.y+oy*a.w); c.lineTo(b.x,b.y+oy*b.w); c.stroke(); } };
   run(0,1,'#eba51a'); run(.27,.34,'#fbe8bc');
-  c.save(); c.globalCompositeOperation='multiply'; run(.42,.16,'#c9b7dc'); c.restore();
+  run(.42,.16,'rgba(96,62,140,.3)');
   run(-.3,.14,'#fff1b8');
   // крљушт
   c.strokeStyle=mix('#eba51a',INK,.35); c.lineWidth=Math.max(1,s*.014); for(let i=2;i<N-2;i++) for(const [oy,dx] of [[-.18,0],[0,.5],[.14,0]]){ const p=pts[i], q=pts[i+1]; if((i+(dx?1:0))%2) continue; const r=p.w*.13;
@@ -6300,10 +6300,10 @@ function tube(x1,y1,r1,x2,y2,r2){ const p=new Path2D(), dx=x2-x1, dy=y2-y1, d=Ma
   const a=Math.atan2(dy,dx), t=Math.acos((r1-r2)/d); p.arc(x1,y1,r1,a+t,a-t+Math.PI*2); p.arc(x2,y2,r2,a-t,a+t); p.closePath(); return p; }
 function E(x,y,rx,ry,rot){ const p=new Path2D(); p.ellipse(x,y,Math.max(.01,rx),Math.max(.01,ry),rot||0,0,Math.PI*2); return p; }
 function RR(x,y,w,h,r){ const p=new Path2D(); p.roundRect(x,y,Math.max(.01,w),Math.max(.01,h),Math.max(0,Math.min(r,w/2,h/2))); return p; }
-let U=40, UK=1;
+let U=40, UK=1, FLAT=false;
 // сенка: хладни срп доле десно; светло: топла ивица горе лево
 // срп ужи од пиксела се не види, па се не црта (UK: пиксела по јединици платна)
-function shadeOver(c,p,k,noHi,rule){ if(c.__ink) return; k=k||1; const off=.043*U*k; if(off*UK<.9) return; const D=new Path2D(); D.addPath(p); D.addPath(p,new DOMMatrix([1,0,0,1,-off*.75,-off]));
+function shadeOver(c,p,k,noHi,rule){ if(c.__ink||FLAT) return; k=k||1; const off=.043*U*k; if(off*UK<.9) return; const D=new Path2D(); D.addPath(p); D.addPath(p,new DOMMatrix([1,0,0,1,-off*.75,-off]));
   c.save(); c.clip(p,rule||'nonzero'); c.globalCompositeOperation='multiply'; c.fillStyle=SHADE; c.fill(D,'evenodd');
   if(!noHi&&.014*U*k*UK>=.6){ const h=.014*U*k, H=new Path2D(); H.addPath(p); H.addPath(p,new DOMMatrix([1,0,0,1,h*.75,h])); c.globalCompositeOperation='screen'; c.fillStyle=HISCR; c.fill(H,'evenodd'); }
   c.restore(); }
@@ -6353,9 +6353,11 @@ function bodyOf(st){ let B=BCACHE.get(st); if(B) return B; B=Object.assign({},BO
 /* ---- спрајтови: лик се црта у помоћно платно, око силуете се отисне мастило, и та слика се памти по свему
    што се на њој види (изглед, величина, правац, фаза корака, опруге, лице, поза). У кадру се само прелепи;
    ново се црта док не потроши BUDGET ms у кадру, после тога лик добије своју претходну слику. ---- */
-const LAY={a:null,b:null};
-function layer(w,h){ if(!LAY.a){ LAY.a=document.createElement('canvas'); LAY.b=document.createElement('canvas'); }
-  for(const cv of [LAY.a,LAY.b]) if(cv.width<w+2||cv.height<h+2){ cv.width=Math.max(cv.width,w+2); cv.height=Math.max(cv.height,h+2); } return LAY; }
+// помоћна платна су на процесору (willReadFrequently): сенчење (clip, multiply, screen) је на графичкој картици врло скупо,
+// а овде јефтино; слика лика се склопи у LAY.c и на картицу пошаље једним цртањем
+const LAY={a:null,b:null,c:null};
+function layer(w,h){ if(!LAY.a) for(const k of ['a','b','c']){ LAY[k]=document.createElement('canvas'); LAY[k].getContext('2d',{willReadFrequently:true}); }
+  for(const cv of [LAY.a,LAY.b,LAY.c]) if(cv.width<w+2||cv.height<h+2){ cv.width=Math.max(cv.width,w+2); cv.height=Math.max(cv.height,h+2); } return LAY; }
 const SPR=new Map(), POOL=[], SIGS=new Map(), LAST=new WeakMap(), LIVE=new WeakMap(), LIVE2=new Map();
 // EXL/EXR/EXT/EXB: колико се лик пружа од своје тачке, у s (измерено по свим ликовима, позама и правцима: .72/.75/1.18/.47)
 const SPX_MAX=36e6, SPN_MAX=900, BUDGET=5, EXL=.85, EXR=.85, EXT=1.35, EXB=.6, STAT={hit:0,miss:0,stale:0,live:0};
@@ -6383,16 +6385,18 @@ function render(cv,st,o,Z,s,k,fx,fy){
   b.setTransform(1,0,0,1,0,0); b.clearRect(x0,y0,cw,ch); b.drawImage(L.a,x0,y0,cw,ch,x0,y0,cw,ch);
   b.globalCompositeOperation='source-in'; b.fillStyle=INK; b.fillRect(x0,y0,cw,ch); b.globalCompositeOperation='source-over';
   if(cv&&cv.width*cv.height>2.5*cw*ch) cv=null;
+  const z=L.c.getContext('2d'); z.setTransform(1,0,0,1,0,0); z.clearRect(0,0,cw+2,ch+2);
+  for(let i=0;i<10;i++){ const an=i/10*Math.PI*2; z.drawImage(L.b,x0,y0,cw,ch,Math.cos(an)*ow+ow*.3,Math.sin(an)*ow+ow*.4,cw,ch); }
+  z.drawImage(L.a,x0,y0,cw,ch,0,0,cw,ch);
   if(!cv) cv=document.createElement('canvas'); if(cv.width<cw||cv.height<ch){ cv.width=Math.max(cv.width,cw); cv.height=Math.max(cv.height,ch); }
-  const x=cv.getContext('2d'); x.setTransform(1,0,0,1,0,0); x.clearRect(0,0,cw+2,ch+2);
-  for(let i=0;i<10;i++){ const an=i/10*Math.PI*2; x.drawImage(L.b,x0,y0,cw,ch,Math.cos(an)*ow+ow*.3,Math.sin(an)*ow+ow*.4,cw,ch); }
-  x.drawImage(L.a,x0,y0,cw,ch,0,0,cw,ch);
+  const x=cv.getContext('2d'); x.setTransform(1,0,0,1,0,0); x.clearRect(0,0,cw+2,ch+2); x.drawImage(L.c,0,0,cw,ch,0,0,cw,ch);
   return {cv,w:cw,h:ch,ax:ax-x0,ay:ay-y0,k,info,area:cv.width*cv.height,key:'',dead:false}; }
 
 // исти обрис за цртеж који се не памти (змај), без помоћног платна: fn се нацрта двапут, прво све мастилом
 // и подебљано за ширину обриса (мало доле десно), па у бојама преко тога. s је мера (U).
-function inked(c,s,fn){ const T=c.getTransform(), k=Math.hypot(T.a,T.b)||1, ow=Math.max(1.76,.024*s*k)/k, u=U, uk=UK; U=s; UK=k;
-  try{ c.save(); c.translate(ow*.3,ow*.4); c.fillStyle=INK; c.strokeStyle=INK; fn(inkOf(c,ow)); c.restore(); c.save(); fn(c); c.restore(); } finally{ U=u; UK=uk; } }
+// на главном платну (графичка картица) без сенчења: clip и multiply/screen би сваки кадар коштали десетине милисекунди
+function inked(c,s,fn){ const T=c.getTransform(), k=Math.hypot(T.a,T.b)||1, ow=Math.max(1.76,.024*s*k)/k, u=U, uk=UK; U=s; UK=k; FLAT=true;
+  try{ c.save(); c.translate(ow*.3,ow*.4); c.fillStyle=INK; c.strokeStyle=INK; fn(inkOf(c,ow)); c.restore(); c.save(); fn(c); c.restore(); } finally{ U=u; UK=uk; FLAT=false; } }
 // платно које све боји мастилом: попуне добију и потез 2·ow, потези се подебљају за 2·ow; сенке и унутрашње линије се прескачу
 function inkOf(c,ow){ let lw=1;
   const wrap={ fill(...a){ c.fill(...a); const w=c.lineWidth; c.lineWidth=2*ow; a.length&&typeof a[0]==='object'?c.stroke(a[0]):c.stroke(); c.lineWidth=w; },
