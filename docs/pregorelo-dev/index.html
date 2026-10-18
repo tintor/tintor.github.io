@@ -412,6 +412,7 @@ const SPIT_FROM={pg:'R',pk:'M'}; // на ражањ иде прасе сиров
 const SPIT_T=10, SPIT_BURN=9, TURN_DRAIN=3.5, WOK_TOSS=3.2, WOK_TOSSES=2, WATER_MAX=2, SMOTRA_BONUS=300, MICHELIN_BONUS=1000;
 const SPEED=4.4, PR=0.3, NPC_R=0.32;
 const UNLOCK_ALL=false; // true = сви нивои отворени без звездица (за тестирање)
+const DEBUGGING=/[?&]debugging(?:[=&]|$)/.test(location.search); // ?debugging у адреси: сви нивои и кувари отворени, сачувани напредак се не мења
 const CHEERS=['Живели!','Свака част!','Алал вера!','Ко код маме!','Мљац!','Баш је фино!'];
 
 const LEVELS=[
@@ -927,8 +928,8 @@ function applyLang(){
 }
 function setLang(l){ LANG=l==='en'?'en':'sr'; save.lang=LANG; persist(); applyLang(); }
 const QTHEMES=new Set(['pekara','zimnica','ada','docek']), isQ=th=>QTHEMES.has(th);
-const chefOpen=i=>i>=0&&i<CHARS.length&&(!CHEF_REQ[i]||!!save.allOpen||starsOf(CHEF_REQ[i].li)>=3);
-const levelOpen=i=>UNLOCK_ALL||!!save.allOpen||i<=1||starsOf(i-1)>=1; // обука и кафана су увек отворене
+const chefOpen=i=>i>=0&&i<CHARS.length&&(!CHEF_REQ[i]||DEBUGGING||!!save.allOpen||starsOf(CHEF_REQ[i].li)>=3);
+const levelOpen=i=>UNLOCK_ALL||DEBUGGING||!!save.allOpen||i<=1||starsOf(i-1)>=1; // обука и кафана су увек отворене
 const myPrefCh=()=>{ const i=save.ch|0; return chefOpen(i)?i:0; };
 function persist(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }catch(e){} }
 

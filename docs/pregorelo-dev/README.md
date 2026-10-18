@@ -40,10 +40,12 @@ Replace `index.html` in the repo and commit; Pages redeploys automatically. Brow
 Search the file for these lines:
 
 ```js
-const UNLOCK_ALL=true;   // all levels open (for playtesting); set to false to unlock levels in order
+const UNLOCK_ALL=false;  // true = all levels open (for playtesting); false = levels unlock in order
 const TURN_URL='';       // empty = no TURN relay; see section 2
 const TIP={kofi:'', usd:3, ipsAccount:'', ipsName:'', rsd:300}; // empty = no tip jar; see section 3
 ```
+
+For testing, add `?debugging` to the address (e.g. `.../pregorelo-dev/?debugging`): every level and every chef is open for as long as the flag is in the URL. Nothing is written to the saved progress, so dropping the flag brings back your real stars and unlocks.
 
 ---
 
