@@ -496,7 +496,7 @@ const CHARS=[
   {name:'Пандур', full:'Интервентни пандур', tag:'#2c4a6e', skin:'#e6b088', shirt:'#2c3c52', vest:'#1e2a3a', sleeve:'#2c3c52', trim:'#141c28', apron:'#e8ecf0', hat:'riot', hatC:'#1e2a3a', hair:'#2b1a10', stache:'walrus', belt:'#141c28', pants:'#1e2a3a', b:{hip:.2,belly:.22,chest:.27,sh:.26,th:.34,hw:.135,hh:.145,jaw:1.1,nose:1.1,armW:1.15}},
   {name:'Трубач', full:'Трубач', tag:'#b3122e', skin:'#efc19a', shirt:'#f5f0e6', vest:'#a3121c', trim:'#e0b23a', apron:'#f5efe2', hat:'sajkaca', hatC:'#24211f', hair:'#1f1a17', stache:true, money:3, trumpetBack:true, pants:'#2a2420', b:{hip:.19,belly:.23,chest:.21,sh:.17,th:.31,hw:.135,hh:.15,jaw:.9,nose:1.2}},
   {name:'Председник Станара', full:'Председник кућног савета', tag:'#6f6a58', skin:'#efc19a', shirt:'#f2eee2', vest:'#7a7563', sleeve:'#7a7563', trim:'#8a2a2a', apron:'#f2ece0', hat:'bald', hatC:'#9a9a9a', hair:'#a8a8a8', stache:true, glasses:true, tie:'#8a2a2a', pants:'#4a463a', b:{hip:.17,belly:.21,chest:.17,sh:.15,th:.33,hw:.14,hh:.155,jaw:.8,nose:1.3}},
-  {name:'Ник Слотер', full:'Ник Слотер, приватни детектив', tag:'#1f6fc8', skin:'#e2a070', shirt:'#e2a070', vest:'#1f6fc8', sleeve:'#1f6fc8', trim:'#8ccaf5', apron:null, hat:'ponytail', hatC:'#16121a', hair:'#16121a', noBelt:true, hawaii:true, chestHair:true, muscles:true, stubble:true, cleft:true, gun:true, face0:'cool', brow:'#120e14', pants:'#d8c8a0', b:{hip:.15,belly:.18,chest:.25,sh:.27,th:.35,hw:.118,hh:.158,jaw:1.32,nose:1.15,brow:1.75,eye:.8,armW:1.25}},
+  {name:'Ник Слотер', full:'Ник Слотер, приватни детектив', tag:'#1f6fc8', skin:'#e2a070', shirt:'#e2a070', vest:'#1f6fc8', sleeve:'#1f6fc8', trim:'#8ccaf5', apron:null, hat:'ponytail', hatC:'#16121a', hair:'#16121a', noBelt:true, hawaii:true, rolled:true, chestHair:true, muscles:true, stubble:true, cleft:true, gun:true, face0:'cool', brow:'#120e14', pants:'#d8c8a0', b:{hip:.15,belly:.18,chest:.25,sh:.27,th:.35,hw:.118,hh:.158,jaw:1.32,nose:1.15,brow:1.75,eye:.8,armW:1.25}},
   {name:'Деда Мраз', full:'Деда Мраз', tag:'#c8102e', skin:'#f0c29a', shirt:'#c8102e', vest:'#c8102e', sleeve:'#c8102e', trim:'#ffffff', apron:'#ffffff', hat:'santa', hatC:'#c8102e', hair:'#f4f4f4', stache:'santa', beard:true, longBeard:true, redNose:true, beardC:'#f6f4f0', stacheC:'#ffffff', cuff:'#f6f2ea', pants:'#c8102e', b:{hip:.2,belly:.29,chest:.24,sh:.17,th:.31,hw:.135,hh:.145,jaw:.85,nose:1.15}},
   {name:'Регрут', full:'Регрут на одслужењу', tag:'#5a6a3a', skin:'#efc19a', shirt:'#6a7a4a', vest:'#56643a', sleeve:'#6a7a4a', trim:'#3a4a2a', apron:'#e8e4d0', hat:'army', hatC:'#56643a', hair:'#3a2a1a', blush:true, bigHelmet:true, b:{hip:.17,belly:.17,chest:.18,sh:.16,th:.3,hw:.13,hh:.145,jaw:.75,nose:.9}},
   {name:'Тајкун', full:'Тајкун са обезбеђењем', tag:'#b8901e', skin:'#efc19a', shirt:'#26262a', vest:'#f4f1e8', sleeve:'#f4f1e8', trim:'#d9a21b', apron:null, hat:'swoop', hatC:'#2b1a10', hair:'#1e1610', swoopHi:'#5a4a3e', stache:'pencil', chain:true, shades:'aviator', cigar:true, scale:.9, noBelt:true, face0:'smug', pants:'#ebe6da', cuff:'#ffffff', lapels:true, b:{hip:.17,belly:.26,chest:.3,sh:.3,th:.36,leg:.11,hw:.115,hh:.13,jaw:1.1,nose:1,armW:1.25}}
@@ -6530,11 +6530,21 @@ function shoe(c,x,y,s,fx,fy,kind,st,back){
     else { c.moveTo(x,y-.006*s); c.quadraticCurveTo(x+.002*s,y-.03*s,x+.012*s,y-.034*s); } c.stroke(); }
   if(kind==='heel'&&Math.abs(fx)>.3){ c.fillStyle=mix(col,INK,.5); c.fillRect(x-Math.sign(fx)*len*.55-.006*s,y,.012*s,.03*s); } }
 
+// хавајска шара у правоугаонику (позивалац сече облик): листови па хибискуси, раштркани по мрежи
+function hawaiiPrint(c,x0,y0,x1,y1,s,sd){ const step=.13*s;
+  for(let gy=0,j=0;y0+gy<y1+step;gy+=step*.8,j++) for(let gx=(j%2)*step*.5,i=0;x0+gx<x1+step;gx+=step,i++){
+    const x=x0+gx+(hash(i+sd*7,j)-.5)*step*.5, y=y0+gy+(hash(j+sd*3,i)-.5)*step*.4, a=hash(i,j+sd)*6.28;
+    if((i+j+sd)%3===0){ c.save(); c.translate(x,y); c.rotate(a); const L=.075*s; c.fillStyle='#164f96'; c.beginPath(); c.moveTo(-L*.5,0); c.quadraticCurveTo(0,-L*.32,L*.5,0); c.quadraticCurveTo(0,L*.32,-L*.5,0); c.fill();
+      c.strokeStyle='#2a6cb8'; c.lineWidth=Math.max(.6,.005*s); c.beginPath(); c.moveTo(-L*.45,0); c.lineTo(L*.45,0); c.stroke(); c.restore(); }
+    else { c.fillStyle=(i+j)%2?'#d6ebfc':'#ffffff'; for(let q=0;q<5;q++){ const b=a+q*1.2566; c.beginPath(); c.ellipse(x+Math.cos(b)*.022*s,y+Math.sin(b)*.022*s,.021*s,.014*s,b,0,7); c.fill(); }
+      c.fillStyle='#123c78'; c.beginPath(); c.arc(x,y,.01*s,0,7); c.fill(); c.fillStyle='#ffd34d'; c.beginPath(); c.arc(x+Math.cos(a)*.012*s,y+Math.sin(a)*.012*s,.005*s,0,7); c.fill(); } } }
 function armDraw(c,Ar,s,st,B){
   const sl=st.sleeve||st.shirt, rolled=st.rolled!==undefined?st.rolled:!!(st.apron&&!st.sleeve&&!st.uniform), r0=.05*s*B.armW, r1=.042*s*B.armW, r2=.034*s*B.armW;
   const dx=Ar.hx-Ar.ex, dy=Ar.hy-Ar.ey, d=Math.hypot(dx,dy)||1, wx=Ar.hx-dx/d*.03*s, wy=Ar.hy-dy/d*.03*s;
-  if(rolled){ paint(c,tube(Ar.ex,Ar.ey,r1*.92,wx,wy,r2),st.skin,.45); paint(c,tube(Ar.Sx,Ar.Sy,r0,Ar.ex,Ar.ey,r1),sl,.55);
-    const ux=Ar.ex-Ar.Sx, uy=Ar.ey-Ar.Sy, ud=Math.hypot(ux,uy)||1; paint(c,tube(Ar.ex-ux/ud*.022*s,Ar.ey-uy/ud*.022*s,r1*1.07,Ar.ex+ux/ud*.004*s,Ar.ey+uy/ud*.004*s,r1*1.05),mix(sl,'#d8cdb8',.25),.4); }
+  if(rolled){ paint(c,tube(Ar.ex,Ar.ey,r1*.92,wx,wy,r2),st.skin,.45); const U1=tube(Ar.Sx,Ar.Sy,r0*(st.hawaii?1.08:1),Ar.ex,Ar.ey,r1*(st.hawaii?1.12:1)); c.fillStyle=sl; c.fill(U1);
+    if(st.hawaii){ c.save(); c.clip(U1); hawaiiPrint(c,Math.min(Ar.Sx,Ar.ex)-r0*1.3,Math.min(Ar.Sy,Ar.ey)-r0*1.3,Math.max(Ar.Sx,Ar.ex)+r0*1.3,Math.max(Ar.Sy,Ar.ey)+r0*1.3,s,7+Ar.sg); c.restore(); }
+    shadeOver(c,U1,.55); lineOf(c,U1,sl);
+    const ux=Ar.ex-Ar.Sx, uy=Ar.ey-Ar.Sy, ud=Math.hypot(ux,uy)||1; paint(c,tube(Ar.ex-ux/ud*.022*s,Ar.ey-uy/ud*.022*s,r1*(st.hawaii?1.13:1.07),Ar.ex+ux/ud*.004*s,Ar.ey+uy/ud*.004*s,r1*(st.hawaii?1.12:1.05)),st.hawaii?mix(sl,'#000000',.12):mix(sl,'#d8cdb8',.25),.4); }
   else { paint(c,tube(Ar.ex,Ar.ey,r1,wx,wy,r2*1.08),sl,.5); paint(c,tube(Ar.Sx,Ar.Sy,r0,Ar.ex,Ar.ey,r1),sl,.55);
     if(st.track){ c.strokeStyle='rgba(255,255,255,.95)'; c.lineWidth=Math.max(1,.012*s); c.beginPath(); c.moveTo(Ar.Sx,Ar.Sy); c.lineTo(Ar.ex,Ar.ey); c.lineTo(wx,wy); c.stroke(); }
     if(st.cuff) paint(c,tube(wx-dx/d*.018*s,wy-dy/d*.018*s,r2*1.35,wx+dx/d*.004*s,wy+dy/d*.004*s,r2*1.3),st.cuff,.35); } }
@@ -6548,15 +6558,17 @@ function torso(c,Tp,px,s,st,B,g){ const {back,fx,side,yS,chestY,bellyY,hipY,yH,x
   c.fillStyle=st.shirt; c.fill(Tp);
   c.save(); c.clip(Tp);
   if(st.leopard){ for(let k=0;k<22;k++){ const lx=px+(hash(k,41)-.5)*s*.6, ly=yS+hash(43,k)*(yH-yS); c.fillStyle='#4a2a10'; c.beginPath(); c.ellipse(lx,ly,s*.028,s*.02,hash(k,7)*3,0,7); c.fill(); c.fillStyle='#e6b464'; c.beginPath(); c.ellipse(lx+s*.004,ly,s*.012,s*.008,0,0,7); c.fill(); } }
-  if(st.hawaii){ for(let k=0;k<12;k++){ const hx2=px+(hash(k,71)-.5)*s*.56, hy2=yS+hash(73,k)*(yH-yS); if(!back&&Math.abs(hx2-xc)<s*.07) continue; c.fillStyle='rgba(220,240,255,.85)'; for(let qq=0;qq<5;qq++){ const a=qq*1.2566+k; c.beginPath(); c.arc(hx2+Math.cos(a)*s*.02,hy2+Math.sin(a)*s*.02,s*.015,0,7); c.fill(); } c.fillStyle='#f2c230'; c.beginPath(); c.arc(hx2,hy2,s*.009,0,7); c.fill(); } }
   if(st.stripes){ c.fillStyle=st.stripes; for(let i=-4;i<=4;i++) c.fillRect(px+fx*s*.03+i*s*.085-s*.022,yS-.1*s,s*.044,yH-yS+.2*s); }
   if(skirt&&!o.sit){ c.fillStyle=skirt; c.fillRect(X0,waist,s,yH-waist+s*.1); if(st.hem||st.trim){ c.fillStyle=st.hem||st.trim; c.fillRect(X0,yH-.045*s,s,.016*s); } }
   if(st.uniform){ if(!back){ c.fillStyle='#8a1420'; c.fillRect(xc-.17*s,yS-.05*s,.34*s,yH-yS+.1*s); c.strokeStyle='#d9a21b'; c.lineWidth=.016*s; c.strokeRect(xc-.17*s,yS-.05*s,.34*s,yH-yS+.1*s); c.fillStyle='#d9a21b'; c.fillRect(X0,waist-.012*s,s,.026*s); }
     else { c.fillStyle='#8a1420'; c.fillRect(X0,yS-.1*s,s,yH-yS+.2*s); c.strokeStyle='#d9a21b'; c.lineWidth=.016*s; c.beginPath(); c.moveTo(X0,by); c.lineTo(X1,by); c.stroke(); } }
   else if(st.vest&&st.vest!==st.shirt){ c.fillStyle=st.vest;
-    if(back) c.fillRect(X0,yS-.1*s,s,(st.lapels?yH+.1*s:waist)-yS+.1*s);
-    else { const gap=(st.lapels?.06:.075)*s, bot=st.lapels?yH+.1*s:waist; c.beginPath(); c.moveTo(X0,yS-.1*s); c.lineTo(xc-gap*.6,yS-.1*s); c.lineTo(xc-gap,chestY); c.lineTo(xc-gap,bot); c.lineTo(X0,bot); c.closePath();
+    if(back){ c.fillRect(X0,yS-.1*s,s,(st.lapels?yH+.1*s:waist)-yS+.1*s); if(st.hawaii) hawaiiPrint(c,X0,yS-.1*s,X1,yH+.1*s,s,5); }
+    else { const gap=(st.lapels?.06:.075)*s, bot=st.lapels||st.hawaii?yH+.1*s:waist; c.beginPath(); c.moveTo(X0,yS-.1*s); c.lineTo(xc-gap*.6,yS-.1*s); c.lineTo(xc-gap,chestY); c.lineTo(xc-gap,bot); c.lineTo(X0,bot); c.closePath();
       c.moveTo(X1,yS-.1*s); c.lineTo(xc+gap*.6,yS-.1*s); c.lineTo(xc+gap,chestY); c.lineTo(xc+gap,bot); c.lineTo(X1,bot); c.closePath(); c.fill();
+      if(st.hawaii){ c.save(); c.clip(); hawaiiPrint(c,X0,yS-.1*s,X1,bot,s,3); c.restore();
+        c.strokeStyle=mix(st.vest,'#ffffff',.35); c.lineWidth=Math.max(1,.012*s); c.beginPath(); for(const sg of [-1,1]){ c.moveTo(xc+sg*gap*.6,yS-.1*s); c.lineTo(xc+sg*gap,chestY); c.lineTo(xc+sg*gap,bot); } c.stroke();
+        for(const sg of [-1,1]){ const P=new Path2D(); P.moveTo(xc+sg*gap*.55,yS-.03*s); P.lineTo(xc+sg*(gap+.1*s),yS+.04*s); P.lineTo(xc+sg*gap*1.05,chestY+.03*s); P.closePath(); paint(c,P,mix(st.vest,'#ffffff',.12),.4); } }
       if(st.lapels){ c.fillStyle=mix(st.vest,'#000000',.08); for(const sg of [-1,1]){ c.beginPath(); c.moveTo(xc+sg*gap*.6,yS-.02*s); c.lineTo(xc+sg*(gap+.06*s),chestY-.03*s); c.lineTo(xc+sg*gap,chestY+.07*s); c.closePath(); c.fill(); } }
       else if(st.trim&&st.trim!==st.vest){ c.strokeStyle=st.trim; c.lineWidth=.016*s; c.beginPath(); for(const sg of [-1,1]){ c.moveTo(xc+sg*gap*.6,yS-.02*s); c.lineTo(xc+sg*gap,chestY); c.lineTo(xc+sg*gap,waist); } c.stroke(); } } }
   if(st.shorts){ c.fillStyle=st.shorts; c.fillRect(X0,waist-.02*s,s,yH-waist+.1*s); c.fillStyle='rgba(255,255,255,.85)'; c.fillRect(X0,waist-.02*s,s,.014*s); }
