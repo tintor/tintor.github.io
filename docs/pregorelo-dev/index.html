@@ -411,7 +411,7 @@ const CHARS=[
   {name:'Ник Слотер', full:'Ник Слотер, приватни детектив', tag:'#1f6fc8', skin:'#e2a070', shirt:'#e2a070', vest:'#1f6fc8', sleeve:'#1f6fc8', trim:'#8ccaf5', apron:null, hat:'ponytail', hatC:'#16121a', hair:'#16121a', noBelt:true, hawaii:true, chestHair:true, stubble:true, gun:true},
   {name:'Деда Мраз', full:'Деда Мраз', tag:'#c8102e', skin:'#f0c29a', shirt:'#c8102e', vest:'#c8102e', sleeve:'#c8102e', trim:'#ffffff', apron:'#ffffff', hat:'santa', hatC:'#c8102e', hair:'#f4f4f4', stache:true, beard:true, longBeard:true, redNose:true},
   {name:'Регрут', full:'Регрут на одслужењу', tag:'#5a6a3a', skin:'#efc19a', shirt:'#6a7a4a', vest:'#56643a', sleeve:'#6a7a4a', trim:'#3a4a2a', apron:'#e8e4d0', hat:'army', hatC:'#56643a', hair:'#3a2a1a', blush:true, bigHelmet:true},
-  {name:'Тек брат', full:'Тек брат из стартапа', tag:'#4a6aa8', skin:'#f0c8a4', shirt:'#2a2a30', vest:'#8a9098', sleeve:'#2a2a30', trim:'#6a7078', apron:null, hat:'hair', hatC:'#222', hair:'#5a3a22', airpods:true, vr:true, noBelt:true}
+  {name:'Тајкун', full:'Тајкун са обезбеђењем', tag:'#b8901e', skin:'#efc19a', shirt:'#26262a', vest:'#f4f1e8', sleeve:'#f4f1e8', trim:'#d9a21b', apron:null, hat:'buzz', hatC:'#2b1a10', hair:'#2b1a10', chain:true, shades:true, cigar:true, bulk:1.22, noBelt:true}
 ];
 const CHEF_REQ={4:{li:0,how:'★★★ у кафани'},5:{li:1,how:'★★★ у пекари'},6:{li:2,how:'★★★ на свадби'},7:{li:3,how:'★★★ на зимници'},8:{li:4,how:'★★★ на Ади'},9:{li:5,how:'★★★ на дочеку'},10:{li:6,how:'★★★ у касарни'},11:{li:7,how:'★★★ у „Змају“'}};
 const CHEF_FOR_LEVEL={0:4,1:5,2:6,3:7,4:8,5:9,6:10,7:11};
@@ -680,7 +680,8 @@ const EN={
   'Још се пари…':'Still steaming…','Стави димсам или кнедлу.':'Put in dim sum or a dumpling.','Готово је — исеци је на дасци!':'Done — slice it on the board!','Стави патку на ражањ.':'Put the duck on the spit.',
   'Сад ракија — фламбирај!':'Now the rakija — flambé!','Нестало воде у парњачи!':'The steamer ran dry!','Распарило се!':'Oversteamed!','Загорело! Парњача без воде!':'Burnt! The steamer ran dry!',
   'Укиселило се!':'It went sour!','Загорело! Фламбирај на време!':'Burnt! Flambé in time!','На ражањ иде само патка!':'Only the duck goes on the spit!',
-  'Регрут':'Recruit','Регрут на одслужењу':'Recruit doing military service','Тек брат':'Tech Bro','Тек брат из стартапа':'Tech bro from a startup','★★★ у касарни':'★★★ in the barracks','★★★ у „Змају“':'★★★ at the “Dragon”',
+  'Регрут':'Recruit','Регрут на одслужењу':'Recruit doing military service','Тек брат':'Tech Bro','Тек брат из стартапа':'Tech bro from a startup','Тајкун':'Tycoon','Тајкун са обезбеђењем':'Tycoon with bodyguards','Тајкун је у кухињи — са обезбеђењем!':'The tycoon is in the kitchen — with bodyguards!',
+  'Не прилази шефу!':'Stay away from the boss!','Без фотографисања!':'No photos!','Шеф не даје аутограме.':'The boss doesn’t sign autographs.','Склони се, брате!':'Out of the way, bro!','Полако, полако…':'Easy, easy…','Ко те звао?':'Who invited you?','Заузет — неко други кува као он.':'Taken — someone else is cooking as this chef.','★★★ у касарни':'★★★ in the barracks','★★★ у „Змају“':'★★★ at the “Dragon”',
   // касарна и фјужн: поруке у кухињи
   'Вода иде у пасуљ!':'Water goes into the beans!','Довољно је злата!':'That’s enough gold!','Прво испеци прасе на ражњу!':'Roast the pig on the spit first!','То иде под сач!':'That goes under the sač!','То иде у вок!':'That goes in the wok!',
   'Прво скувај пасуљ!':'Cook the beans first!','Доста воде, ово је већ чај!':'Enough water, this is tea already!','Развучено! +2 порције':'Stretched! +2 portions','Сач је пун!':'The sač is full!','Вок је пун!':'The wok is full!',
@@ -1512,6 +1513,7 @@ function newSim(li,slots){
   buildGrid(s,L);
   const sp=spawnPoints(s,4);
   slots.forEach(sl=>{ const p=sp[sl.slot]||sp[0]; s.players.push({slot:sl.slot,ch:sl.ch,x:p.x,y:p.y,dx:p.x,dy:p.y,fx:0,fy:-1,hold:null,work:null,walk:0,dashT:0,dashCd:0,target:null,moving:false,peer:sl.peer,lastMsg:'',lastMsgT:0}); });
+  s.guards=[]; for(const p of s.players) if((p.ch|0)===TAJKUN) for(let i=0;i<2;i++) s.guards.push({o:p.slot,i,x:p.x,y:p.y+.02*(i+1),fx:0,fy:-1,mv:0,sayT:0});
   s.npcs=[...(L.band||[]).map(b=>({kind:b.kind||'band',r:NPC_R,x:b.path[0][0],y:b.path[0][1],dx:b.path[0][0],dy:b.path[0][1],path:b.path,wp:b.wp,speed:b.speed,fx:1,fy:0,walk:0,note:Math.random()})),
     ...(L.cars||[]).map(c=>({kind:'car',r:.46,x:c.path[0][0],y:c.path[0][1],dx:c.path[0][0],dy:c.path[0][1],path:c.path,wp:1,speed:c.speed,at:c.at*L.time,fx:-1,fy:0,walk:0,started:false,gone:false,waitT:0}))];
   return s;
@@ -1977,7 +1979,7 @@ function simStep(dt){
   S.time+=dt; S.timeLeft-=dt; S.goT=Math.max(0,S.goT-dt);
   for(const p of S.players) if(p.stun>0) p.stun=Math.max(0,p.stun-dt);
   for(const p of S.players) updateWork(p,dt);
-  updateNpcs(dt); updateStations(dt); heatStep(dt); levelEvents(dt); updateOrders(dt); updatePending(dt);
+  updateNpcs(dt); guardStep(dt); updateStations(dt); heatStep(dt); levelEvents(dt); updateOrders(dt); updatePending(dt);
   if(S.L.theme==='kafana'&&S.time>=S.nextTrubac){ S.nextTrubac=S.time+30+Math.random()*15;
     const tabs=[...new Set(S.orders.filter(o=>o.seat>=0).map(o=>Math.floor(o.seat/4)))]; ev('g','T',tabs.length?tabs[Math.floor(Math.random()*tabs.length)]:Math.floor(Math.random()*3));
     S.boostUntil=S.time+13; ev('o','Трубач свира — бакшиш +50%!'); }
@@ -2346,6 +2348,7 @@ function buildSnap(){
     s.rs=S.rs; s.tl=Math.round(S.timeLeft*10); s.sc=S.score; s.cd=Math.round(S.countdown*10); s.go=Math.round(S.goT*10);
     s.pl=S.players.map(p=>[p.slot,p.ch,Math.round(p.x*100),Math.round(p.y*100),Math.round(p.fx*100),Math.round(p.fy*100),enc(p.hold),wkCode(p.work),p.target?p.target.x:-1,p.target?p.target.y:-1,Math.round((p.stun||0)*10)]);
     s.np=S.npcs.map(n=>[Math.round(n.x*100),Math.round(n.y*100),Math.round(n.fx*10),Math.round(n.fy*10),n.gone?1:0]);
+    s.gd=(S.guards||[]).map(g=>[g.o,Math.round(g.x*100),Math.round(g.y*100),Math.round(g.fx*10),Math.round(g.fy*10),g.mv?1:0]);
     s.o=S.orders.map(o=>[o.id,RKEYS.indexOf(o.r),Math.round(o.t*10),o.max,o.tb,Math.max(0,CTS.indexOf(o.ct)),o.seat]);
     const t=[];
     for(const row of S.grid) for(const x of row){ if(!x.solid) continue;
@@ -2451,6 +2454,7 @@ function onSnap(s){
   V.players=Object.values(V.pmap);
   const nb=((V.L&&V.L.band)||[]).length;
   V.npcs=(s.np||[]).map((a,i)=>{ const o=V.npcs&&V.npcs[i]||{dx:a[0]/100,dy:a[1]/100,walk:0}; o.x=a[0]/100; o.y=a[1]/100; o.fx=a[2]/10; o.fy=a[3]/10; o.gone=!!a[4]; o.kind=i<nb?(V.L.band[i].kind||'band'):'car'; o.r=o.kind==='car'?.46:NPC_R; return o; });
+  V.guards=(s.gd||[]).map((a,i)=>{ const g=V.guards&&V.guards[i]||{dx:a[1]/100,dy:a[2]/100,walk:0}; Object.assign(g,{o:a[0],x:a[1]/100,y:a[2]/100,fx:a[3]/10,fy:a[4]/10,mv:a[5]}); return g; });
   V.orders=(s.o||[]).map(a=>({id:a[0],r:RKEYS[a[1]],t:a[2]/10,max:a[3],tb:a[4],ct:CTS[a[5]]||'g',seat:a[6]===undefined?-1:a[6]}));
   for(const row of V.grid) for(const t of row){ if(!t.solid) continue; t.item=null; if(t.v) resetV(t.v); if('count' in t) t.count=0; if(t.kind==='sink'){ t.dirty=0; t.prog=0; } }
   for(const [x,y,c] of s.t||[]){ const t=tileAt(V,x,y); if(!t) continue;
@@ -2636,7 +2640,7 @@ function ambient(dt){
     else if(p.wk===2&&v>.3){ FX.chopT.set(key,0); sfx('wash'); for(let i=0;i<3;i++) FX.parts.push({x:t.x+.3+Math.random()*.4,y:t.y+.45,vx:(Math.random()-.5)*.3,vy:-.6-Math.random()*.4,t:0,life:.8,kind:'bubble',r:.05+Math.random()*.05}); }
     else FX.chopT.set(key,v);
   }
-  for(const n of DN){ if(n.kind==='squad'||n.kind==='robot') continue; n.note=(n.note||0)-dt; if(n.note<=0){ n.note=.45+Math.random()*.4; FX.parts.push({x:n.x+n.fx*.45,y:n.y-.45,vx:(Math.random()-.5)*.4,vy:-.7,t:0,life:1.3,kind:'note',ch:Math.random()<.5?'♪':'♫'}); } }
+  for(const n of DN){ if(n.kind==='squad'||n.kind==='robot'||n.kind==='guard') continue; n.note=(n.note||0)-dt; if(n.note<=0){ n.note=.45+Math.random()*.4; FX.parts.push({x:n.x+n.fx*.45,y:n.y-.45,vx:(Math.random()-.5)*.4,vy:-.7,t:0,life:1.3,kind:'note',ch:Math.random()<.5?'♪':'♫'}); } }
 }
 
 /* ======================= УНОС ======================= */
@@ -2716,6 +2720,32 @@ $('#pauseBtn').addEventListener('click',e=>{ e.currentTarget.blur(); menuKey(); 
 /* ======================= ТОК ИГРЕ ======================= */
 function othersFor(a,list,pushNpc){ const o=[]; for(const p of list) if(p!==a) o.push({x:p.x,y:p.y,r:PR}); for(const n of (V&&V.npcs)||[]){ if(n.gone) continue; if(n.kind==='car'||!pushNpc) o.push({x:n.x,y:n.y,r:n.r||NPC_R}); } return o; }
 const NICK=8, chefSpeed=ch=>(ch|0)===NICK?1.6:1; // Ник Слотер always sprints
+const TAJKUN=11, GUARD_GAP=.85, SHOVE_R=PR*2+.08, SHOVE_V=3.4, SHOVE_T=.18;
+const GUARD_SAY=['Не прилази шефу!','Без фотографисања!','Шеф не даје аутограме.','Склони се, брате!','Полако, полако…','Ко те звао?'];
+/* тајкун: два телохранитеља иду његовим трагом и одгурују свакога ко му приђе (играче и робота).
+   Домаћин их помера и шаље у снимку; сваки играч сам себе одгурне (кретање је код играча). */
+function guardStep(dt){
+  if(!S.guards) return;
+  S.guards=S.guards.filter(g=>S.players.some(p=>p.slot===g.o&&(p.ch|0)===TAJKUN));
+  for(const p of S.players){ if((p.ch|0)!==TAJKUN) continue; const tr=p.trail||(p.trail=[{x:p.x,y:p.y}]), last=tr[tr.length-1];
+    if(Math.hypot(p.x-last.x,p.y-last.y)>.12){ tr.push({x:p.x,y:p.y}); if(tr.length>40) tr.shift(); } }
+  for(const g of S.guards){ const p=S.players.find(q=>q.slot===g.o), tr=p.trail;
+    let need=(g.i+1)*GUARD_GAP, ax=p.x, ay=p.y, tx=ax, ty=ay;
+    for(let k=tr.length-1;k>=0&&need>0;k--){ const d=Math.hypot(tr[k].x-ax,tr[k].y-ay); if(d>=need){ tx=ax+(tr[k].x-ax)*need/d; ty=ay+(tr[k].y-ay)*need/d; need=0; } else { need-=d; ax=tx=tr[k].x; ay=ty=tr[k].y; } }
+    const dx=tx-g.x, dy=ty-g.y, d=Math.hypot(dx,dy), st=Math.min(d,SPEED*1.25*dt);
+    if(d>.02){ g.x+=dx/d*st; g.y+=dy/d*st; g.fx=dx/d; g.fy=dy/d; g.mv=1; } else { g.mv=0; g.fx=p.fx; g.fy=p.fy; }
+    g.sayT=Math.max(0,(g.sayT||0)-dt);
+    const bark=()=>{ if(g.sayT<=0){ g.sayT=3; evF(pick(GUARD_SAY),'#ffffff',{x:g.x-.5,y:g.y-.85},-1,1); ev('s','deny',-1); } };
+    for(const q of S.players){ if(q.slot===g.o||Math.hypot(q.x-g.x,q.y-g.y)>=SHOVE_R) continue; q.work=null; bark(); }
+    for(const n of S.npcs){ if(n.kind==='car'||n.gone) continue; const ddx=n.x-g.x, ddy=n.y-g.y, dd=Math.hypot(ddx,ddy), lim=NPC_R+PR+.05;
+      if(dd<lim&&dd>1e-3){ const k=Math.min(.15,lim-dd); if(npcFree(n.x+ddx/dd*k,n.y+ddy/dd*k)){ n.x+=ddx/dd*k; n.y+=ddy/dd*k; } bark(); } } }
+}
+/* одгуравање: кретање играча, који год му телохранитељ приђе */
+function shoveStep(o,a,slot,guards,dt){
+  if(a.kvT>0){ a.kvT-=dt; tryMove(o,a,a.kvx*dt,a.kvy*dt,[]); return; }
+  for(const g of guards||[]){ if(g.o===slot) continue; const dx=a.x-g.x, dy=a.y-g.y, d=Math.hypot(dx,dy); if(d>=SHOVE_R) continue;
+    let ux=dx, uy=dy; if(d<1e-3){ ux=g.fx||0; uy=g.fy||1; } const m=Math.hypot(ux,uy)||1; a.kvx=ux/m*SHOVE_V; a.kvy=uy/m*SHOVE_V; a.kvT=SHOVE_T; return; }
+}
 const PANDUR=5, nearNpc=(x,y)=>((V&&V.npcs)||[]).some(n=>n.kind!=='car'&&!n.gone&&Math.hypot(n.x-x,n.y-y)<PR+NPC_R+.08);
 function hostUpdate(dt){
   if(!S||V!==S) return;
@@ -2723,11 +2753,11 @@ function hostUpdate(dt){
   if(Game.phase==='countdown'){
     const b=S.countdown; S.countdown-=dt;
     if(Math.ceil(b)!==Math.ceil(S.countdown)&&S.countdown>0) ev('s','count',-1);
-    if(S.countdown<=0){ Game.phase='play'; S.goT=.9; ev('s','go',-1); spawnOrder(); if(S.L.band) setTimeout(()=>{ if(Game.phase==='play'&&S) ev('o',NPC_HELLO[S.L.band[0].kind||'band']); },900); uiDirty(); }
+    if(S.countdown<=0){ Game.phase='play'; S.goT=.9; ev('s','go',-1); spawnOrder(); if(S.guards.length) setTimeout(()=>{ if(Game.phase==='play'&&S) ev('o','Тајкун је у кухињи — са обезбеђењем!'); },2600); if(S.L.band) setTimeout(()=>{ if(Game.phase==='play'&&S) ev('o',NPC_HELLO[S.L.band[0].kind||'band']); },900); uiDirty(); }
     if(p) p.target=findTarget(S,p); return;
   }
   if(Game.phase==='play'){
-    if(p){ const i=p.stun>0?{x:0,y:0}:readInput(), pc=(p.ch|0)===PANDUR, sl=pc&&nearNpc(p.x,p.y)?.78:1; stepMove(S,p,i.x*sl,i.y*sl,dt,othersFor(p,S.players,pc),chefSpeed(p.ch)); p.target=findTarget(S,p); }
+    if(p){ const i=p.stun>0?{x:0,y:0}:readInput(), pc=(p.ch|0)===PANDUR, sl=pc&&nearNpc(p.x,p.y)?.78:1; stepMove(S,p,i.x*sl,i.y*sl,dt,othersFor(p,S.players,pc),chefSpeed(p.ch)); shoveStep(S,p,p.slot,S.guards,dt); p.target=findTarget(S,p); }
     simStep(dt); if(Game.phase==='ending') uiDirty(); return;
   }
   if(Game.phase==='ending'){ S.endT-=dt; if(S.endT<=0) finishLevel(); }
@@ -2737,7 +2767,7 @@ function clientUpdate(dt){
   if(Game.phase==='play'){ V.timeLeft=Math.max(0,V.timeLeft-dt); V.goT=Math.max(0,V.goT-dt); }
   if(Game.phase==='countdown') V.countdown-=dt;
   if(me&&(Game.phase==='play'||Game.phase==='countdown')){
-    if(Game.phase==='play'){ const mp=V.players.find(q=>q.slot===Game.mySlot)||{}, myc=mp.ch|0, i=mp.stun>0?{x:0,y:0}:readInput(), pc=myc===PANDUR, sl=pc&&nearNpc(me.x,me.y)?.78:1; stepMove(V,me,i.x*sl,i.y*sl,dt,othersFor(null,DP.filter(p=>p.slot!==Game.mySlot),pc),chefSpeed(myc)); }
+    if(Game.phase==='play'){ const mp=V.players.find(q=>q.slot===Game.mySlot)||{}, myc=mp.ch|0, i=mp.stun>0?{x:0,y:0}:readInput(), pc=myc===PANDUR, sl=pc&&nearNpc(me.x,me.y)?.78:1; stepMove(V,me,i.x*sl,i.y*sl,dt,othersFor(null,DP.filter(p=>p.slot!==Game.mySlot),pc),chefSpeed(myc)); shoveStep(V,me,Game.mySlot,V.guards,dt); }
     me.target=findTarget(V,me);
   }
 }
@@ -3736,6 +3766,9 @@ function drawChar(c,px,py,s,fx,fy,walk,st,o){
     if(st.glasses){ c.strokeStyle='#1f1f1f'; c.lineWidth=Math.max(1.2,s*.02); circ(c,px+ex-s*.06,hy+ey-s*.004,s*.047); c.stroke(); circ(c,px+ex+s*.06,hy+ey-s*.004,s*.047); c.stroke(); c.beginPath(); c.moveTo(px+ex-s*.013,hy+ey-s*.01); c.lineTo(px+ex+s*.013,hy+ey-s*.01); c.stroke(); }
     if(st.shades){ c.fillStyle='#121212'; rr(c,px+ex-s*.115,hy+ey-s*.035,s*.095,s*.065,s*.025); c.fill(); rr(c,px+ex+s*.02,hy+ey-s*.035,s*.095,s*.065,s*.025); c.fill(); c.fillRect(px+ex-s*.025,hy+ey-s*.02,s*.05,s*.014);
       c.fillStyle='rgba(255,255,255,.35)'; c.fillRect(px+ex-s*.1,hy+ey-s*.025,s*.03,s*.012); c.fillRect(px+ex+s*.035,hy+ey-s*.025,s*.03,s*.012); }
+    if(st.cigar&&!o.shout){ c.save(); c.translate(px+ex+s*.03,hy+ey+s*.1); c.rotate(-.25); rr(c,0,-s*.018,s*.14,s*.036,s*.012); c.fillStyle='#6a3a1a'; c.fill(); c.fillStyle='#d9a21b'; c.fillRect(s*.03,-s*.018,s*.02,s*.036);
+      circ(c,s*.142,0,s*.016); c.fillStyle=`rgb(255,${120+60*Math.sin(G_anim*6)|0},40)`; c.fill(); c.strokeStyle='rgba(225,225,225,.5)'; c.lineWidth=Math.max(1,s*.015); c.beginPath(); const sp=(G_anim*.7)%1;
+      c.moveTo(s*.15,-s*.02); c.quadraticCurveTo(s*.12,-s*.08-sp*s*.05,s*.17,-s*.13-sp*s*.08); c.stroke(); c.restore(); }
     if(st.toothpick){ c.strokeStyle='#e8d8a8'; c.lineWidth=Math.max(1,s*.016); c.beginPath(); c.moveTo(px+ex+s*.03,hy+ey+s*.105); c.lineTo(px+ex+s*.13,hy+ey+s*.075); c.stroke(); }
     if((o.angry||o.squint)&&!st.shades&&!o.sleep){ c.strokeStyle='#2b1a10'; c.lineWidth=Math.max(1.2,s*.025); c.beginPath(); c.moveTo(px+ex-s*.1,hy+ey-s*.07); c.lineTo(px+ex-s*.03,hy+ey-s*.045); c.moveTo(px+ex+s*.1,hy+ey-s*.07); c.lineTo(px+ex+s*.03,hy+ey-s*.045); c.stroke(); }
     if(o.shout){ ell(c,px+ex,hy+ey+s*.1,s*.048,s*.042); c.fillStyle='#4a1010'; c.fill(); ell(c,px+ex,hy+ey+s*.115,s*.025,s*.014); c.fillStyle='#d65a5a'; c.fill(); }
@@ -5470,6 +5503,7 @@ function buildDisplay(dt){
     DP.push(d);
   }
   for(const n of V.npcs||[]){ if(n.dx===undefined){ n.dx=n.x; n.dy=n.y; } const ox_=n.dx, oy_=n.dy; n.dx+=(n.x-n.dx)*k; n.dy+=(n.y-n.dy)*k; n.walk=(n.walk||0)+Math.hypot(n.dx-ox_,n.dy-oy_)*13; DN.push(n); }
+  for(const g of V.guards||[]){ if(g.dx===undefined){ g.dx=g.x; g.dy=g.y; } const ox_=g.dx, oy_=g.dy; g.dx+=(g.x-g.dx)*k; g.dy+=(g.y-g.dy)*k; g.walk=(g.walk||0)+Math.hypot(g.dx-ox_,g.dy-oy_)*13; DN.push(Object.assign(g,{kind:'guard'})); }
 }
 function render(dt){
   G_anim+=dt;
@@ -5492,7 +5526,7 @@ function render(dt){
       if(e.p){ const p=e.p, s=ts, hx=p.hold;
         drawChar(ctx,ox+p.x*ts,oy+p.y*ts,s,p.fx,p.fy,p.walk,CHARS[p.ch]||CHARS[0],{pose:(CHARS[p.ch]||CHARS[0]).gun&&p.mv&&!hx&&!(p.wk===1||p.wk===2)?'gunrun':undefined,holding:!!hx,working:p.wk===1||p.wk===2,knife:p.wk===1?(FX.chopT.get('w'+p.slot)||0)/.2:undefined,
           drawHold:hx?((x,y)=>drawItemAt(ctx,hx,x,y,s*.52)):null,label:multi?tr(p.me?'Ти':slotName(p.slot)):null}); }
-      else { const n=e.n; if(n.kind==='car'){ if(!n.gone) topCar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts*1.15,'#c8202b',Math.atan2(n.fy||0,n.fx||-1)); } else if(n.kind==='squad') drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk*1.4,SQUAD,{}); else if(n.kind==='robot') drawRobot(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n); else drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk,BAND,{trumpet:true,holding:true}); }
+      else { const n=e.n; if(n.kind==='car'){ if(!n.gone) topCar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts*1.15,'#c8202b',Math.atan2(n.fy||0,n.fx||-1)); } else if(n.kind==='squad') drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk*1.4,SQUAD,{}); else if(n.kind==='robot') drawRobot(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n); else if(n.kind==='guard') drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk,GUARD,{}); else drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk,BAND,{trumpet:true,holding:true}); }
     }
     drawHangers(); drawKitchenFx();
     drawStatus(); drawParts(); drawFloats();
@@ -5581,6 +5615,8 @@ function mpPanel(){
   <div class="mp-block"><h3>Придружи се</h3>${games?`<ul class="games">${games}</ul>`:'<p class="lede">Тренутно нема отворених игара.</p>'}
   <div class="codein"><input id="codeIn" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="0000" aria-label="Код игре"><button class="btn quiet" data-act="joincode">Уђи са кодом</button></div><p class="hint" id="codeHint"></p></div>`;
 }
+/* кувара кога већ има други играч не може да изабере нико други (домаћин ионако одбије такав захтев) */
+const chefTaken=i=>Game.role!=='solo'&&Net.slots.some(s=>s.ch===i&&!(Game.role==='host'?s.peer==='me':s.peer===Net.myPeer));
 function myCh(){ if(Game.role==='solo') return myPrefCh(); const me=Net.slots.find(s=>Game.role==='host'?s.peer==='me':s.peer===Net.myPeer); return me?me.ch:myPrefCh(); }
 function chefPicker(size,label){
   size=size||56; const inRoom=Game.role!=='solo', mine=myCh();
@@ -5594,7 +5630,7 @@ function rewardCard(){
   const r=Game.reward, res=Game.result; if(!r||!res||r.li!==res.li) return ''; const c=CHARS[r.ch], picked=myCh()===r.ch;
   return `<div class="reward" role="status"><div class="rw-rays" aria-hidden="true"></div><div class="rw-card" style="--chef:${c.tag}">
     <div class="rw-title">Нови кувар откључан!</div><canvas class="rw-pic" data-icon="char:${r.ch}" data-size="96"></canvas><div class="rw-name">${esc(c.full||c.name)}</div>
-    ${picked?'<div class="rw-note">Сад куваш ти!</div>':`<button class="btn small" data-act="chef" data-ch="${r.ch}">Изабери</button>`}</div></div>`;
+    ${picked?'<div class="rw-note">Сад куваш ти!</div>':chefTaken(r.ch)?'<div class="rw-note">Заузет — неко други кува као он.</div>':`<button class="btn small" data-act="chef" data-ch="${r.ch}">Изабери</button>`}</div></div>`;
 }
 const chefSig=()=>[myCh(),save.ch|0,save.stars.join(''),save.allOpen?1:0,JSON.stringify(Net.slots.map(s=>[s.slot,s.ch])),Game.reward?Game.reward.ch:''].join(';');
 const BUILD={
@@ -5711,7 +5747,7 @@ V=viewForLevel(0); resize(); applyLang();
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ bgKey=''; iconCache.clear(); });
 netInit();
 requestAnimationFrame(frame);
-window.__kb={tr,setLang,SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,simStep,enc,dec,buildSnap,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
+window.__kb={tr,setLang,SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,simStep,enc,dec,buildSnap,onHostPeers,setMyChef,onSnap,shoveStep,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
 })();
 </script>
 </body>
