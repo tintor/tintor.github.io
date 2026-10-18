@@ -495,9 +495,9 @@ const LEVELS=[
     map:['#WW###y###f#e#','#......#.....X','D......#.....c','#......#.....s','O............#','O......#.....m','#......#.....T','R..@...#.....#','##j#####X#####']},
   { name:'Чајџиница у Ченгдуу', theme:'chengdu', tune:'chengdu', icon:'mapo',
     desc:'Пракса у Кини почиње у Ченгдуу, у чајџиници поред језера у Народном парку. Махџонг, чишћење ушију, маске сечуанске опере — и сви хоће љуто.',
-    novo:'Ново: вок. Убаци састојке у вок, а кад запламти, протреси га (E) — двапут, иначе загори! Пиринчано тесто баци о даску (E) три пута: бум, бум, бум — то је сан-да-пао. Говедину „муж и жена“ само исеци и сложи на тањир. А неки у парку би радо пробали твоје јело…',
+    novo:'Ново: вок. Убаци састојке у вок, а кад запламти, протреси га (E) — двапут, иначе загори! Пиринчано тесто баци о даску (E) три пута: бум, бум, бум — па га на тањиру прелиј сирупом из бокала, и то је сан-да-пао. Бокал се не троши: носи га до тањира и врати на пулт. Говедину „муж и жена“ само исеци и сложи на тањир. А неки у парку би радо пробали твоје јело…',
     time:180, recipes:['mapo','fuqi','sandapao'], interval:18, maxOrders:4, patience:85, plates:4, trays:0, dirty:false, plate:'porc',
-    stars:[700,1700,2800], crates:{f:'tf',m:'me',d:'db',b:'gv',c:'cu',k:'kk',s:'sd',y:'ms'},
+    stars:[700,1700,2800], crates:{f:'tf',m:'me',d:'db',b:'gv',c:'cu',k:'kk',s:'sd'}, tools:{y:'ms'},
     kinds:{'1':'teaman','2':'opera','3':'aunts'}, secrets:['opera','aunts','teaman'],
     map:['#WW##f#m#d##D#','#............#','1...#####....X','#...##H##....X','#............#','#............2','R.....@......#','##b#c#k#s#y33#']},
   { name:'Свадба на салашу', theme:'salas', tune:'cocek',
@@ -3886,7 +3886,7 @@ function vesselDish(kind,c,L){ L=L||S.L; const r=lvR(L).find(r=>RECIPES[r].cook=
 
 function buildGrid(o,L){
   const rows=L.map.length, cols=L.map[0].length, grid=[];
-  o.start={x:1.5,y:1.5}; o.plateTile=o.dirtyTile=o.windowTile=o.sinkTile=null; o.plateTiles=[]; o.steam=false; o.hotpots=[];
+  o.start={x:1.5,y:1.5}; o.plateTile=o.dirtyTile=o.windowTile=o.sinkTile=null; o.plateTiles=[]; o.steam=false; o.hotpots=[]; o.tools=[];
   const CR=Object.assign({},CRATE,L.crates||{}), KD=L.kinds?Object.assign({},KIND,L.kinds):KIND, FK=L.farmKinds||{};
   for(let y=0;y<rows;y++){ const row=[];
     for(let x=0;x<cols;x++){
@@ -3904,6 +3904,7 @@ function buildGrid(o,L){
       if(t.kind==='window'&&!o.windowTile) o.windowTile=t;
       if(t.kind==='sink'){ t.dirty=0; t.prog=0; o.sinkTile=t; }
       if(t.kind==='hotpot'){ t.hp={oid:0,eat:0,coal:0,dirty:0,gid:0}; t.ti=o.hotpots.length; o.hotpots.push(t); }
+      if(L.tools&&L.tools[ch]){ t.kind='counter'; delete t.ing; t.item=mkJug(L.tools[ch]); o.tools.push({t,ing:L.tools[ch]}); } // бокал који се не троши: његов кућни пулт
       row.push(t);
     }
     grid.push(row);
@@ -4106,6 +4107,8 @@ function combine(p,A,B,t){
   if(A.k==='t'&&B.k==='p'){ scoop(p,A,B,t); return ''; }
   if(A.k==='p'&&B.k==='p') return mergePlates(p,A,B,t);
   if(A.k==='d'&&B.k==='d'){ B.n+=A.n; sndA(p,'drop'); return 'h'; }
+  if(A.k==='j'&&B.k==='p'){ pourJug(p,B,A,t); return ''; }
+  if(A.k==='p'&&B.k==='j'){ pourJug(p,A,B,t); return ''; }
   deny(p,t,'Нема места!'); return '';
 }
 function simGrab(p){
@@ -4211,6 +4214,7 @@ function simGrab(p){
       if(h.k==='p'&&S.L.cones){ toss(enc(h)); p.hold=null; ev('s','trash',-1); return; } // корнет се баца цео
       if(h.k==='p'){ if(h.c.length){ toss(h.c.slice()); h.c=[]; ev('s','trash',-1); } else say(p,t,PW('already')); return; }
       if(h.k==='t'){ if(h.c.length||h.ph!=='i'){ toss(h.ph==='b'?['xxB']:h.dish?[h.dish+'K']:h.c.slice()); resetV(h); ev('s','trash',-1); } else say(p,t,'Тепсија је већ празна.'); return; }
+      if(h.k==='j'){ deny(p,t,'Бокал се не баца — сирупа има довољно!'); return; }
       deny(p,t,PW('noThrow')); return;
     }
     case 'sink': {
@@ -4351,6 +4355,15 @@ function chinaGift(p,t){ const k=t.kind, Q=SEC[k], h=p.hold;
   if(d!==Q.d){ ev('g','cq',k,full?Q.no:Q.hint); return; }
   sec[k]={slot:p.slot,ch:p.ch|0,t:Math.round(S.time*10)}; p.hold=null; S.pending.push(RETURN_T);
   ev('g','cx',k,p.slot); ev('g','cq',k,Q.say); ev('o','Тајна '+Object.keys(sec).length+'/3: '+Q.name); ev('s','ding',-1); ev('b','sparkle',t.x+.5,t.y+.4); }
+/* бокал са сирупом у Ченгдуу: носи се до тањира (или тањир до њега) и сипа, а не троши се. Ако нестане
+   (играч који га је држао изађе из игре), врати се на свој пулт. */
+const mkJug=ing=>({k:'j',t:ing});
+function pourJug(p,plate,jug,t){ if(addToPlate(p,plate,mkIng(jug.t),t)) sndA(p,'plop'); }
+function toolStep(){ const has=(it,T)=>!!it&&it.k==='j'&&it.t===T.ing;
+  for(const T of S.tools){ if(S.players.some(p=>has(p.hold,T))||S.grid.some(r=>r.some(q=>has(q.item,T)))) continue;
+    const reach=q=>[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>!solidAt(S,q.x+dx,q.y+dy)), d=q=>Math.abs(q.x-T.t.x)+Math.abs(q.y-T.t.y);
+    const home=!T.t.item?T.t:S.grid.flat().filter(q=>q.kind==='counter'&&!q.item&&!q.deco&&reach(q)).sort((a,b)=>d(a)-d(b))[0]; if(!home) continue;
+    home.item=mkJug(T.ing); ev('b','sparkle',home.x+.5,home.y+.4); } }
 const SEATS={kafana:12,salas:8,pekara:0,zimnica:0,ada:0,docek:0,kasarna:8,fusion:12,chengdu:12};
 function bakeryScript(){
   const pairs=[['fa','fb'],['pro','pol']]; if(Math.random()<.5) pairs.reverse(); for(const p of pairs) if(Math.random()<.5) p.reverse();
@@ -4568,7 +4581,7 @@ function simStep(dt){
   S.time+=dt; if(timed(S.L)) S.timeLeft-=dt; S.goT=Math.max(0,S.goT-dt);
   for(const p of S.players) if(p.stun>0) p.stun=Math.max(0,p.stun-dt);
   for(const p of S.players) updateWork(p,dt);
-  updateNpcs(dt); if(S.L.street) streetStep(dt); if(S.L.farm) farmStep(dt); guardStep(dt); updateStations(dt); heatStep(dt); levelEvents(dt); updateOrders(dt); updatePending(dt);
+  updateNpcs(dt); if(S.L.street) streetStep(dt); if(S.L.farm) farmStep(dt); guardStep(dt); updateStations(dt); if(S.tools.length) toolStep(); heatStep(dt); levelEvents(dt); updateOrders(dt); updatePending(dt);
   if(S.L.theme==='kafana'&&S.time>=S.nextTrubac){ S.nextTrubac=S.time+30+Math.random()*15;
     const tabs=[...new Set(S.orders.filter(o=>o.seat>=0).map(o=>Math.floor(o.seat/4)))]; ev('g','T',tabs.length?tabs[Math.floor(Math.random()*tabs.length)]:Math.floor(Math.random()*3));
     S.boostUntil=S.time+13; ev('o','Трубач свира — бакшиш +50%!'); }
@@ -4916,6 +4929,7 @@ function enc(it){
   if(it.k==='i') return it.t+it.s+(it.n>0?'%'+Math.round(it.n*99):'')+(it.b>0?'^'+Math.round(it.b*10):'')+(it.h>0?'~'+Math.max(1,Math.round(it.h*9)):'')+(it.fw>0?'!'+Math.round(it.fw*10):'')+(it.tu>0?'@'+Math.max(1,Math.round(it.tu*9)):'')+(it.st>1?'#'+it.st:'')+(it.c?'='+it.c.join(''):'');
   if(it.k==='p') return 'P'+it.c.join('')+(it.h>0?'~'+Math.max(1,Math.round(it.h*9)):'');
   if(it.k==='d') return 'D'+it.n;
+  if(it.k==='j') return 'J'+it.t;
   if(it.k==='t') return encV(it,'T');
   return 0;
 }
@@ -4928,6 +4942,7 @@ function dec(c,kind){
   c=String(c);
   if(c[0]==='P'){ const ti=c.indexOf('~'); return {k:'p',c:chunk3(c.slice(1,ti<0?undefined:ti)),h:ti<0?0:+c.slice(ti+1)/9}; }
   if(c[0]==='D') return {k:'d',n:+c.slice(1)||1};
+  if(c[0]==='J') return mkJug(c.slice(1,3));
   const eq=c.indexOf('='), o={k:'i',t:c.slice(0,2),s:c[2],n:0,b:0,h:0,fw:0,tu:0}, rest=c.slice(3,eq<0?undefined:eq);
   if(eq>=0) o.c=chunk3(c.slice(eq+1));
   for(const m of rest.matchAll(/([%^~!@#])(\d+)/g)){ const v=+m[2]; if(m[1]==='%') o.n=v/99; else if(m[1]==='^') o.b=v/10; else if(m[1]==='~') o.h=v/9; else if(m[1]==='@') o.tu=v/9; else if(m[1]==='#') o.st=v; else o.fw=v/10; }
@@ -9472,6 +9487,8 @@ function iRiceDough(c,ch){
   fs(c,rg(c,-10,-12,46,'#ffffff','#e6e0d2'),'#a8a090',2.5);
   c.fillStyle='rgba(255,255,255,.9)'; ell(c,-12,-12,10,4,-.3); c.fill(); c.strokeStyle='rgba(160,150,130,.5)'; c.lineWidth=1.6; c.beginPath(); c.moveTo(-10,6); c.quadraticCurveTo(4,0,16,8); c.stroke();
 }
+function iSyrupPool(c){ c.beginPath(); c.moveTo(-30,4); c.bezierCurveTo(-34,-20,-6,-26,8,-18); c.bezierCurveTo(30,-24,38,0,26,14); c.bezierCurveTo(14,30,-24,28,-30,4); c.closePath();
+  fs(c,rg(c,-8,-10,40,'#a8501a','#5a1e04'),'#3a1404',2.5); c.fillStyle='rgba(255,220,170,.55)'; ell(c,-10,-10,10,3.5,-.3); c.fill(); ell(c,14,6,4,2,.4); c.fill(); }
 function iSyrup(c){
   c.beginPath(); c.moveTo(-18,-20); c.lineTo(-24,30); c.quadraticCurveTo(0,38,24,30); c.lineTo(18,-20); c.closePath(); fs(c,lg(c,-24,0,24,0,'#e8e2d4','#a8a090'),'#6a6458',2.5);
   c.beginPath(); c.moveTo(-21,6); c.lineTo(-23,28); c.quadraticCurveTo(0,35,23,28); c.lineTo(21,6); c.quadraticCurveTo(0,10,-21,6); c.closePath(); fs(c,lg(c,0,6,0,34,'#8a3a10','#4a1404'),'',0);
@@ -9560,8 +9577,8 @@ const STICON_CN={table:iHotpot,pull2:c=>iBeard(c,256)};
     }
     return _dish(c,id); };
   const _plate=drawPlateIcon; drawPlateIcon=function(c,item,L){ if(!(L&&L.plate==='porc')||plateDishOf(L,item.c)) return _plate(c,item,L);
-    porcBase(c); const n=item.c.length; item.c.forEach((k,i)=>{ const p=SLOTS[n][i]; sub(c,p[0],p[1],.5,cc=>drawIngIcon(cc,k)); }); };
-  const _item=itemIcon; itemIcon=function(item,u,L){ if(item&&item.k==='i'&&item.st>1&&(item.t==='mz'||item.t==='zb')) return cachedIcon('beard#'+item.st,cc=>iBeard(cc,item.st),u); return _item(item,u,L); };
+    porcBase(c); const n=item.c.length; item.c.forEach((k,i)=>{ const p=SLOTS[n][i]; sub(c,p[0],p[1],.5,cc=>k==='msR'?iSyrupPool(cc):drawIngIcon(cc,k)); }); };
+  const _item=itemIcon; itemIcon=function(item,u,L){ if(item&&item.k==='j') return cachedIcon('jug:'+item.t,cc=>sub(cc,0,-4,1.12,iSyrup),u); if(item&&item.k==='i'&&item.st>1&&(item.t==='mz'||item.t==='zb')) return cachedIcon('beard#'+item.st,cc=>iBeard(cc,item.st),u); return _item(item,u,L); };
 })();
 /* =================== КУХИЊЕ У КИНИ: зид, сто са бакарним лонцем, ликови на ивици кухиње =================== */
 // зид кухиње у јединицама плочице (100), нацртан једном у позадину, са мастилом и цел сенком
@@ -9635,7 +9652,7 @@ BASE45.hotpot=function(c,t){
   for(let k=0;k<3;k++) sP(c,pS(`M${18+k*10},${-6+k*20} Q${50},${-12+k*20} ${82-k*10},${-6+k*20}`),'rgba(60,25,8,.25)',1.4);
   // број стола
   kP(c,pR(78,30,20,22,3),'#c8202b'); c.fillStyle='#ffe8a0'; c.font='900 17px Rubik, sans-serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillText(String(t.ti+1),88,42); };
-const HP_BOWL=[[24,-18],[76,-18]];
+const HP_BOWL=[[13,14],[87,14]]; // чиније на ивици стола, испред гостију са стране
 DYN45.hotpot=function(c,t){ const h=t.hp, on=h.oid||h.eat>0, hot=on&&h.coal>0, eat=h.eat>0;
   if(on) for(const [bx,by] of HP_BOWL){ c.save(); c.translate(bx,by); spr45(c,'hpbowl',x=>{ kP(x,pCyl(0,0,5,9),'#f2f2f0'); fP(x,pC(0,0,9),'#ffffff'); fP(x,pC(0,0,6.5),'#c8945a'); sP(x,pC(0,0,9),'#2c5aa8',1.4); },-11,-11,22,22); c.restore(); }
   c.save(); c.translate(50,10);
@@ -9648,17 +9665,24 @@ DYN45.hotpot=function(c,t){ const h=t.hp, on=h.oid||h.eat>0, hot=on&&h.coal>0, e
     puff45(c,-6,-62,5,0,'rgba(255,255,255,.75)',2.4); puff45(c,7,-64,4,.5,'rgba(255,255,255,.75)',2.4); if(h.coal<.25) spark45(c,0,-60,1.6,0); }
   else fP(c,pR(-5,-14,10,8,2),'#2a1a10');
   c.restore();
-  if(h.dirty){ fn45(c,'D1',cc=>drawDirtyIcon(cc,1),30,30,34); fn45(c,'D1',cc=>drawDirtyIcon(cc,1),66,30,34); line45(c,40,22,60,40,'#8a5a2a',2.2); line45(c,44,20,62,36,'#8a5a2a',2.2); }
-  if(eat){ const k=Math.sin(G_anim*5); line45(c,30,-24+k*4,46,-4+k*4,'#c8a868',2.2); line45(c,70,-24-k*4,56,-2-k*4,'#c8a868',2.2); } };
+  if(h.dirty){ fn45(c,'D1',cc=>drawDirtyIcon(cc,1),20,24,34); fn45(c,'D1',cc=>drawDirtyIcon(cc,1),80,24,34); line45(c,10,14,30,30,'#8a5a2a',2.2); line45(c,14,12,32,27,'#8a5a2a',2.2); }
+  if(eat){ const k=Math.sin(G_anim*5); line45(c,8,2+k*4,30,10+k*3,'#c8a868',2.2); line45(c,92,2-k*4,70,10-k*3,'#c8a868',2.2); } };
 QUIET45.hotpot=t=>false;
-// гости за столом седе иза лонца, лицем ка кухињи; ентитет за опруге је везан за плочу стола и број наруџбине
+// гости седе са стране стола, на столицама, лицем ка лонцу; ентитет за опруге је везан за плочу стола и број наруџбине
 const HPG=new WeakMap();
 function hotpotGuests(t){ const h=t.hp; let G=HPG.get(t); if(!G||G.gid!==h.gid){ const cts=['hdd','hdb','htu','hst'];
     G={gid:h.gid,e:[0,1].map(k=>({x:0,y:0,fx:0,fy:1,walk:0,look:lookFor(h.gid*5+k*17,cts[Math.floor(hash(h.gid,k+3)*4)])}))}; HPG.set(t,G); } return G; }
+// столица из профила, наслон на спољној страни (за госта лево: наслон лево); кутија 100, седиште око y=0
+function iHpChair(c){ const wood=lg(c,-30,0,30,0,'#8a4a26','#5a2a12');
+  rr(c,-24,-52,9,98,3); fs(c,wood,'#2a1206',2.4); rr(c,17,0,8,46,3); fs(c,wood,'#2a1206',2.4);
+  rr(c,-30,-58,20,9,4); fs(c,'#7a3a1e','#2a1206',2.2); rr(c,-17,-44,8,40,3); fs(c,'#a8643a','#2a1206',1.6);
+  rr(c,-30,-4,60,11,3); fs(c,lg(c,0,-4,0,7,'#b06a3a','#7a3a1e'),'#2a1206',2.4); rr(c,-20,30,40,5,2); fs(c,'#6a3216','#2a1206',1.6); }
 function hotpotEnts(ents){
-  for(const t of V.hotpots||[]){ const h=t.hp; if(!h.gid||!(h.oid||h.eat>0)) continue; const G=hotpotGuests(t), o=(V.orders||[]).find(q=>q.id===h.oid), mad=o&&o.t/o.max<.3, cold=h.oid&&h.coal<=0;
-    G.e.forEach((e,k)=>{ e.x=ox+(t.x+(k?.78:.22))*ts; e.y=oy+(t.y+.08)*ts; e.fx=k?-.25:.25; e.fy=1;
-      ents.push({y:t.y+.08,f:()=>drawChar(ctx,e.x,e.y,ts*.92,e.fx,e.fy,0,e.look,{ent:e,sit:true,pose:h.eat>0?'eat':(mad||cold)?'up':'',angry:mad||cold,shout:cold&&Math.sin(G_anim*3+k)>.6})}); }); } }
+  for(const t of V.hotpots||[]){ const h=t.hp, on=!!h.gid&&!!(h.oid||h.eat>0);
+    for(const k of [0,1]){ const sx=k?1.31:-.31; ents.push({y:t.y+.5,f:()=>drawFnAt(ctx,'hpchair'+k,cc=>{ if(k) cc.scale(-1,1); iHpChair(cc); },ox+(t.x+sx)*ts,oy+(t.y+.42)*ts,ts*.66)}); }
+    if(!on) continue; const G=hotpotGuests(t), o=(V.orders||[]).find(q=>q.id===h.oid), mad=o&&o.t/o.max<.3, cold=h.oid&&h.coal<=0;
+    G.e.forEach((e,k)=>{ e.x=ox+(t.x+(k?1.19:-.19))*ts; e.y=oy+(t.y+.52)*ts; e.fx=k?-.85:.85; e.fy=.5;
+      ents.push({y:t.y+.51,f:()=>drawChar(ctx,e.x,e.y,ts*.92,e.fx,e.fy,0,e.look,{ent:e,sit:true,pose:h.eat>0?'eat':(mad||cold)?'up':'',angry:mad||cold,shout:cold&&Math.sin(G_anim*3+k)>.6})}); }); } }
 function hotpotStatus(t){ const h=t.hp, s=ts, x=ox+t.x*s, y=oy+(t.y-top45(t))*s, cx=x+s/2, bw=s*.78, bx=x+s*.11, by=y-s*.2, bh=Math.max(6,s*.15);
   if(h.oid){ bar(bx,by,bw,bh*.8,h.coal,h.coal<.25?'#e85050':'#f2a93b','flame',.25); if(h.coal<.25) warnIcon(x+s*.92,y+s*.04); }
   else if(h.dirty){ const a=.6+.4*Math.sin(G_anim*6); ctx.globalAlpha=a; drawFnAt(ctx,'D1',cc=>drawDirtyIcon(cc,1),cx,y-s*.05,s*.42); ctx.globalAlpha=1; } }
@@ -9945,7 +9969,7 @@ Object.assign(EN,{
   "Још три доставе пре ручка!":"Three more deliveries before lunch!","Љута паста од боба":"Chili bean paste","Ћумур":"Charcoal",
   "Ћумур иде у бакарни лонац на столу!":"Charcoal goes into the copper pot on the table!","Ћумур!":"Charcoal!","Ааах… божанствено.":"Aaah… divine.",
   "Аутобус ми иде!":"My bus is leaving!","Ај, ај, ај…":"Aiya, aiya…","Ајде, бре, браћо!":"Come on, brothers!",
-  "Ајде, окрени једну патку. Али само једну!":"Go on, turn one duck. But only one!","Бакарни лонац иде за сто, а ћумур у лонац.":"The copper pot goes to the table, and charcoal into the pot.","Бакарни лонац с јагњетином":"Copper hot pot with lamb (shuan yangrou)",
+  "Ајде, окрени једну патку. Али само једну!":"Go on, turn one duck. But only one!","Бакарни лонац иде за сто, а ћумур у лонац.":"The copper pot goes to the table, and charcoal into the pot.","Бокал се не баца — сирупа има довољно!":"The jug isn’t trash — there’s plenty of syrup!","Бакарни лонац с јагњетином":"Copper hot pot with lamb (shuan yangrou)",
   "Бакарни лонац се носи за сто!":"The copper hot pot goes to a table!","Батерија ми је при крају!":"My battery is almost dead!","Бип-бип! Касним!":"Beep-beep! I’m late!",
   "Браћо! Србија у Ченгдуу!":"Brothers! Serbia in Chengdu!","Брзо, имам још дванаест адреса!":"Quick, I have twelve more addresses!","Бубњеви са Куле бубња — ново јело на менију!":"Drums from the Drum Tower — a new dish on the menu!",
   "Бум, бум, бум — за сан-да-пао те учим кунг-фу чај!":"Boom, boom, boom — for san da pao I’ll teach you kung fu tea!","Валтер брани Сарајево!":"Walter defends Sarajevo!","Видиш ли овај град? То је Валтер!":"See this city? That is Walter!",
@@ -9969,7 +9993,7 @@ Object.assign(EN,{
   "Не то — оно што пуца о даску!":"Not that — the one that bangs on the board!","Не то — јагњетину с младим луком!":"Not that — lamb with scallions!","Не то, тражимо „мужа и жену“!":"Not that, we’re looking for “husband and wife”!",
   "Ни хао! Једну шољу чаја и нешто љуто.":"Ni hao! A cup of tea and something spicy.","Ни хао! Нешто топло, мраз је.":"Ni hao! Something warm, it’s freezing.","Ни хао! Пробаћу све!":"Ni hao! I’ll try everything!",
   "Ни хао! Стари Пекинг, стари укус.":"Ni hao! Old Beijing, old flavors.","Ни хао! Шта је данас најљуће?":"Ni hao! What’s the spiciest today?","Ни ја не знам колико их имам!":"Even I don’t know how many I have!",
-  "Ново: вок. Убаци састојке у вок, а кад запламти, протреси га (E) — двапут, иначе загори! Пиринчано тесто баци о даску (E) три пута: бум, бум, бум — то је сан-да-пао. Говедину „муж и жена“ само исеци и сложи на тањир. А неки у парку би радо пробали твоје јело…":"New: the wok. Put the ingredients in the wok, and when it flares up, toss it (E) — twice, or it burns! Throw the rice dough onto the board (E) three times: boom, boom, boom — that’s san da pao. “Husband and wife” beef is just sliced and arranged on a plate. And some people in the park would love to taste your cooking…","Ново: столови у дворишту. Бакарни лонац (јагњетина и сусамов сос) не иде на шалтер, него за сто са бројем са листића. Ложи ћумур у лонац на столу: кад се угаси, гости плаћају упола. Кад поједу, покупи прљаве тањире са стола и опери их. Змајеву браду развлачи на дасци (E) до 8192 нити — преко 16384 пукне! Кад загрме бубњеви са куле, мени се шири. Склањај се куририма с пута!":"New: tables in the courtyard. The copper hot pot (lamb and sesame sauce) doesn’t go to the window but to the table whose number is on the ticket. Feed charcoal into the pot on the table: if it goes out, the guests pay half. When they finish, take the dirty plates from the table and wash them. Pull dragon’s beard on the board (E) to 8192 strands — past 16384 it snaps! When the drums thunder from the tower, the menu grows. Stay out of the couriers’ way!","Ови већ једу!":"These guests are already eating!",
+  "Ново: вок. Убаци састојке у вок, а кад запламти, протреси га (E) — двапут, иначе загори! Пиринчано тесто баци о даску (E) три пута: бум, бум, бум — па га на тањиру прелиј сирупом из бокала, и то је сан-да-пао. Бокал се не троши: носи га до тањира и врати на пулт. Говедину „муж и жена“ само исеци и сложи на тањир. А неки у парку би радо пробали твоје јело…":"New: the wok. Put the ingredients in the wok, and when it flares up, toss it (E) — twice, or it burns! Throw the rice dough onto the board (E) three times: boom, boom, boom — then pour syrup from the jug over it on a plate, and that’s san da pao. The jug never runs out: carry it to the plate and put it back on the counter. “Husband and wife” beef is just sliced and arranged on a plate. And some people in the park would love to taste your cooking…","Ново: столови у дворишту. Бакарни лонац (јагњетина и сусамов сос) не иде на шалтер, него за сто са бројем са листића. Ложи ћумур у лонац на столу: кад се угаси, гости плаћају упола. Кад поједу, покупи прљаве тањире са стола и опери их. Змајеву браду развлачи на дасци (E) до 8192 нити — преко 16384 пукне! Кад загрме бубњеви са куле, мени се шири. Склањај се куририма с пута!":"New: tables in the courtyard. The copper hot pot (lamb and sesame sauce) doesn’t go to the window but to the table whose number is on the ticket. Feed charcoal into the pot on the table: if it goes out, the guests pay half. When they finish, take the dirty plates from the table and wash them. Pull dragon’s beard on the board (E) to 8192 strands — past 16384 it snaps! When the drums thunder from the tower, the menu grows. Stay out of the couriers’ way!","Ови већ једу!":"These guests are already eating!",
   "Опет ти?!":"You again?!","Пази, тротинет!":"Watch out, scooter!","Патке се не журе.":"Ducks are not rushed.",
   "Пекиншку патку ти још не дам… осим за змајеву браду.":"I won’t let you near the Peking duck yet… except for dragon’s beard.","Пиринчано тесто":"Rice dough","Пицу ћу наручити.":"I’ll order pizza.",
   "Пишем водом, па нестане… за један танхулу написаћу нешто лепо.":"I write with water and it fades… for one tanghulu I’ll write something nice.","Плесале смо на тргу, сад смо гладне!":"We danced on the square, now we’re hungry!","Почиње плес на тргу!":"The square dancing is starting!",
