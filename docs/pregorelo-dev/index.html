@@ -438,6 +438,27 @@ const LEVELS=[
     poi:[[9.4,8.5,1,-.2,2],[11.6,8.5,-1,-.2,2],[10.5,9.6,0,-1,2],[2.5,9.45,0,-1,3],[3.6,9.4,.2,-1,3],
       [12.4,7.7,1,0,1],[15.6,7.6,-1,0,1],[13.95,9.45,0,-1,1],[13.6,1.45,0,-1,4],[14.5,1.5,0,-1,4],[15.4,1.45,0,-1,4]],
     map:['%%%%.|..*..|.$$$.*','%%%%..............','..................','..................','....?RDvcjpW......','..................','........@.........','.............&&...','*.+++..|..!..&&.|.','..................']},
+  { name:'Сеоско домаћинство', theme:'selo', tune:'kolo', icon:'seoproja',
+    desc:'Слава у селу! Цела родбина долази на ручак. Јаја, млеко и поврће нису у гајбама — скупљај их по дворишту.',
+    novo:'Ново: двориште и слава. Цела родбина наручи одмах и нико не одлази гладан, а сат иде унапред: што брже послужиш целу трпезу, то више звездица. Кокошке носе јаја, а јаја се котрљају низбрдо — ухвати их (Размак) пре него што упадну у бару! Краву помузи тако што држиш E. Поврће бери у башти кад сазри, па га исецкај (E). Чорба и шненокле се кувају у лонцу, а проја се пече у тепсији у фуруни. Јело стави на тањир и однеси на шалтер. Један кувар нека ради напољу, други у кухињи: састојке додај кроз прозор у зиду.',
+    // слава: сва јела из feast су наручена на почетку и не истичу; сат иде од 0:00, а stars су секунде за ★, ★★ и ★★★
+    feast:['seosalata','corbica','seoproja','snenokle','seosalata','corbica','seoproja','snenokle'],
+    recipes:['seosalata','corbica','seoproja','snenokle'], patience:120, plates:4, trays:2, dirty:false,
+    stars:[600,360,240], crates:{c:'ku',b:'se'}, wide:true, farm:{split:17,coop:[1,1,6,6],slope:[-.3,1.1]},
+    kinds:{'=':'fence','~':'pond','I':'wall','E':'coop','^':'tree','%':'hay'}, farmKinds:{'1':'pa','2':'zs','3':'lu','4':'km','5':'rt','A':'cow'},
+    map:['=====^=====^=====I#WW#cb##',
+         '=EE...=..........I.......X',
+         '=EE...=...AA..%..I.......#',
+         '=.....=..........I..##...#',
+         '=.....=..........#.......P',
+         '=.....=..........I.......#',
+         '==...==..........#..##...O',
+         '.................I.......#',
+         '.....1133..2255..I.......T',
+         '.........@...............#',
+         '~~~..1144..3344..I.......#',
+         '~~~~.............I.......#',
+         '=====^===========IRD######']},
   { name:'Кафана „Златни котлић“', theme:'kafana', tune:'kolo',
     desc:'Мирно вече у кафани. Роштиљ ради, гости траже ћевапе, пљескавицу и шопску.',
     novo:'Узми тањир, сложи састојке на њега и однеси јело на шалтер — црвено-бели пулт горе лево. Што брже послужиш, то већи бакшиш.',
@@ -493,25 +514,6 @@ const LEVELS=[
     band:[{kind:'zmaj',grp:1,path:[[3.3,4.4],[14.1,4.4],[14.55,4.6],[14.6,5.0],[14.55,5.4],[14.1,5.6],[1.9,5.6],[1.45,5.4],[1.4,5.0],[1.45,4.6],[1.9,4.4]],speed:1.2,wp:1},{kind:'zmajr',grp:1,path:[[2.4,4.4]]},{kind:'zmajr',grp:1,path:[[1.5,4.4]]},
       {kind:'caj',path:[[1.5,7.5],[7.5,7.5,2.5],[14.5,7.5,1.2],[7.5,7.5,2.5],[1.5,7.5,1.2]],speed:.85,wp:1}], runner:[1,4,15,6], uniform:true,
     map:['#WW#abcd#efgh#D#','H..............M','H..............M','J...XX....CC...#','#..............Z','L..............Z','#...XX....##...P','#..............#','R......@.......#','##ijklmnopq#####']},
-  { name:'Сеоско домаћинство', theme:'selo', tune:'kolo', icon:'seoproja',
-    desc:'Слава у селу! Цела родбина долази на ручак. Јаја, млеко и поврће нису у гајбама — скупљај их по дворишту.',
-    novo:'Ново: двориште. Кокошке носе јаја, а јаја се котрљају низбрдо — ухвати их (Размак) пре него што упадну у бару! Краву помузи тако што држиш E. Поврће бери у башти кад сазри. Један кувар нека ради напољу, други у кухињи: састојке додај кроз прозор у зиду. Нема гостију за столом, али наруџбине за славску трпезу стижу.',
-    time:240, recipes:['seosalata','corbica','seoproja','snenokle'], interval:22, maxOrders:4, patience:120, plates:4, trays:2, dirty:false,
-    stars:[900,2200,3600], crates:{c:'ku',b:'se'}, wide:true, farm:{split:17,coop:[1,1,6,6],slope:[-.3,1.1]},
-    kinds:{'=':'fence','~':'pond','I':'wall','E':'coop','^':'tree','%':'hay'}, farmKinds:{'1':'pa','2':'zs','3':'lu','4':'km','5':'rt','A':'cow'},
-    map:['=====^=====^=====I#WW#cb##',
-         '=EE...=..........I.......X',
-         '=EE...=...AA..%..I.......#',
-         '=.....=..........I..##...#',
-         '=.....=..........#.......P',
-         '=.....=..........I.......#',
-         '==...==..........#..##...O',
-         '.................I.......#',
-         '.....1133..2255..I.......T',
-         '.........@...............#',
-         '~~~..1144..3344..I.......#',
-         '~~~~.............I.......#',
-         '=====^===========IRD######']}
 ];
 
 const CHARS=[
@@ -528,8 +530,10 @@ const CHARS=[
   {name:'Регрут', full:'Регрут на одслужењу', tag:'#5a6a3a', skin:'#efc19a', shirt:'#6a7a4a', vest:'#56643a', sleeve:'#6a7a4a', trim:'#3a4a2a', apron:'#e8e4d0', hat:'army', hatC:'#56643a', hair:'#3a2a1a', blush:true, bigHelmet:true, b:{hip:.17,belly:.17,chest:.18,sh:.16,th:.3,hw:.13,hh:.145,jaw:.75,nose:.9}},
   {name:'Тајкун', full:'Тајкун са обезбеђењем', tag:'#b8901e', skin:'#efc19a', shirt:'#26262a', vest:'#f4f1e8', sleeve:'#f4f1e8', trim:'#d9a21b', apron:null, hat:'swoop', hatC:'#2b1a10', hair:'#1e1610', swoopHi:'#5a4a3e', stache:'pencil', chain:true, shades:'aviator', cigar:true, scale:.9, noBelt:true, face0:'smug', pants:'#ebe6da', cuff:'#ffffff', lapels:true, b:{hip:.17,belly:.26,chest:.3,sh:.3,th:.36,leg:.11,hw:.115,hh:.13,jaw:1.1,nose:1,armW:1.25}}
 ];
-const CHEF_REQ={4:{li:1,how:'★★★ у кафани'},5:{li:2,how:'★★★ у пекари'},6:{li:3,how:'★★★ на свадби'},7:{li:4,how:'★★★ на зимници'},8:{li:5,how:'★★★ на Ади'},9:{li:6,how:'★★★ на дочеку'},10:{li:7,how:'★★★ у касарни'},11:{li:8,how:'★★★ у „Змају“'}};
-const CHEF_FOR_LEVEL={1:4,2:5,3:6,4:7,5:8,6:9,7:10,8:11};
+/* кувара откључавају три звездице на нивоу са датом темом; индекс нивоа се рачуна, јер нивои мењају место у LEVELS */
+const CHEF_REQ=Object.fromEntries([[4,'kafana','★★★ у кафани'],[5,'pekara','★★★ у пекари'],[6,'salas','★★★ на свадби'],[7,'zimnica','★★★ на зимници'],[8,'ada','★★★ на Ади'],[9,'docek','★★★ на дочеку'],[10,'kasarna','★★★ у касарни'],[11,'fusion','★★★ у „Змају“']]
+  .map(([ch,th,how])=>[ch,{li:LEVELS.findIndex(L=>L.theme===th),how}]));
+const CHEF_FOR_LEVEL=Object.fromEntries(Object.entries(CHEF_REQ).map(([ch,q])=>[q.li,+ch]));
 const SQUAD={tag:'#56643a',skin:'#efc19a',shirt:'#6a7a4a',vest:'#56643a',sleeve:'#6a7a4a',trim:'#3a4a2a',apron:null,hat:'army',hatC:'#56643a',hair:'#3a2a1a'};
 const BAND={tag:'#b3122e', skin:'#efc19a', shirt:'#f5f0e6', vest:'#a3121c', trim:'#e0b23a', hat:'sajkaca', hatC:'#24211f', hair:'#1f1a17', stache:true, band:true};
 
@@ -537,12 +541,28 @@ const BAND={tag:'#b3122e', skin:'#efc19a', shirt:'#f5f0e6', vest:'#a3121c', trim
 const SAVE_KEY='kuvaj-bre-v2';
 let save={stars:[0,0,0,0,0,0], best:[0,0,0,0,0,0], sound:true, music:true, mode:'solo', name:''};
 try{ const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); if(s&&Array.isArray(s.stars)) save=Object.assign(save,s); }catch(e){}
-while(save.stars.length<LEVELS.length-1) save.stars.push(0); while(save.best.length<LEVELS.length-1) save.best.push(0);
-/* обука (ниво 0) чува звездице у својим пољима: save.stars[i] остаје ниво i+1, као у docs/pregorelo, који дели исти localStorage */
-const starsOf=li=>li===0?(save.tutStars|0):(save.stars[li-1]|0), bestOf=li=>li===0?(save.tutBest|0):(save.best[li-1]|0);
-function setStars(li,v){ if(li===0) save.tutStars=v; else save.stars[li-1]=v; }
-function setBest(li,v){ if(li===0) save.tutBest=v; else save.best[li-1]=v; }
-const progSig=()=>save.stars.join('')+'/'+save.best.join(',')+'/'+(save.tutStars|0)+'/'+(save.tutBest|0)+'/'+(save.tutDone?1:0);
+/* save.stars[k] и save.best[k] припадају нивоу са темом SAVE_SLOT[k], редом као у docs/pregorelo, који дели исти localStorage:
+   ниво може да промени место у LEVELS, а звездице остају његове. Обука (ниво 0) чува звездице у својим пољима. */
+const SAVE_SLOT=['kafana','pekara','salas','zimnica','ada','docek','kasarna','fusion','selo'];
+for(const L of LEVELS) if(!L.tutorial&&!SAVE_SLOT.includes(L.theme)) throw new Error('SAVE_SLOT нема тему '+L.theme);
+while(save.stars.length<SAVE_SLOT.length) save.stars.push(0); while(save.best.length<SAVE_SLOT.length) save.best.push(0);
+if(!save.bestT||typeof save.bestT!=='object') save.bestT={};
+const slotOf=li=>SAVE_SLOT.indexOf(LEVELS[li].theme);
+const starsOf=li=>li===0?(save.tutStars|0):(save.stars[slotOf(li)]|0), bestOf=li=>li===0?(save.tutBest|0):(save.best[slotOf(li)]|0);
+function setStars(li,v){ if(li===0) save.tutStars=v; else save.stars[slotOf(li)]=v; }
+function setBest(li,v){ if(li===0) save.tutBest=v; else save.best[slotOf(li)]=v; }
+/* слава се мери временом (мање је боље): рекорд у секундама иде у засебно поље, по теми */
+const bestTOf=li=>save.bestT[LEVELS[li].theme]|0;
+function setBestT(li,v){ save.bestT[LEVELS[li].theme]=v; }
+const progSig=()=>save.stars.join('')+'/'+save.best.join(',')+'/'+JSON.stringify(save.bestT)+'/'+(save.tutStars|0)+'/'+(save.tutBest|0)+'/'+(save.tutDone?1:0);
+/* обука и слава немају сат који истиче: трају док се не послужи све из распореда (L.script, L.feast) */
+const goalN=L=>L.tutorial?L.script.length:L.feast?L.feast.length:0, timed=L=>!goalN(L);
+const fmtT=x=>{ x=Math.max(0,Math.floor(x)); return Math.floor(x/60)+':'+String(x%60).padStart(2,'0'); };
+/* прагови звездица за n кувара: динари расту са бројем кувара, а време славе се скраћује истом мером */
+const starThr=(L,n)=>{ const k=1+.35*(n-1); return L.feast?L.stars.map(v=>Math.round(v/k/5)*5):L.stars.map(v=>Math.round(v*k/50)*50); };
+const starsFor=(L,thr,sc,tm)=>L.feast?thr.filter(v=>tm<=v).length:thr.filter(v=>sc>=v).length;
+/* највише наруџбина одједном: од тога зависи и ширина листића */
+const ticketN=(L,n)=>L.feast?L.feast.length:Math.min(7,L.maxOrders+(n-1));
 /* ======================= ЈЕЗИК ======================= */
 /* Изворни текст је српски; tr() га преводи на језик играча при приказу: енглески из EN, остали из XL (што XL нема, остаје на енглеском).
    Домаћин шаље поруке на српском, па сваки играч види свој језик. */
@@ -776,7 +796,7 @@ const EN={
   'Назад у чекаоницу':'Back to the lobby','Главни мени':'Main menu','Домаћин је паузирао игру.':'The host paused the game.',
   'Газда није задовољан. Пробај поново!':'The boss isn’t happy. Try again!','Није лоше, али може брже.':'Not bad, but you can be faster.',
   'Браво! Гости су сити и задовољни.':'Bravo! The guests are full and happy.','Свака част! Права кафанска легенда.':'Hats off! A true kafana legend.',
-  'Смена је готова!':'Shift’s over!','Сви гости су добили сладолед. Спреман си за кафану!':'Every guest got their ice cream. You’re ready for the kafana!','Испоручено јела':'Dishes served','Гостију отишло гладно':'Guests who left hungry','Бакшиш':'Tips','Нови рекорд!':'New record!',
+  'Смена је готова!':'Shift’s over!','Сви гости су добили сладолед. Спреман си за праву кухињу!':'Every guest got their ice cream. You’re ready for a real kitchen!','Испоручено јела':'Dishes served','Гостију отишло гладно':'Guests who left hungry','Бакшиш':'Tips','Нови рекорд!':'New record!',
   'Кувар за следећу смену':'Cook for the next shift','Мени':'Menu','Поново':'Again','Следећи ниво':'Next level','Домаћин бира шта даље…':'The host is deciding what’s next…',
   'Обавештење':'Notice','У реду':'OK','Улазак у игру':'Joining the game','Тражим домаћина…':'Looking for the host…',
   'Тражим домаћина… Ово може да потраје неколико секунди.':'Looking for the host… This may take a few seconds.','Одустани':'Cancel',
@@ -906,7 +926,7 @@ for(const id of ICE_KEYS){ const R=RECIPES[id]; EN[R.n]='Ice cream: '+R.parts.ma
 /* поруке са бројем или именом у себи */
 const EN_RE=[
   [/^(\+?)([\d.,]+) дин\.$/,(m,p,n)=>p+n+' din.'],
-  [/^Рекорд: ([\d.,]+) дин\.$/,(m,n)=>'Best: '+n+' din.'],
+  [/^Рекорд: ([\d.,]+) дин\.$/,(m,n)=>'Best: '+n+' din.'],[/^Рекорд: (\d+:\d\d)$/,(m,t)=>'Best: '+t],[/^до (\d+:\d\d)$/,(m,t)=>'under '+t],
   [/^Број (\d+)$/,(m,n)=>'No. '+n],[/^Скривен ниво (\d+)$/,(m,n)=>'Hidden level '+n],[/^Освоји ★ на нивоу (\d+)$/,(m,n)=>'Earn ★ on level '+n],
   [/^Тајна (\d)\/3: (.+)$/,(m,n,t)=>'Secret '+n+'/3: '+tr(t)],[/^(\d) од 3$/,(m,n)=>n+' of 3'],
   [/^Бакшиш \+(.+) € ×2$/,(m,n)=>'Tip +'+n+' € ×2'],
@@ -1165,7 +1185,7 @@ XL.es={
   'Назад у чекаоницу':'Volver a la sala de espera','Главни мени':'Menú principal','Домаћин је паузирао игру.':'El anfitrión pausó la partida.',
   'Газда није задовољан. Пробај поново!':'El jefe no está contento. ¡Inténtalo de nuevo!','Није лоше, али може брже.':'No está mal, pero puedes ir más rápido.',
   'Браво! Гости су сити и задовољни.':'¡Bravo! Los clientes quedaron llenos y contentos.','Свака част! Права кафанска легенда.':'¡Te luciste! Toda una leyenda de la kafana.',
-  'Смена је готова!':'¡Se acabó el turno!','Сви гости су добили сладолед. Спреман си за кафану!':'Todos los clientes recibieron su helado. ¡Estás listo para la kafana!','Испоручено јела':'Platos servidos','Гостију отишло гладно':'Clientes que se fueron con hambre','Бакшиш':'Propinas','Нови рекорд!':'¡Nuevo récord!',
+  'Смена је готова!':'¡Se acabó el turno!','Сви гости су добили сладолед. Спреман си за праву кухињу!':'Todos los clientes recibieron su helado. ¡Estás listo para una cocina de verdad!','Испоручено јела':'Platos servidos','Гостију отишло гладно':'Clientes que se fueron con hambre','Бакшиш':'Propinas','Нови рекорд!':'¡Nuevo récord!',
   'Кувар за следећу смену':'Cocinero para el próximo turno','Мени':'Menú','Поново':'Otra vez','Следећи ниво':'Siguiente nivel','Домаћин бира шта даље…':'El anfitrión está decidiendo qué sigue…',
   'Обавештење':'Aviso','У реду':'Aceptar','Улазак у игру':'Entrando a la partida','Тражим домаћина…':'Buscando al anfitrión…',
   'Тражим домаћина… Ово може да потраје неколико секунди.':'Buscando al anfitrión… Esto puede tardar unos segundos.','Одустани':'Cancelar',
@@ -1521,7 +1541,7 @@ XL.zh={
   'Назад у чекаоницу':'返回大厅','Главни мени':'主菜单','Домаћин је паузирао игру.':'房主暂停了游戏。',
   'Газда није задовољан. Пробај поново!':'老板不满意。再试一次！','Није лоше, али може брже.':'还不错，但还可以更快。',
   'Браво! Гости су сити и задовољни.':'太棒了！客人们吃得又饱又满意。','Свака част! Права кафанска легенда.':'了不起！真正的小酒馆传奇。',
-  'Смена је готова!':'收工啦！','Сви гости су добили сладолед. Спреман си за кафану!':'每位客人都吃到了冰淇淋。你可以去小酒馆上岗了！','Испоручено јела':'已上菜品','Гостију отишло гладно':'饿着肚子离开的客人','Бакшиш':'小费','Нови рекорд!':'新纪录！',
+  'Смена је готова!':'收工啦！','Сви гости су добили сладолед. Спреман си за праву кухињу!':'每位客人都吃到了冰淇淋。你可以进真正的厨房了！','Испоручено јела':'已上菜品','Гостију отишло гладно':'饿着肚子离开的客人','Бакшиш':'小费','Нови рекорд!':'新纪录！',
   'Кувар за следећу смену':'下一班的厨师','Мени':'菜单','Поново':'再来一次','Следећи ниво':'下一关','Домаћин бира шта даље…':'房主正在决定下一步……',
   'Обавештење':'通知','У реду':'确定','Улазак у игру':'正在加入游戏','Тражим домаћина…':'正在寻找房主……',
   'Тражим домаћина… Ово може да потраје неколико секунди.':'正在寻找房主……可能需要几秒钟。','Одустани':'取消',
@@ -1877,7 +1897,7 @@ XL.hi={
   'Назад у чекаоницу':'लॉबी में वापस','Главни мени':'मेन मेनू','Домаћин је паузирао игру.':'होस्ट ने गेम पॉज़ किया।',
   'Газда није задовољан. Пробај поново!':'मालिक ख़ुश नहीं है। फिर से कोशिश करो!','Није лоше, али може брже.':'बुरा नहीं, पर और तेज़ हो सकते हो।',
   'Браво! Гости су сити и задовољни.':'शाबाश! मेहमानों का पेट भर गया, सब ख़ुश हैं।','Свака част! Права кафанска легенда.':'क्या बात है! असली kafana लीजेंड।',
-  'Смена је готова!':'शिफ़्ट ख़त्म!','Сви гости су добили сладолед. Спреман си за кафану!':'हर मेहमान को आइसक्रीम मिल गई। अब तुम kafana के लिए तैयार हो!','Испоручено јела':'परोसी गई डिश','Гостију отишло гладно':'भूखे लौटे मेहमान','Бакшиш':'टिप','Нови рекорд!':'नया रिकॉर्ड!',
+  'Смена је готова!':'शिफ़्ट ख़त्म!','Сви гости су добили сладолед. Спреман си за праву кухињу!':'हर मेहमान को आइसक्रीम मिल गई। अब तुम असली रसोई के लिए तैयार हो!','Испоручено јела':'परोसी गई डिश','Гостију отишло гладно':'भूखे लौटे मेहमान','Бакшиш':'टिप','Нови рекорд!':'नया रिकॉर्ड!',
   'Кувар за следећу смену':'अगली शिफ़्ट का शेफ़','Мени':'मेनू','Поново':'फिर से','Следећи ниво':'अगला लेवल','Домаћин бира шта даље…':'होस्ट तय कर रहा है कि आगे क्या…',
   'Обавештење':'सूचना','У реду':'ठीक है','Улазак у игру':'गेम से जुड़ना','Тражим домаћина…':'होस्ट को ढूँढ रहे हैं…',
   'Тражим домаћина… Ово може да потраје неколико секунди.':'होस्ट को ढूँढ रहे हैं… इसमें कुछ सेकंड लग सकते हैं।','Одустани':'रद्द करो',
@@ -2233,7 +2253,7 @@ XL.pt={
   'Назад у чекаоницу':'Voltar à sala de espera','Главни мени':'Menu principal','Домаћин је паузирао игру.':'O anfitrião pausou o jogo.',
   'Газда није задовољан. Пробај поново!':'O patrão não ficou satisfeito. Tente de novo!','Није лоше, али може брже.':'Nada mal, mas dá para ser mais rápido.',
   'Браво! Гости су сити и задовољни.':'Parabéns! Os clientes estão satisfeitos e de barriga cheia.','Свака част! Права кафанска легенда.':'Tiro o chapéu! Uma verdadeira lenda da kafana.',
-  'Смена је готова!':'Fim do turno!','Сви гости су добили сладолед. Спреман си за кафану!':'Todos os clientes ganharam sorvete. Você está pronto para a kafana!','Испоручено јела':'Pratos servidos','Гостију отишло гладно':'Clientes que saíram com fome','Бакшиш':'Gorjetas','Нови рекорд!':'Novo recorde!',
+  'Смена је готова!':'Fim do turno!','Сви гости су добили сладолед. Спреман си за праву кухињу!':'Todos os clientes ganharam sorvete. Você está pronto para uma cozinha de verdade!','Испоручено јела':'Pratos servidos','Гостију отишло гладно':'Clientes que saíram com fome','Бакшиш':'Gorjetas','Нови рекорд!':'Novo recorde!',
   'Кувар за следећу смену':'Cozinheiro do próximo turno','Мени':'Menu','Поново':'De novo','Следећи ниво':'Próxima fase','Домаћин бира шта даље…':'O anfitrião está decidindo o que vem agora…',
   'Обавештење':'Aviso','У реду':'OK','Улазак у игру':'Entrando na partida','Тражим домаћина…':'Procurando o anfitrião…',
   'Тражим домаћина… Ово може да потраје неколико секунди.':'Procurando o anfitrião… Isso pode levar alguns segundos.','Одустани':'Cancelar',
@@ -2589,7 +2609,7 @@ XL.ja={
   'Назад у чекаоницу':'ロビーに戻る','Главни мени':'メインメニュー','Домаћин је паузирао игру.':'ホストがゲームを一時停止しました。',
   'Газда није задовољан. Пробај поново!':'店主はご不満です。もう一度挑戦しよう！','Није лоше, али може брже.':'悪くないけど、もっと速くできるはず。',
   'Браво! Гости су сити и задовољни.':'ブラボー！お客さんはお腹いっぱいで大満足。','Свака част! Права кафанска легенда.':'お見事！真のkafanaレジェンドです。',
-  'Смена је готова!':'シフト終了！','Сви гости су добили сладолед. Спреман си за кафану!':'お客さん全員にアイスが行き渡りました。これでkafanaへの準備は万端です！','Испоручено јела':'提供した料理','Гостију отишло гладно':'空腹で帰ったお客さん','Бакшиш':'チップ','Нови рекорд!':'新記録！',
+  'Смена је готова!':'シフト終了！','Сви гости су добили сладолед. Спреман си за праву кухињу!':'お客さん全員にアイスが行き渡りました。これで本物の厨房に立つ準備は万端です！','Испоручено јела':'提供した料理','Гостију отишло гладно':'空腹で帰ったお客さん','Бакшиш':'チップ','Нови рекорд!':'新記録！',
   'Кувар за следећу смену':'次のシフトのコック','Мени':'メニュー','Поново':'もう一度','Следећи ниво':'次のステージ','Домаћин бира шта даље…':'ホストが次を決めています…',
   'Обавештење':'お知らせ','У реду':'OK','Улазак у игру':'ゲームに参加','Тражим домаћина…':'ホストを探しています…',
   'Тражим домаћина… Ово може да потраје неколико секунди.':'ホストを探しています… 数秒かかる場合があります。','Одустани':'キャンセル',
@@ -2945,7 +2965,7 @@ XL.fr={
   'Назад у чекаоницу':'Retour à la salle d’attente','Главни мени':'Menu principal','Домаћин је паузирао игру.':'L’hôte a mis la partie en pause.',
   'Газда није задовољан. Пробај поново!':'Le patron n’est pas content. Réessaie\u202f!','Није лоше, али може брже.':'Pas mal, mais tu peux aller plus vite.',
   'Браво! Гости су сити и задовољни.':'Bravo\u202f! Les clients sont repus et contents.','Свака част! Права кафанска легенда.':'Chapeau\u202f! Une vraie légende de la kafana.',
-  'Смена је готова!':'Fin du service\u202f!','Сви гости су добили сладолед. Спреман си за кафану!':'Tous les clients ont eu leur glace. Tu es prêt pour la kafana\u202f!','Испоручено јела':'Plats servis','Гостију отишло гладно':'Clients partis le ventre vide','Бакшиш':'Pourboires','Нови рекорд!':'Nouveau record\u202f!',
+  'Смена је готова!':'Fin du service\u202f!','Сви гости су добили сладолед. Спреман си за праву кухињу!':'Tous les clients ont eu leur glace. Tu es prêt pour une vraie cuisine\u202f!','Испоручено јела':'Plats servis','Гостију отишло гладно':'Clients partis le ventre vide','Бакшиш':'Pourboires','Нови рекорд!':'Nouveau record\u202f!',
   'Кувар за следећу смену':'Cuisinier pour le prochain service','Мени':'Menu','Поново':'Rejouer','Следећи ниво':'Niveau suivant','Домаћин бира шта даље…':'L’hôte décide de la suite…',
   'Обавештење':'Information','У реду':'OK','Улазак у игру':'Connexion à la partie','Тражим домаћина…':'Recherche de l’hôte…',
   'Тражим домаћина… Ово може да потраје неколико секунди.':'Recherche de l’hôte… Cela peut prendre quelques secondes.','Одустани':'Annuler',
@@ -3136,7 +3156,7 @@ function applyLang(){
 function setLang(l){ LANG=langOk(l)?l:'sr'; save.lang=LANG; persist(); applyLang(); }
 const QTHEMES=new Set(['pekara','zimnica','ada','docek']), isQ=th=>QTHEMES.has(th);
 const chefOpen=i=>i>=0&&i<CHARS.length&&(!CHEF_REQ[i]||DEBUGGING||!!save.allOpen||starsOf(CHEF_REQ[i].li)>=3);
-const levelOpen=i=>UNLOCK_ALL||DEBUGGING||!!save.allOpen||i<=1||starsOf(i-1)>=1; // обука и кафана су увек отворене
+const levelOpen=i=>UNLOCK_ALL||DEBUGGING||!!save.allOpen||i<=1||starsOf(i-1)>=1||starsOf(i)>=1; // обука и први ниво су увек отворени; освојен ниво остаје отворен и кад промени место
 const myPrefCh=()=>{ const i=save.ch|0; return chefOpen(i)?i:0; };
 function persist(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }catch(e){} }
 
@@ -3925,8 +3945,8 @@ function newSim(li,slots){
   const s={li,L,n,players:[],npcs:[],orders:[],score:0,delivered:0,missed:0,tips:0,time:0,timeLeft:L.time||0,nextOrderAt:L.firstGap||3.5,seq:0,pending:[],events:[],
     countdown:2.4,goT:0,endT:0,warned30:false,rs:++Game.rs,
     ticketNo:16,reinforce:[],boostUntil:0,standoffs:{},lastServed:{},nextTrubac:16+Math.random()*10,nextBand:22+Math.random()*10,nextShot:7+Math.random()*6,
-    interval:L.interval/(1+.4*(n-1)), maxOrders:Math.min(7,L.maxOrders+(n-1)), patience:L.patience,
-    stars:L.stars.map(v=>Math.round(v*(1+.35*(n-1))/50)*50)};
+    interval:L.interval/(1+.4*(n-1)), maxOrders:ticketN(L,n), patience:L.patience,
+    stars:starThr(L,n)};
   buildGrid(s,L);
   const sp=spawnPoints(s,4);
   slots.forEach(sl=>{ const p=sp[sl.slot]||sp[0]; s.players.push({slot:sl.slot,ch:sl.ch,x:p.x,y:p.y,dx:p.x,dy:p.y,fx:0,fy:-1,hold:null,work:null,walk:0,dashT:0,dashCd:0,target:null,moving:false,peer:sl.peer,lastMsg:'',lastMsgT:0}); });
@@ -4272,23 +4292,23 @@ function pickSeat(ct){ const n=SEATS[S.L.theme]||0; if(!n||ct==='voj') return -1
   for(let i=0;i<n;i++) if(!used.has(i)) free.push(i);
   if(ct==='bec'&&S.L.theme==='kafana'){ const side=free.filter(i=>i%4<2); if(side.length) return side[Math.floor(Math.random()*side.length)]; }
   return free.length?free[Math.floor(Math.random()*free.length)]:Math.floor(Math.random()*n); }
-function spawnOrder(forceCt){
-  const L=S.L; let r, tries=0; if(L.tutorial&&S.seq>=L.script.length) return;
+function spawnOrder(forceCt,quiet){
+  const L=S.L; let r, tries=0; if(goalN(L)&&S.seq>=goalN(L)) return;
   const pool=L.waves?L.waves.filter(w=>S.time>=w[0]).flatMap(w=>w[1]):L.recipes; // мени се шири током вечери
   const draw=()=>{ if(!L.rw) return pool[Math.floor(Math.random()*pool.length)]; let x=Math.random()*pool.reduce((a,k)=>a+(L.rw[k]||1),0); for(const k of pool){ x-=L.rw[k]||1; if(x<0) return k; } return pool[0]; };
-  do{ r=L.script?iceDraw(L):draw(); tries++; } while(tries<6&&S.orders.filter(o=>o.r===r).length>=((L.dup&&L.dup[r])||2));
+  if(L.feast) r=L.feast[S.seq]; else do{ r=L.script?iceDraw(L):draw(); tries++; } while(tries<6&&S.orders.filter(o=>o.r===r).length>=((L.dup&&L.dup[r])||2));
   const ct=forceCt||pickCt(r); if(ct==='pro'&&L.recipes.includes('burek')) r='burek';
   let max=S.patience+(RECIPES[r].cook?15:0)+(RECIPES[r].pat||0); if(ct==='bec') max=Math.round(max*.6); if(ct==='dete'||ct==='dsp') max=Math.round(max*.72); if(ct==='rol') max=Math.round(max*.82);
   if(ct==='ofi'||ct==='tek') max=Math.round(max*.85); if(ct==='taj') max=Math.round(max*.6); const seat=pickSeat(ct);
   const tb=isQ(L.theme)||L.street||L.farm||ct==='voj'?(++S.ticketNo):L.theme==='kafana'||L.theme==='fusion'?Math.floor(seat/4)+1:(seat<4?1:2);
-  S.orders.push({id:++S.seq,r,t:max,max,tb,ct,seat}); ev('s','order',-1);
+  S.orders.push({id:++S.seq,r,t:max,max,tb,ct,seat}); if(!quiet) ev('s','order',-1);
   if(L.street) streetAssign(S.orders[S.orders.length-1]);
 }
 /* сладолед: прве наруџбине иду по распореду кугли (L.script), после насумично; понекад две исте кугле */
 function iceDraw(L){ const u=Math.random(), n=L.script[S.seq]||(u<.25?1:u<.65?2:3), f=FLAVORS.slice().sort(()=>Math.random()-.5).slice(0,n);
   if(n>1&&Math.random()<.2) f[n-1]=f[0]; f.sort((a,b)=>FLAVORS.indexOf(a)-FLAVORS.indexOf(b)); return 'ice'+f.map(k=>k[1]).join(''); }
 function updateOrders(dt){
-  if(!S.L.tutorial) for(const o of S.orders) o.t=S.L.noExpire?Math.max(0,o.t-dt):o.t-dt;
+  if(timed(S.L)) for(const o of S.orders) o.t=S.L.noExpire?Math.max(0,o.t-dt):o.t-dt;
   for(let i=S.orders.length-1;i>=0;i--){
     if(S.orders[i].t<=0&&!S.L.noExpire){ const o=S.orders[i]; S.orders.splice(i,1); S.missed++; S.score=Math.max(0,S.score-PENALTY);
       evF('Гост је отишао! −'+PENALTY,'#ff7a6b',S.windowTile,-1,0); ev('s','fail',-1); ev('k'); ev('g','x',o.id);
@@ -4303,6 +4323,7 @@ function updateOrders(dt){
     const P=S.orders.find(o=>o.ct==='pro'&&o.max-o.t>2.5), Q=S.orders.find(o=>o.ct==='pol'&&o.max-o.t>2.5);
     if(P&&Q&&!S.standoffs[P.id+'-'+Q.id]){ S.standoffs[P.id+'-'+Q.id]=1; ev('g','W',P.id,Q.id); }
   }
+  if(S.L.feast) return; // слава: сва јела су наручена на почетку
   if(!S.orders.length&&S.nextOrderAt-S.time>2) S.nextOrderAt=S.time+1.2;
   if(S.time>=S.nextOrderAt){
     const storm=S.time<(S.stormUntil||0);
@@ -4449,7 +4470,7 @@ function updateNpcs(dt){
       if(d<min){ const k=Math.min(.05,(min-d)/2), ux=d>1e-3?dx/d:1, uy=d>1e-3?dy/d:0; if(npcFree(n.x+ux*k,n.y+uy*k)){ n.x+=ux*k; n.y+=uy*k; } } } }
 }
 function simStep(dt){
-  S.time+=dt; if(!S.L.tutorial) S.timeLeft-=dt; S.goT=Math.max(0,S.goT-dt);
+  S.time+=dt; if(timed(S.L)) S.timeLeft-=dt; S.goT=Math.max(0,S.goT-dt);
   for(const p of S.players) if(p.stun>0) p.stun=Math.max(0,p.stun-dt);
   for(const p of S.players) updateWork(p,dt);
   updateNpcs(dt); if(S.L.street) streetStep(dt); if(S.L.farm) farmStep(dt); guardStep(dt); updateStations(dt); heatStep(dt); levelEvents(dt); updateOrders(dt); updatePending(dt);
@@ -4460,10 +4481,10 @@ function simStep(dt){
     if(S.time>=S.nextBand){ S.nextBand=S.time+40+Math.random()*15; ev('g','B'); S.boostUntil=S.time+16; ev('o','Трубачи свирају — бакшиш +50%!'); }
     if(S.time>=S.nextShot){ S.nextShot=S.time+9+Math.random()*9; const r=Math.random(); ev('g','S',r<.25?2:r<.62?0:1); }
   }
-  if(!S.L.tutorial&&S.timeLeft<=30&&!S.warned30){ S.warned30=true; ev('o','Још 30 секунди!'); }
+  if(timed(S.L)&&S.timeLeft<=30&&!S.warned30){ S.warned30=true; ev('o','Још 30 секунди!'); }
   if(S.timeLeft<=0&&S.equity>0&&!S.exitDone){ S.exitDone=true; if(Math.random()<.5){ const g=Math.round(S.equity*3/10)*10; S.score+=g; ev('o','EXIT! Стартап је продат: +'+fmt(g)+' дин.'); ev('s','ding',-1); } else ev('o','Стартап је банкротирао. Акције не вреде ништа.'); }
-  // обука нема сат: траје док сви гости из распореда не добију сладолед
-  if(S.L.tutorial?S.delivered>=S.L.script.length:S.timeLeft<=0){ S.timeLeft=0; Game.phase='ending'; S.endT=1.6; ev('s','whistle',-1); for(const p of S.players) p.work=null; }
+  // обука и слава немају сат: трају док сви гости из распореда не буду послужени
+  if(goalN(S.L)?S.delivered>=goalN(S.L):S.timeLeft<=0){ S.timeLeft=0; Game.phase='ending'; S.endT=1.6; ev('s','whistle',-1); for(const p of S.players) p.work=null; }
 }
 
 /* ======================= МРЕЖА =======================
@@ -4820,7 +4841,7 @@ function dec(c,kind){
 function buildSnap(){
   const s={f:++Game.snapSeq,ph:Game.phase,lv:Game.li};
   if(S&&['countdown','play','pause','ending','end'].includes(Game.phase)){
-    s.rs=S.rs; s.tl=Math.round(S.timeLeft*10); s.sc=S.score; s.dl=S.delivered; if(S.st&&S.st.eggs) s.eg=EGG_KEYS.map(k=>{ const e=S.st.eggs[k]; return e?[e.slot,e.ch,e.c.join(',')]:0; }); s.cd=Math.round(S.countdown*10); s.go=Math.round(S.goT*10);
+    s.rs=S.rs; s.tl=Math.round(S.timeLeft*10); if(S.L.feast) s.el=Math.round(S.time*10); s.sc=S.score; s.dl=S.delivered; if(S.st&&S.st.eggs) s.eg=EGG_KEYS.map(k=>{ const e=S.st.eggs[k]; return e?[e.slot,e.ch,e.c.join(',')]:0; }); s.cd=Math.round(S.countdown*10); s.go=Math.round(S.goT*10);
     s.pl=S.players.map(p=>[p.slot,p.ch,Math.round(p.x*100),Math.round(p.y*100),Math.round(p.fx*100),Math.round(p.fy*100),enc(p.hold),wkCode(p.work),p.target?p.target.x:-1,p.target?p.target.y:-1,Math.round((p.stun||0)*10)]);
     s.np=S.npcs.map(n=>{ const a=[Math.round(n.x*100),Math.round(n.y*100),Math.round(n.fx*10),Math.round(n.fy*10),n.gone?1:n.pause>0||n.started?2:0];
       if(n.kind==='ped'||n.kind==='cust') a.push(n.kind==='cust'?2:1,n.id,Math.max(0,CTS.indexOf(n.ct)),n.state,n.carry?RKEYS.indexOf(n.carry):-1,n.act|0,n.oid|0); return a; });
@@ -4919,7 +4940,7 @@ function onSnap(s){
   if(prevPh!==s.ph) uiDirty();
   if(s.rs===undefined){ if(s.ph==='lobby'||s.ph==='intro'){ if(!V||V.li!==Game.li||V.rs!==-1) V=viewForLevel(Game.li); } return; }
   if(!V||V.rs!==s.rs||V.li!==Game.li){ V=viewForLevel(Game.li); V.rs=s.rs; V.pmap={}; me=null; FX.hx.clear(); }
-  V.timeLeft=s.tl/10; V.score=s.sc; V.delivered=s.dl|0; V.eggs=s.eg?Object.fromEntries(EGG_KEYS.map((k,i)=>[k,s.eg[i]?{slot:s.eg[i][0],ch:s.eg[i][1],c:s.eg[i][2].split(',')}:null])):null; V.countdown=s.cd/10; V.goT=s.go/10;
+  V.timeLeft=s.tl/10; if(s.el!==undefined) V.time=s.el/10; V.score=s.sc; V.delivered=s.dl|0; V.eggs=s.eg?Object.fromEntries(EGG_KEYS.map((k,i)=>[k,s.eg[i]?{slot:s.eg[i][0],ch:s.eg[i][1],c:s.eg[i][2].split(',')}:null])):null; V.countdown=s.cd/10; V.goT=s.go/10;
   const seen=new Set();
   for(const a of s.pl||[]){
     const slot=a[0]; seen.add(slot); let p=V.pmap[slot];
@@ -5079,7 +5100,7 @@ function musicSync(){
   const want=Game.phase==='play'&&save.music&&!!Snd.ctx;
   if(want&&!Mus.on) musicStart(LEVELS[Game.li].tune); else if(!want&&Mus.on) musicStop();
   if(Mus.on){ const tw=TUNES[STR.fiddle>0&&V&&V.L.street?'kolo':LEVELS[Game.li].tune]||TUNES.kolo; if(Mus.tune!==tw){ Mus.tune=tw; Mus.step=0; } } // виолинисткиња свира коло за корнет
-  Mus.rate=((V&&!V.L.tutorial&&V.timeLeft<=30)?1.17:1)*(SCN.boostT>0?1.07:1);
+  Mus.rate=((V&&timed(V.L)&&V.timeLeft<=30)?1.17:1)*(SCN.boostT>0?1.07:1);
 }
 
 /* ======================= ЕФЕКТИ ======================= */
@@ -5371,7 +5392,7 @@ function hostUpdate(dt){
   if(Game.phase==='countdown'){
     const b=S.countdown; S.countdown-=dt;
     if(Math.ceil(b)!==Math.ceil(S.countdown)&&S.countdown>0) ev('s','count',-1);
-    if(S.countdown<=0){ Game.phase='play'; S.goT=.9; ev('s','go',-1); spawnOrder(); if(S.guards.length) setTimeout(()=>{ if(Game.phase==='play'&&S) ev('o','Тајкун је у кухињи — са обезбеђењем!'); },2600); if(S.L.band) [...new Set(S.L.band.map(b=>b.kind||'band'))].filter(k=>NPC_HELLO[k]).forEach((k,i)=>setTimeout(()=>{ if(Game.phase==='play'&&S) ev('o',NPC_HELLO[k]); },900+i*2600)); uiDirty(); }
+    if(S.countdown<=0){ Game.phase='play'; S.goT=.9; ev('s','go',-1); if(S.L.feast) S.L.feast.forEach((_,k)=>spawnOrder(null,k>0)); else spawnOrder(); if(S.guards.length) setTimeout(()=>{ if(Game.phase==='play'&&S) ev('o','Тајкун је у кухињи — са обезбеђењем!'); },2600); if(S.L.band) [...new Set(S.L.band.map(b=>b.kind||'band'))].filter(k=>NPC_HELLO[k]).forEach((k,i)=>setTimeout(()=>{ if(Game.phase==='play'&&S) ev('o',NPC_HELLO[k]); },900+i*2600)); uiDirty(); }
     for(const p of ps) p.target=findTarget(S,p); return;
   }
   if(Game.phase==='play'){
@@ -5382,7 +5403,7 @@ function hostUpdate(dt){
 }
 function clientUpdate(dt){
   if(!V||!V.grid||V.rs===-1) return;
-  if(Game.phase==='play'){ V.timeLeft=Math.max(0,V.timeLeft-dt); V.goT=Math.max(0,V.goT-dt); }
+  if(Game.phase==='play'){ V.timeLeft=Math.max(0,V.timeLeft-dt); if(V.L.feast) V.time=(V.time||0)+dt; V.goT=Math.max(0,V.goT-dt); }
   if(Game.phase==='countdown') V.countdown-=dt;
   if(me&&(Game.phase==='play'||Game.phase==='countdown')){
     if(Game.phase==='play'){ const mp=V.players.find(q=>q.slot===Game.mySlot)||{}, myc=mp.ch|0, i=mp.stun>0?{x:0,y:0}:readInput(), pd=myc===PANDUR, pc=pd||myc===TAJKUN||!!V.L.street, sl=(pd||V.L.street)&&nearNpc(me.x,me.y)?(pd?.78:.88):1; stepMove(V,me,i.x*sl,i.y*sl,dt,othersFor(null,DP.filter(p=>p.slot!==Game.mySlot),pc),chefSpeed(myc,i.slow)); shoveStep(V,me,Game.mySlot,V.guards,dt); }
@@ -5405,9 +5426,9 @@ function noteResult(li,st){
   uiDirty();
 }
 function finishLevel(){
-  const tut=!!S.L.tutorial, st=tut?0:S.stars.filter(v=>S.score>=v).length, i=S.li;
-  const rec=!tut&&S.score>bestOf(i)&&S.score>0; if(tut&&!save.tutDone){ save.tutDone=true; persist(); } if(rec) setBest(i,S.score); noteResult(i,st);
-  Game.result={eg:S.st&&S.st.eggs?Object.keys(S.st.eggs).length:0,sc:S.score,st,d:S.delivered,m:S.missed,tp:S.tips,li:i,thr:S.stars,n:S.n,rec:rec?1:0,x:S.stolen|0,mi:S.michelin|0};
+  const tut=!!S.L.tutorial, fe=!!S.L.feast, tm=Math.floor(S.time), st=tut?0:starsFor(S.L,S.stars,S.score,tm), i=S.li;
+  const rec=fe?!bestTOf(i)||tm<bestTOf(i):!tut&&S.score>bestOf(i)&&S.score>0; if(tut&&!save.tutDone){ save.tutDone=true; persist(); } if(rec){ if(fe) setBestT(i,tm); else setBest(i,S.score); } noteResult(i,st);
+  Game.result={eg:S.st&&S.st.eggs?Object.keys(S.st.eggs).length:0,sc:S.score,st,d:S.delivered,m:S.missed,tp:S.tips,li:i,thr:S.stars,n:S.n,rec:rec?1:0,x:S.stolen|0,mi:S.michelin|0,tm};
   Game.phase='end'; uiDirty(); rescanPeers();
   for(let k=0;k<st;k++) setTimeout(()=>sfx('star'),300+k*300);
 }
@@ -5432,7 +5453,7 @@ const bg=document.createElement('canvas'); let bgKey='';
 function layout(){
   hs=clamp(Math.min(VW,VH)/12.5,30,60);
   const L=V?V.L:LEVELS[0], n=nPlayers();
-  const maxN=Math.min(7,L.maxOrders+(n-1)), rightW=hs*2.9+64, avail=VW-rightW-20;
+  const maxN=ticketN(L,n), rightW=hs*2.9+64, avail=VW-rightW-20;
   tw=Math.max(44,Math.min(hs*2.4,(avail-(maxN-1)*8)/maxN)); th=Math.min(hs*2.15,tw*1.08);
   topH=10+Math.max(th,hs*.72*2+6)+8;
   if(!V||!V.grid) return;
@@ -10013,7 +10034,10 @@ function iVegSoup(c){ ell(c,0,6,40,28); fs(c,lg(c,0,-20,0,34,'#f4f0e8','#c8c0b0'
 Object.assign(EN,{
   'Сеоско домаћинство':'The Village Homestead',
   'Слава у селу! Цела родбина долази на ручак. Јаја, млеко и поврће нису у гајбама — скупљај их по дворишту.':'A slava in the village! The whole family is coming to lunch. Eggs, milk and vegetables don\'t come in crates: gather them around the yard.',
-  'Ново: двориште. Кокошке носе јаја, а јаја се котрљају низбрдо — ухвати их (Размак) пре него што упадну у бару! Краву помузи тако што држиш E. Поврће бери у башти кад сазри. Један кувар нека ради напољу, други у кухињи: састојке додај кроз прозор у зиду. Нема гостију за столом, али наруџбине за славску трпезу стижу.':'New: the yard. Hens lay eggs, and the eggs roll downhill: catch them (Space) before they fall into the pond! Milk the cow by holding E. Pick vegetables in the garden when they are ripe. Let one cook work outside and the other in the kitchen: pass ingredients through the hatch in the wall. No guests at the tables, but orders for the slava feast keep coming.',
+  'Ново: двориште и слава. Цела родбина наручи одмах и нико не одлази гладан, а сат иде унапред: што брже послужиш целу трпезу, то више звездица. Кокошке носе јаја, а јаја се котрљају низбрдо — ухвати их (Размак) пре него што упадну у бару! Краву помузи тако што држиш E. Поврће бери у башти кад сазри, па га исецкај (E). Чорба и шненокле се кувају у лонцу, а проја се пече у тепсији у фуруни. Јело стави на тањир и однеси на шалтер. Један кувар нека ради напољу, други у кухињи: састојке додај кроз прозор у зиду.':'New: the yard and the slava. The whole family orders at once and nobody leaves hungry, but the clock runs forward: the faster you serve the whole feast, the more stars you get. Hens lay eggs, and the eggs roll downhill: catch them (Space) before they fall into the pond! Milk the cow by holding E. Pick vegetables in the garden when they are ripe, then chop them (E). Soup and floating islands cook in a pot; proja bakes in a tray in the oven. Put each dish on a plate and take it to the pass. Let one cook work outside and the other in the kitchen: pass ingredients through the hatch in the wall.',
+  'Слава је послужена!':'The feast is served!', 'Зарада':'Earnings',
+  'Родбина је дуго чекала. Пробај брже!':'The family waited a long time. Try to be faster!', 'Сви су сити, али може брже.':'Everyone is full, but you can be faster.',
+  'Браво! Слава је за памћење.':'Bravo! A slava to remember.', 'Свака част! Најбоља слава у селу.':'Well done! The best slava in the village.',
   'Млеко':'Milk', 'Шненокле':'Floating islands (Šnenokle)', 'Чорба од поврћа':'Vegetable soup', 'Зелена салата с ротквицама':'Green salad with radishes', 'Зелена салата':'Lettuce', 'Ротквице':'Radishes', 'Проја са млеком':'Cornbread with milk (Proja)',
   'Кокодак!':'Cluck!', 'Ко-ко-да!':'Bok-bok!', 'Снела сам!':'Laid one!', 'Пљус! Јаје у бари.':'Splash! Egg in the pond.', 'Још расте…':'Still growing…',
   'Држи E да помузеш краву!':'Hold E to milk the cow!', 'Крава пасе, још нема млека.':'The cow is grazing, no milk yet.', 'Муу!':'Moo!',
@@ -10649,11 +10673,11 @@ function iceIntro(){
 
 /* -------- HUD -------- */
 function drawTicket(o,x,y,w,h){
-  const frac=Math.max(0,o.t/o.max); let sx=x; if(frac<.2&&!V.L.noExpire) sx+=Math.sin(G_anim*42)*1.6;
+  const frac=Math.max(0,o.t/o.max); let sx=x; if(frac<.2&&!V.L.noExpire&&timed(V.L)) sx+=Math.sin(G_anim*42)*1.6;
   ctx.fillStyle='rgba(0,0,0,.32)'; rr(ctx,sx+2,y+3,w,h,7); ctx.fill();
   rr(ctx,sx,y,w,h,7); ctx.fillStyle=lg(ctx,sx,y,sx,y+h,'#fffdf8','#f6eddc'); ctx.fill(); ctx.strokeStyle='#d8c4a2'; ctx.lineWidth=1.5; ctx.stroke();
   const bh=Math.max(5,h*.075), col=frac>.5?'#3aa655':frac>.25?'#e0a01e':'#d63a2e';
-  if(!V.L.tutorial){ rr(ctx,sx+5,y+5,w-10,bh,bh/2); ctx.fillStyle='#ece0c8'; ctx.fill(); // обука: гост чека колико треба, па нема ни траке стрпљења
+  if(timed(V.L)){ rr(ctx,sx+5,y+5,w-10,bh,bh/2); ctx.fillStyle='#ece0c8'; ctx.fill(); // обука и слава: гост чека колико треба, па нема ни траке стрпљења
     if(frac>0){ rr(ctx,sx+5,y+5,Math.max(bh,(w-10)*frac),bh,bh/2); ctx.fillStyle=col; ctx.fill(); } }
   const rc=RECIPES[o.r]; const row=rc.card?rc.card.map(k=>k[0]==='@'?['s',k.slice(1)]:['k',k]):rc.cook?[...rc.in.map(k=>['k',k]),['s',rc.cook],...rc.parts.filter(p=>p!==rc.out+'K').map(k=>['k',k])]:rc.parts.map(k=>['k',k]);
   const n=row.length, iu=Math.min(h*.3,(w-8)/n), iy=y+h-iu/2-5;
@@ -10679,14 +10703,14 @@ function drawHUD(dt){
   for(const o of V.orders){ live.add(o.id); let hx=FX.hx.get(o.id); if(hx===undefined) hx=VW+40; hx+=(x-hx)*Math.min(1,dt*9); FX.hx.set(o.id,hx); drawTicket(o,hx,10,w,h); x+=w+(w<tw?6:8); }
   for(const k of FX.hx.keys()) if(!live.has(k)) FX.hx.delete(k);
   const pw=hs*2.9, ph=hs*.72, px=VW-62-pw, py=10;
-  // обука нема сат: уместо њега колико је корнета предато од колико их тражи распоред
-  const ut=V.L.tutorial, tl=Math.max(0,Math.ceil(V.timeLeft)), txt=ut?(V.delivered|0)+'/'+V.L.script.length:Math.floor(tl/60)+':'+String(tl%60).padStart(2,'0'), low=!ut&&tl<=30&&Game.phase==='play';
+  // обука нема сат: уместо њега колико је корнета предато од колико их тражи распоред. На слави сат иде од 0:00, а испод њега је колико је јела послужено.
+  const ut=V.L.tutorial, fe=!!V.L.feast, done=(V.delivered|0)+'/'+goalN(V.L), tl=Math.max(0,Math.ceil(V.timeLeft)), txt=ut?done:fmtT(fe?V.time||0:tl), low=timed(V.L)&&tl<=30&&Game.phase==='play';
   pill(px,py,pw,ph,low&&Math.sin(G_anim*8)>0?'#b5121b':'#3a2416','#fff',txt,ut?(cx,cy,r)=>drawItemAt(ctx,{k:'p',c:['ijR']},cx,cy,r*2.3):(cx,cy,r)=>{
     circ(ctx,cx,cy,r); fs(ctx,'#fffdf8','rgba(0,0,0,.3)',1.5); ctx.strokeStyle='#33200f'; ctx.lineWidth=Math.max(1.5,r*.2);
     ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx,cy-r*.65); ctx.moveTo(cx,cy); ctx.lineTo(cx+r*.5,cy+r*.15); ctx.stroke(); });
   const sc=1+FX.scorePulse*.12, my=py+ph+6+ph/2;
   ctx.save(); ctx.translate(px+pw/2,my); ctx.scale(sc,sc); ctx.translate(-(px+pw/2),-my);
-  pill(px,py+ph+6,pw,ph,'#fffdf8','#33200f',tr(fmt(V.score)+' дин.'),(cx,cy,r)=>{ circ(ctx,cx,cy,r); fs(ctx,rg(ctx,cx,cy,r,'#ffe08a','#d9a21b'),'#9c7414',Math.max(1.2,r*.15));
+  pill(px,py+ph+6,pw,ph,'#fffdf8','#33200f',fe?done:tr(fmt(V.score)+' дин.'),fe?(cx,cy,r)=>drawFnAt(ctx,'dish:'+V.L.icon,cc=>dishArt(cc,V.L.icon),cx,cy,r*2.6):(cx,cy,r)=>{ circ(ctx,cx,cy,r); fs(ctx,rg(ctx,cx,cy,r,'#ffe08a','#d9a21b'),'#9c7414',Math.max(1.2,r*.15));
     ctx.fillStyle='#7a5a0c'; ctx.font=`900 ${Math.round(r*1.2)}px Rubik, system-ui, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(tr('д'),cx,cy+1); });
   ctx.restore();
 }
@@ -10809,7 +10833,7 @@ function overlayKind(){
   return {menu:'menu',lobby:'lobby',intro:'intro',pause:'pause',end:'end'}[Game.phase]||null;
 }
 function nPlayers(){ return Game.role==='solo'?1:Math.max(1,(Game.role==='couch'?Couch.players:Net.slots).length); }
-function scaledStars(L){ const n=nPlayers(); return L.stars.map(v=>Math.round(v*(1+.35*(n-1))/50)*50); }
+function scaledStars(L){ return starThr(L,nPlayers()); }
 function sigFor(k){
   switch(k){
     case 'menu': return [pad.on,pad.sig,couchSig(),Game.mode,Net.avail,Net.standalone,JSON.stringify(Net.adverts.map(a=>[a.code,a.n,a.ph,Net.names[a.by]||''])),progSig(),save.sound,save.music,chefSig()].join('|');
@@ -10856,9 +10880,9 @@ function levelList(noPlay){
     const icon=`<span class="ico" style="background:${th?th.fa:'#f3dfc8'}"><canvas data-icon="dish:${L.icon||L.recipes[0]}" data-size="40"></canvas></span>`;
     if(lock>=0&&i>lock) return `<button class="tix back" ${r} disabled aria-label="Скривен ниво ${i}"><span class="q">?</span><small>Број ${i}</small></button>`;
     if(i===lock) return `<button class="tix locked" ${r} disabled><span class="no">Број ${i}</span>${icon}<b>${esc(L.name)}</b><small>Освоји ★ на нивоу ${i-1}</small><span class="stamp">ЗАКЉУЧАНО</span></button>`;
-    const st=starsOf(i), best=bestOf(i);
+    const st=starsOf(i), best=L.feast?bestTOf(i):bestOf(i);
     return `<button class="tix${i===cur?' cur':''}" ${r} data-act="pick" data-li="${i}" ${noPlay?'disabled':''}><span class="no">Број ${i}</span>${!L.tutorial&&!st?'<span class="new">НОВО</span>':''}${icon}<b>${esc(L.name)}</b>${L.tutorial
-      ?`<small class="ok">${save.tutDone?'✓ Обука':'Обука'}</small>`:`<span class="stars" aria-label="Звездице: ${st} од 3">${starsHTML(st)}</span>${best?`<span class="best">Рекорд: ${fmt(best)} дин.</span>`:''}`}</button>`; });
+      ?`<small class="ok">${save.tutDone?'✓ Обука':'Обука'}</small>`:`<span class="stars" aria-label="Звездице: ${st} од 3">${starsHTML(st)}</span>${best?`<span class="best">Рекорд: ${L.feast?fmtT(best):fmt(best)+' дин.'}</span>`:''}`}</button>`; });
   let rails=''; for(let k=0;k<tix.length;k+=3) rails+=`<div class="rail"><div class="tixs">${tix.slice(k,k+3).join('')}</div></div>`;
   const L=LEVELS[cur];
   return `<div class="pass">${rails}</div><div class="pick-card"><div><b><span>${cur}.</span> ${esc(L.name)}</b><p>${esc(L.desc)}</p></div><button class="btn" data-act="pick" data-li="${cur}" ${noPlay?'disabled':'data-primary'}>Играј</button></div>`;
@@ -10986,7 +11010,7 @@ const BUILD={
       return `<div class="rec"><canvas data-icon="dish:${rid}" data-size="58"></canvas><div><div class="rec-name">${esc(rc.n)} <span class="rec-price">${fmt(rc.price)} дин.</span></div><div class="rec-parts">${chips}${st}${extra}</div></div></div>`; }).join('');
     return `<div class="sheet"><div class="cloth thin"></div><div class="sheet-body"><div class="intro-head"><span class="lvl">Ниво ${Game.li}</span><h2>${esc(L.name)}</h2></div>
       <p class="lede">${esc(L.desc)}</p><div class="novo">${esc(L.novo)}</div><div class="recipes">${recs}</div>
-      ${L.tutorial?'':`<div class="goals">${thr.map((s,k)=>`<span><b>${'★'.repeat(k+1)}</b> ${fmt(s)} дин.</span>`).join('')}${nPlayers()>1?`<span>за ${nPlayers()} кувара</span>`:''}</div>`}
+      ${L.tutorial?'':`<div class="goals">${thr.map((s,k)=>`<span><b>${'★'.repeat(k+1)}</b> ${L.feast?'до '+fmtT(s):fmt(s)+' дин.'}</span>`).join('')}${nPlayers()>1?`<span>за ${nPlayers()} кувара</span>`:''}</div>`}
       ${Game.role==='couch'?couchSlots(44):chefPicker(44)}
       ${host?`<div class="row end"><button class="btn quiet" data-act="back" data-back>Назад</button><button class="btn" data-act="go" data-primary ${couchEmpty()?'disabled':''}>Крени!</button></div>`
            :`<p class="wait">Чека се да домаћин крене…</p><div class="row end"><button class="btn quiet" data-act="leave">Напусти игру</button></div>`}</div></div>`; },
@@ -10994,15 +11018,16 @@ const BUILD={
     return `<div class="sheet narrow"><div class="cloth thin"></div><div class="sheet-body"><h2>Пауза</h2>
       ${host?`<p class="lede">Гости чекају, али време стоји.</p><div class="row col"><button class="btn" data-act="resume" data-primary data-back>Настави</button><button class="btn quiet" data-act="retry">Почни испочетка</button><button class="btn quiet" data-act="tobase">${Game.role==='host'?'Назад у чекаоницу':'Главни мени'}</button></div>${toggles()}`
             :`<p class="wait">Домаћин је паузирао игру.</p><div class="row col"><button class="btn quiet" data-act="leave">Напусти игру</button></div>${toggles()}`}</div></div>`; },
-  end:()=>{ const r=Game.result||{sc:0,st:0,d:0,m:0,tp:0,thr:[0,0,0],li:Game.li}, host=Game.role!=='client', last=r.li>=LEVELS.length-1, th=(LEVELS[r.li]||{}).theme, ut=!!(LEVELS[r.li]||{}).tutorial;
-    const verdict=ut?'Сви гости су добили сладолед. Спреман си за кафану!':['Газда није задовољан. Пробај поново!','Није лоше, али може брже.','Браво! Гости су сити и задовољни.','Свака част! Права кафанска легенда.'][r.st];
-    return `<div class="sheet narrow"><div class="cloth"></div><div class="sheet-body"><h2 class="center">${ut?'Обука је завршена!':'Смена је готова!'}</h2>
+  end:()=>{ const r=Game.result||{sc:0,st:0,d:0,m:0,tp:0,thr:[0,0,0],li:Game.li}, host=Game.role!=='client', last=r.li>=LEVELS.length-1, th=(LEVELS[r.li]||{}).theme, ut=!!(LEVELS[r.li]||{}).tutorial, fe=!!(LEVELS[r.li]||{}).feast;
+    const verdict=ut?'Сви гости су добили сладолед. Спреман си за праву кухињу!':(fe?['Родбина је дуго чекала. Пробај брже!','Сви су сити, али може брже.','Браво! Слава је за памћење.','Свака част! Најбоља слава у селу.']
+      :['Газда није задовољан. Пробај поново!','Није лоше, али може брже.','Браво! Гости су сити и задовољни.','Свака част! Права кафанска легенда.'])[r.st];
+    return `<div class="sheet narrow"><div class="cloth"></div><div class="sheet-body"><h2 class="center">${ut?'Обука је завршена!':fe?'Слава је послужена!':'Смена је готова!'}</h2>
       <div class="big-stars">${ut?'':[0,1,2].map(k=>`<span class="${k<r.st?'on':''}" style="animation-delay:${.3+k*.3}s">★</span>`).join('')}</div>
-      <div class="total">${fmt(r.sc)} дин.</div><p class="verdict">${(r.st>=1&&last?'Сви нивои су пређени! ':'')+verdict}</p>
-      <dl class="stats"><dt>Испоручено јела</dt><dd>${r.d}</dd>${ut?`<dt>Пронађене тајне</dt><dd>${r.eg|0} од 3</dd>`:`<dt>Гостију отишло гладно</dt><dd>${r.m}</dd>`}<dt>${th==='kasarna'?'Похвале':'Бакшиш'}</dt><dd>${fmt(r.tp)} дин.</dd>${th==='kasarna'?`<dt>Разноврсност оброка</dt><dd>${r.x|0}</dd>`:''}${th==='fusion'?`<dt>Мишлен звездица</dt><dd>${r.mi?'★':'—'}</dd>`:''}</dl>
+      <div class="total">${fe?fmtT(r.tm):fmt(r.sc)+' дин.'}</div><p class="verdict">${(r.st>=1&&last?'Сви нивои су пређени! ':'')+verdict}</p>
+      <dl class="stats"><dt>Испоручено јела</dt><dd>${r.d}</dd>${ut?`<dt>Пронађене тајне</dt><dd>${r.eg|0} од 3</dd>`:fe?`<dt>Зарада</dt><dd>${fmt(r.sc)} дин.</dd>`:`<dt>Гостију отишло гладно</dt><dd>${r.m}</dd>`}${fe?'':`<dt>${th==='kasarna'?'Похвале':'Бакшиш'}</dt><dd>${fmt(r.tp)} дин.</dd>`}${th==='kasarna'?`<dt>Разноврсност оброка</dt><dd>${r.x|0}</dd>`:''}${th==='fusion'?`<dt>Мишлен звездица</dt><dd>${r.mi?'★':'—'}</dd>`:''}</dl>
       ${th==='kasarna'?'<p class="verdict">Саопштење Министарства: Војници добијају разноврсне оброке.</p>':''}
       <p class="record">${host&&r.rec?'Нови рекорд!':''}</p>
-      <div class="goals row mid">${ut?'':(r.thr||[]).map((s,k)=>`<span><b>${'★'.repeat(k+1)}</b> ${fmt(s)} дин.</span>`).join('')}</div>
+      <div class="goals row mid">${ut?'':(r.thr||[]).map((s,k)=>`<span><b>${'★'.repeat(k+1)}</b> ${fe?'до '+fmtT(s):fmt(s)+' дин.'}</span>`).join('')}</div>
       ${rewardCard()}${Game.role==='couch'?couchSlots(44):chefPicker(44,'Кувар за следећу смену')}
       ${host?`<div class="row mid"><button class="btn quiet" data-act="tobase">${Game.role==='host'?'Чекаоница':'Мени'}</button><button class="btn quiet" data-act="retry" ${(r.st<1&&!ut)||last?'data-primary':''} ${couchEmpty()?'disabled':''}>Поново</button>${last?'':`<button class="btn" data-act="next" ${r.st<1&&!levelOpen(r.li+1)?'disabled':(r.st>=1||ut?'data-primary':'')}>Следећи ниво</button>`}</div>`
             :`<p class="wait">Домаћин бира шта даље…</p><div class="row mid"><button class="btn quiet" data-act="leave">Напусти игру</button></div>`}</div></div>`; },
@@ -11050,7 +11075,7 @@ function act(a,b){
     case 'back': toBase(); break;
     case 'resume': resumeGame(); break;
     case 'resetall': if(confirm(tr('Обрисати сав напредак: звездице, рекорде, откључане нивое и куваре?'))){ // за развој
-      Object.assign(save,{stars:save.stars.map(()=>0),best:save.best.map(()=>0),tutStars:0,tutBest:0,tutDone:false,allOpen:false,ch:0,cch:undefined}); persist(); uiDirty(); } break;
+      Object.assign(save,{stars:save.stars.map(()=>0),best:save.best.map(()=>0),bestT:{},tutStars:0,tutBest:0,tutDone:false,allOpen:false,ch:0,cch:undefined}); persist(); uiDirty(); } break;
     case 'retry': beginLevel(Game.li); break;
     case 'tobase': toBase(); break;
     case 'next': openIntro(Math.min(LEVELS.length-1,Game.li+1)); break;
