@@ -487,7 +487,7 @@ const LEVELS=[
 const CHARS=[
   {name:'Мића', tag:'#c8202b', skin:'#f0c29a', shirt:'#f8f4ea', vest:'#2a2522', trim:'#c8202b', apron:'#efe7d6', hat:'sajkaca', hatC:'#5d5844', hair:'#2b1a10', stache:true},
   {name:'Стана', tag:'#2f6fb5', skin:'#f3c8a4', shirt:'#fbf7ef', vest:'#2f5f9e', trim:'#f0c040', apron:'#ffffff', hat:'marama', hatC:'#c8202b', hair:'#cfc6b8', blush:true},
-  {name:'Бошко', tag:'#2e8b4a', skin:'#e6b088', shirt:'#f3ece0', vest:'#6b4226', trim:'#d9a21b', apron:'#f2ece0', hat:'subara', hatC:'#221c18', hair:'#221c18', stache:true, beard:true},
+  {name:'Горан', tag:'#2e8b4a', skin:'#e6b088', shirt:'#f3ece0', vest:'#6b4226', trim:'#d9a21b', apron:'#f2ece0', hat:'subara', hatC:'#221c18', hair:'#221c18', stache:true, beard:true},
   {name:'Марија', tag:'#d9a21b', skin:'#f4cfae', shirt:'#fffaf2', vest:'#7a1630', trim:'#f0c040', apron:'#ffffff', hat:'venac', hatC:'#e85a7a', hair:'#7a4a22', blush:true, braids:true},
   {name:'Евро Тетка', full:'Тетка из Беча', tag:'#c8944a', skin:'#f0c29a', shirt:'#f4e4d0', vest:'#c8944a', sleeve:'#c8944a', trim:'#d9a21b', apron:null, hat:'perm', hatC:'#e8c070', hair:'#e8c070', blush:true, leopard:true, chain:true, earrings:true, shadesUp:true, lips:true, noBelt:true},
   {name:'Пандур', full:'Интервентни пандур', tag:'#2c4a6e', skin:'#e6b088', shirt:'#2c3c52', vest:'#1e2a3a', sleeve:'#2c3c52', trim:'#141c28', apron:'#e8ecf0', hat:'riot', hatC:'#1e2a3a', hair:'#2b1a10', stache:true},
@@ -556,7 +556,7 @@ const EN={
   'Новогодишња ноћ на тргу. Кувано вино, шумадијски чај и печени кестени — све до поноћи!':'New Year’s Eve on the town square. Mulled wine, hot brandy toddy and roasted chestnuts — all the way to midnight!',
   'Ново: пића се хладе! Кувано вино и чај послужи док се пуше — хладно пиће кошта упола. Кестене прво зарежи на дасци, па их испеци у тигању. Пази да вино не прокува!':'New: drinks get cold! Serve the mulled wine and toddy while they’re steaming — a cold drink pays half. Score the chestnuts on the board first, then roast them in the pan. Don’t let the wine boil over!',
   // кувари
-  'Мића':'Mića','Стана':'Stana','Бошко':'Boshko','Марија':'Marija','Евро Тетка':'Euro Auntie','Тетка из Беча':'Auntie from Vienna','Пандур':'Cop',
+  'Мића':'Mića','Стана':'Stana','Горан':'Goran','Марија':'Marija','Евро Тетка':'Euro Auntie','Тетка из Беча':'Auntie from Vienna','Пандур':'Cop',
   'Интервентни пандур':'Riot cop','Трубач':'Trumpeter','Председник Станара':'Residents’ Chairman','Председник кућног савета':'Residents’ council chairman',
   'Спасилац':'Lifeguard','Спасилац са Аде':'Ada lifeguard','Деда Мраз':'Deda Mraz',
   '★★★ у кафани':'★★★ in the kafana','★★★ у пекари':'★★★ in the bakery','★★★ на свадби':'★★★ at the wedding','★★★ на зимници':'★★★ at the preserves',
@@ -5227,7 +5227,7 @@ function drawScene(){
 }
 /* ---- свадбена кухиња: кобасице и сланина висе са плафона; високи ударају главом ---- */
 const HANG={key:'',list:[],prev:new Map(),bonk:new Map(),t:0};
-const TALL=new Set([0,2,5,6]); // Мића (шајкача), Бошко (шубара), Пандур (шлем), Трубач (шајкача)
+const TALL=new Set([0,2,5,6]); // Мића (шајкача), Горан (шубара), Пандур (шлем), Трубач (шајкача)
 function hangSpots(){
   if(!V||!V.grid||!V.L||V.L.theme!=='salas') return [];
   const key=V.li+'|'+V.grid.length+'|'+V.grid[0].length; if(HANG.key===key) return HANG.list;
