@@ -1463,7 +1463,7 @@ let V=null;   // оно што се црта (код домаћина V===S, к�
 const Game={role:save.mode==='couch'?'couch':'solo', phase:'menu', li:0, mySlot:0, prevPhase:'play', rs:0, evId:0, snapSeq:0, result:null, notice:null, localMenu:false, tip:false, mode:save.mode||'solo'};
 /* заједно за једним рачунаром: до 4 кувара, сваки са својим уређајем (kbL = WASD, kbR = стрелице, p0…p3 = гејмпад по индексу) */
 const Couch={players:[]}; // {slot,ch,dev}
-const FX={parts:[],floats:[],toast:null,shake:0,scorePulse:0,hx:new Map(),warnT:new Map(),chopT:new Map(),lastTl:0};
+const FX={parts:[],floats:[],toast:null,shake:0,scorePulse:0,hx:new Map(),warnT:new Map(),chopT:new Map(),bins:new Map(),lastTl:0};
 
 const mkIng=(t,s)=>({k:'i',t,s:s||'R',n:0,b:0});
 const mkPlate=()=>({k:'p',c:[]});
@@ -1769,9 +1769,10 @@ function simGrab(p){
     }
     case 'trash': {
       if(!h) return;
-      if(h.k==='i'){ p.hold=null; ev('s','trash',-1); return; }
-      if(h.k==='p'){ if(h.c.length){ h.c=[]; ev('s','trash',-1); } else say(p,t,PW('already')); return; }
-      if(h.k==='t'){ if(h.c.length||h.ph!=='i'){ resetV(h); ev('s','trash',-1); } else say(p,t,'Тепсија је већ празна.'); return; }
+      const toss=what=>ev('t',what,+(p.x+(p.fx||0)*.36).toFixed(2),+(p.y-.3).toFixed(2),t.x+.5,t.y+.45); // летећи отпадак (код свих играча)
+      if(h.k==='i'){ toss(enc(h)); p.hold=null; ev('s','trash',-1); return; }
+      if(h.k==='p'){ if(h.c.length){ toss(h.c.slice()); h.c=[]; ev('s','trash',-1); } else say(p,t,PW('already')); return; }
+      if(h.k==='t'){ if(h.c.length||h.ph!=='i'){ toss(h.ph==='b'?['xxB']:h.dish?[h.dish+'K']:h.c.slice()); resetV(h); ev('s','trash',-1); } else say(p,t,'Тепсија је већ празна.'); return; }
       deny(p,t,PW('noThrow')); return;
     }
     case 'sink': {
@@ -2665,6 +2666,7 @@ function playEvent(e){
   if(ty==='s'){ const who=e[3]; if(who===undefined||who<0||isLocalSlot(who)) sfx(e[2]); }
   else if(ty==='f'){ if(e[6]<0||isLocalSlot(e[6])) FX.floats.push({x:e[4],y:e[5],text:tr(String(e[2])),color:String(e[3]),t:0,life:e[7]?1.15:1.5,small:!!e[7]}); }
   else if(ty==='b') burst(e[2],e[3],e[4]);
+  else if(ty==='t') FX.parts.push({kind:'toss',x:e[3],y:e[4],x0:e[3],y0:e[4],x1:e[5],y1:e[6],vx:0,vy:0,t:0,life:.42,rot:e[5]>=e[3]?1:-1,it:Array.isArray(e[2])?null:dec(e[2]),keys:Array.isArray(e[2])?e[2]:null});
   else if(ty==='k') FX.shake=.35;
   else if(ty==='o') FX.toast={text:tr(String(e[2])),t:2.4};
   else if(ty==='p') FX.scorePulse=1;
@@ -2679,11 +2681,15 @@ function burst(kind,x,y){
 }
 function puff(x,y){ FX.parts.push({x,y,vx:(Math.random()-.5)*.4,vy:-.2,t:0,life:.45,kind:'puff',r:.1,c:'rgba(255,255,255,'}); }
 function smoke(t,dark){ FX.parts.push({x:t.x+.3+Math.random()*.4,y:t.y+.35,vx:(Math.random()-.5)*.2,vy:-.55-Math.random()*.3,t:0,life:1.4,kind:'puff',r:.12+Math.random()*.08,c:dark?'rgba(60,55,52,':'rgba(255,255,255,'}); }
+/* отпадак упадне у канту: облачић прашине и канта се тресне */
+function tossLand(q){ FX.bins.set(Math.floor(q.x1)+','+Math.floor(q.y1),.35);
+  for(let i=0;i<7;i++){ const a=-Math.PI*(.1+.8*Math.random()); FX.parts.push({x:q.x1,y:q.y1-.1,vx:Math.cos(a)*.9,vy:Math.sin(a)*.9,g:1.5,t:0,life:.4,kind:'puff',r:.06+Math.random()*.04,c:'rgba(200,196,186,'}); } }
 function updateFx(dt){
-  for(let i=FX.parts.length-1;i>=0;i--){ const q=FX.parts[i]; q.t+=dt; if(q.t>=q.life){ FX.parts.splice(i,1); continue; } q.vy+=(q.g||0)*dt; q.x+=q.vx*dt; q.y+=q.vy*dt; }
+  for(let i=FX.parts.length-1;i>=0;i--){ const q=FX.parts[i]; q.t+=dt; if(q.t>=q.life){ FX.parts.splice(i,1); if(q.kind==='toss') tossLand(q); continue; } q.vy+=(q.g||0)*dt; q.x+=q.vx*dt; q.y+=q.vy*dt; }
   for(let i=FX.floats.length-1;i>=0;i--){ const f=FX.floats[i]; f.t+=dt; if(f.t>=f.life) FX.floats.splice(i,1); }
   if(FX.toast){ FX.toast.t-=dt; if(FX.toast.t<=0) FX.toast=null; }
   FX.shake=Math.max(0,FX.shake-dt); FX.scorePulse=Math.max(0,FX.scorePulse-dt*2.5);
+  for(const [k,v] of FX.bins){ if(v-dt<=0) FX.bins.delete(k); else FX.bins.set(k,v-dt); }
   if(FX.parts.length>400) FX.parts.splice(0,FX.parts.length-400);
 }
 function warnTick(key,dt){ const v=(FX.warnT.get(key)||0)+dt; if(v>.5){ FX.warnT.set(key,0); sfx('tick'); } else FX.warnT.set(key,v); }
@@ -3705,6 +3711,8 @@ let G_anim=0;
 function drawTileDyn(t){
   const s=ts, x=ox+t.x*s, y=oy+t.y*s, front=frontOf(t), h=s-(front?s*.18:0), cx=x+s/2, cy=y+h/2, lw=Math.max(1,s*.03);
   switch(t.kind){
+    case 'trash': { const b=FX.bins.get(t.x+','+t.y); if(b>0){ const k=1-b/.35, j=Math.sin(k*Math.PI*3)*(1-k)*s*.04;
+      circ(ctx,cx+j,cy,s*.34); ctx.strokeStyle='#262b2e'; ctx.lineWidth=lw*1.2; ctx.stroke(); circ(ctx,cx,cy,s*(.3+.2*k)); ctx.strokeStyle=`rgba(255,255,255,${.55*(1-k)})`; ctx.lineWidth=Math.max(1.5,s*.04); ctx.stroke(); } break; }
     case 'counter': case 'board': if(t.kind==='board'&&!boardBusy(t)) boardKnife(ctx,x,y,s,h); if(t.item){ drawItemAt(ctx,t.item,cx,cy,s*.68); if(t.kind==='board') sliceMarks(t.item,cx,cy,s); } break;
     case 'window': if(G_ready){ ctx.fillStyle=`rgba(255,215,60,${.22+.18*Math.sin(G_anim*8)})`; ctx.fillRect(x,y,s,h); } break;
     case 'plates': { const n=Math.min(t.count,6), look=V.L.plate||'', fn=look==='cup'?cupBase:look==='jar'?jarBase:look==='paper'?paperPlate:look==='slate'?slateBase:(cc=>plateBase(cc,false)), tall=look==='cup'||look==='jar';
@@ -5694,6 +5702,10 @@ function drawParts(){
     if(q.kind==='dot'){ ctx.fillStyle=q.c; circ(ctx,x,y,q.r*ts); ctx.fill(); }
     else if(q.kind==='puff'){ ctx.fillStyle=q.c+(.45*k)+')'; circ(ctx,x,y,q.r*ts*(1.6-k*.6)); ctx.fill(); }
     else if(q.kind==='cig'){ ctx.fillStyle=`rgba(${150+70*(1-k)|0},${150+70*(1-k)|0},${160+66*(1-k)|0},${.8*k*Math.min(1,(1-k)*6)})`; circ(ctx,x+Math.sin(q.t*5+q.r*90)*ts*.03,y,q.r*ts*(2.4-k*1.4)); ctx.fill(); }
+    else if(q.kind==='toss'){ const f=q.t/q.life, X=ox+(q.x0+(q.x1-q.x0)*f)*ts, Y=oy+(q.y0+(q.y1-q.y0)*f-Math.sin(Math.PI*f)*.6)*ts, sc=1-.6*f*f;
+      ctx.save(); ctx.translate(X,Y); ctx.rotate(q.rot*f*5.5); if(f>.8) ctx.globalAlpha=(1-f)/.2;
+      if(q.it) drawItemAt(ctx,q.it,0,0,ts*.5*sc); else { const n=Math.min(3,q.keys.length); q.keys.slice(0,3).forEach((k2,i)=>drawKeyAt(ctx,k2,(i-(n-1)/2)*ts*.17*sc,0,ts*.36*sc)); }
+      ctx.restore(); }
     else if(q.kind==='bubble'){ ctx.strokeStyle=`rgba(255,255,255,${k})`; ctx.lineWidth=1.3; circ(ctx,x,y,q.r*ts); ctx.stroke(); }
     else if(q.kind==='star'){ ctx.fillStyle=q.c; ctx.save(); ctx.translate(x,y); ctx.rotate(q.t*6); const r=q.r*ts*k*1.4; ctx.fillRect(-r,-r*.3,r*2,r*.6); ctx.fillRect(-r*.3,-r,r*.6,r*2); ctx.restore(); }
     else if(q.kind==='note'){ ctx.globalAlpha=k; ctx.fillStyle='#d9a21b'; ctx.font=`800 ${Math.round(ts*.34)}px Rubik, system-ui, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(q.ch,x+Math.sin(q.t*5)*ts*.08,y); ctx.globalAlpha=1; }
