@@ -65,18 +65,39 @@ h3{font-size:17px; margin:0 0 4px; font-weight:800}
 .langsel .seg{margin:0}
 .langsel .seg button{font-size:13px; padding:5px 12px}
 
-.menu-list{list-style:none; margin:0; padding:0; border-top:2px solid var(--ink)}
-.menu-item{display:grid; grid-template-columns:auto 1fr auto; gap:4px 14px; align-items:baseline; padding:13px 0; border-bottom:1px solid var(--rule)}
-.menu-item .n{font-weight:900; color:var(--red); font-size:20px; min-width:1.2em}
-.menu-item .title{display:flex; align-items:baseline; gap:8px; min-width:0}
-.menu-item .title b{font-size:17px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.menu-item .title .dots{flex:1; border-bottom:2px dotted var(--chip-edge); transform:translateY(-4px); min-width:16px}
-.menu-item .stars{font-size:18px; letter-spacing:1px; color:var(--chip-edge); white-space:nowrap}
+.pass{background-color:#3b2416; background-image:repeating-linear-gradient(0deg,transparent 0 30px,rgba(0,0,0,.18) 30px 32px),repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.14) 46px 48px); border-radius:14px; padding:16px clamp(10px,2.4vw,20px) 20px; display:flex; flex-direction:column; gap:18px}
+.rail{position:relative; padding-top:7px}
+.rail::before{content:""; position:absolute; left:-6px; right:-6px; top:0; height:10px; border-radius:5px; background:var(--brass); box-shadow:0 3px 0 #8a6212}
+.tixs{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(8px,2.4vw,18px); padding:0 4px}
+.tix{position:relative; min-height:150px; padding:20px 8px 10px; border:0; border-radius:4px 4px 10px 10px; background:#fffdf8; color:#33200f; box-shadow:0 5px 0 rgba(0,0,0,.28); transform:rotate(var(--r,0deg)); font:inherit; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:5px; text-align:center; transition:transform .12s}
+.tix:hover:not(:disabled),.tix:focus-visible{transform:rotate(0deg) translateY(3px)}
+.tix:focus-visible{outline:3px solid #ffd34d; outline-offset:2px}
+.tix:disabled{cursor:default}
+.tix::before{content:""; position:absolute; left:50%; top:-11px; width:28px; height:16px; margin-left:-14px; border-radius:4px; background:#5c4632}
+.tix .no{position:absolute; left:8px; top:5px; font-size:11.5px; font-weight:700; color:#8a6d52}
+.tix .new{position:absolute; right:6px; top:5px; padding:1px 7px; border-radius:999px; background:var(--red); color:#fff; font-weight:900; font-size:10px; letter-spacing:.06em}
+.tix .ico{width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0}
+.tix b{font-size:13.5px; font-weight:800; line-height:1.2}
+.tix small{font-size:11.5px; font-weight:600; color:#6e5a46}
+.tix .ok{color:#2e7d32; font-weight:700}
+.tix .stars{font-size:16px; letter-spacing:1px; color:#e2d3ba; line-height:1}
 .stars .on{color:var(--brass)}
-.menu-item .desc{grid-column:2 / 3; color:var(--muted); font-size:14px; line-height:1.4}
-.menu-item .act{grid-column:3 / 4; grid-row:2 / 3; justify-self:end; align-self:center}
-.menu-item .best{grid-column:2 / 3; font-size:13px; color:var(--muted)}
-.menu-item.locked .title b, .menu-item.locked .n{opacity:.5}
+.tix .best{font-size:11px; color:#8a6d52}
+.tix.cur{box-shadow:0 0 0 4px #ffd34d,0 9px 0 rgba(0,0,0,.32)}
+.tix.locked{background:#ece5d8}
+.tix.locked canvas{filter:grayscale(1) opacity(.5)}
+.tix.locked b{color:#6e5a46}
+.tix .stamp{position:absolute; left:50%; top:30px; width:118px; margin-left:-59px; padding:3px 0; border:3px solid var(--red); border-radius:6px; color:var(--red); font-weight:900; font-size:13px; letter-spacing:.1em; transform:rotate(-14deg); background:rgba(255,253,248,.55)}
+.tix.back{background:repeating-linear-gradient(45deg,#c9ae84 0 10px,#c2a67b 10px 20px); justify-content:center}
+.tix.back .q{width:56px; height:56px; box-sizing:border-box; border-radius:50%; border:3px dashed #7a5a3a; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:30px; color:#6b4a2a}
+.tix.back small{color:#6b4a2a}
+.pick-card{display:flex; align-items:center; gap:16px; margin-top:14px; padding:14px 16px; border-radius:14px; background:var(--chip); border:1.5px solid var(--chip-edge)}
+.pick-card div{display:flex; flex-direction:column; gap:3px; flex:1; min-width:0}
+.pick-card b{font-size:17px; font-weight:800}
+.pick-card b span{color:var(--red)}
+.pick-card p{margin:0; font-size:14px; line-height:1.4; color:var(--muted)}
+.ghost-reset{margin-left:auto; font:inherit; font-size:11px; padding:4px 6px; border:0; background:none; color:var(--ink); opacity:.12; cursor:pointer}
+.ghost-reset:hover,.ghost-reset:focus-visible{opacity:.6}
 
 .btn{font:inherit; font-weight:800; font-size:16px; border:0; border-radius:10px; padding:11px 18px; background:var(--red); color:var(--on-red);
   cursor:pointer; box-shadow:0 3px 0 var(--red-dark); transition:transform .06s, box-shadow .06s; white-space:nowrap}
@@ -235,9 +256,13 @@ body.padnav #ov :focus{outline:3px solid var(--brass); outline-offset:2px}
 .tb-dash{grid-area:dash; width:62px; height:62px; background:rgba(43,26,16,.85); align-self:end}
 .tb.down{transform:scale(.93); filter:brightness(1.2)}
 @media (max-width:560px){
-  .menu-item{grid-template-columns:auto 1fr}
-  .menu-item .stars{grid-column:2/3}
-  .menu-item .act{grid-column:2/3; grid-row:auto; justify-self:start; margin-top:6px}
+  .tix{min-height:134px; padding:18px 4px 8px}
+  .tix b{font-size:12px}
+  .tix .ico{width:42px; height:42px}
+  .tix .no{font-size:10.5px; left:6px}
+  .tix .new{font-size:9px; padding:1px 5px}
+  .tix .stamp{width:96px; margin-left:-48px; font-size:11px}
+  .pick-card{flex-direction:column; align-items:stretch}
   .slots{grid-template-columns:repeat(2,1fr)}
   .seg button{padding:8px 11px}
 }
@@ -390,7 +415,7 @@ const UNLOCK_ALL=false; // true = сви нивои отворени без зв
 const CHEERS=['Живели!','Свака част!','Алал вера!','Ко код маме!','Мљац!','Баш је фино!'];
 
 const LEVELS=[
-  { name:'Сладолед у Кнез Михаиловој', theme:'knez', tune:'valcer', street:true,
+  { name:'Сладолед у Кнез Михаиловој', theme:'knez', tune:'valcer', street:true, icon:'icevjp',
     desc:'Сунчано поподне у Кнез Михаиловој. Шетачи, туристи, сликар и виолиниста — и свима се једе сладолед.',
     novo:'Обука. Узми корнет, па за сваку куглу додирни посуду са сладоледом. Гост тражи једну, две или три кугле; готов корнет стави на пулт са звонцетом. Погрешан корнет баци у канту. Нема сата ни журбе: обука траје док седам гостију не добије сладолед. Тезгу можеш да обиђеш са свих страна, а кроз гужву се пробијаш.',
     tutorial:true, recipes:ICE_KEYS, script:[1,1,2,2,3,3,3], interval:12, firstGap:8, maxOrders:2, patience:60, noExpire:true,
@@ -486,7 +511,7 @@ while(save.stars.length<LEVELS.length-1) save.stars.push(0); while(save.best.len
 const starsOf=li=>li===0?(save.tutStars|0):(save.stars[li-1]|0), bestOf=li=>li===0?(save.tutBest|0):(save.best[li-1]|0);
 function setStars(li,v){ if(li===0) save.tutStars=v; else save.stars[li-1]=v; }
 function setBest(li,v){ if(li===0) save.tutBest=v; else save.best[li-1]=v; }
-const progSig=()=>save.stars.join('')+'/'+save.best.join(',')+'/'+(save.tutStars|0)+'/'+(save.tutBest|0);
+const progSig=()=>save.stars.join('')+'/'+save.best.join(',')+'/'+(save.tutStars|0)+'/'+(save.tutBest|0)+'/'+(save.tutDone?1:0);
 /* ======================= ЈЕЗИК ======================= */
 /* Изворни текст је српски; tr() га преводи на енглески при приказу.
    Домаћин шаље поруке на српском, па сваки играч види свој језик. */
@@ -812,6 +837,13 @@ const EN={
   'Мој шофер чека!':'My chauffeur is waiting!','Плаћам, а чекам?!':'I’m paying, and I’m waiting?!','Шармантно!':'Charming!','Одлазим у Монако.':'I’m off to Monaco.','Шампањац је топао!':'The champagne is warm!',
   // сладолед у Кнез Михаиловој
   'Сладолед у Кнез Михаиловој':'Ice Cream on Knez Mihailova',
+  'НОВО':'NEW','ЗАКЉУЧАНО':'LOCKED','Обука':'Tutorial','✓ Обука':'✓ Tutorial','ресет':'reset','Брише сав напредак (за развој)':'Erases all progress (for development)',
+  'Обрисати сав напредак: звездице, рекорде, откључане нивое и куваре?':'Erase all progress: stars, records, unlocked levels and cooks?','Пронађене тајне':'Secrets found',
+  'Насликао бих вас… за један сладолед!':'I’d paint you… for one ice cream!','За корнет бих свирала и брже!':'For a cone I’d play even faster!','Сладолед за шал? Може трампа!':'Ice cream for a scarf? It’s a deal!',
+  'Седите, молим вас — сликам вас!':'Please, sit down — I’m painting you!','Хвала! Ова је за вас — ајде, коло!':'Thank you! This one’s for you — kolo, let’s go!','Шал у бојама заставе — на поклон!':'A scarf in the flag’s colors — a gift!',
+  'Портрет је ваш, на поклон!':'The portrait is yours, a gift!','Хвала још једном!':'Thanks again!','Носите га с поносом!':'Wear it with pride!',
+  'сликар слика твој портрет!':'the painter paints your portrait!','виолинисткиња свира коло!':'the violinist plays a kolo!','добио си шал на поклон!':'you got a scarf as a gift!',
+  'Готово! Портрет је ваш.':'Done! The portrait is yours.','Браво!':'Bravo!','Јао, што лепо!':'Oh, how lovely!','Ајде, још једну!':'Come on, one more!',
   'Сунчано поподне у Кнез Михаиловој. Шетачи, туристи, сликар и виолиниста — и свима се једе сладолед.':'A sunny afternoon on Knez Mihailova, Belgrade’s main pedestrian street. Strollers, tourists, a painter and a violinist — and everyone wants ice cream.',
   'Обука. Узми корнет, па за сваку куглу додирни посуду са сладоледом. Гост тражи једну, две или три кугле; готов корнет стави на пулт са звонцетом. Погрешан корнет баци у канту. Нема сата ни журбе: обука траје док седам гостију не добије сладолед. Тезгу можеш да обиђеш са свих страна, а кроз гужву се пробијаш.':'Tutorial. Take a cone, then touch an ice cream tub once for each scoop. Guests ask for one, two or three scoops; put the finished cone on the counter with the bell. Throw a wrong cone in the bin. There is no clock and no rush: the tutorial lasts until seven guests get their ice cream. You can walk all the way around the stand and push through the crowd.',
   'Ванила':'Vanilla','Чоколада':'Chocolate','Јагода':'Strawberry','Пистаћи':'Pistachio','Корнет и кугле':'Cone and scoops','Корнет':'Cone',
@@ -841,6 +873,8 @@ for(const id of ICE_KEYS){ const R=RECIPES[id]; EN[R.n]='Ice cream: '+R.parts.ma
 const EN_RE=[
   [/^(\+?)([\d.,]+) дин\.$/,(m,p,n)=>p+n+' din.'],
   [/^Рекорд: ([\d.,]+) дин\.$/,(m,n)=>'Best: '+n+' din.'],
+  [/^Број (\d+)$/,(m,n)=>'No. '+n],[/^Скривен ниво (\d+)$/,(m,n)=>'Hidden level '+n],[/^Освоји ★ на нивоу (\d+)$/,(m,n)=>'Earn ★ on level '+n],
+  [/^Тајна (\d)\/3: (.+)$/,(m,n,t)=>'Secret '+n+'/3: '+tr(t)],[/^(\d) од 3$/,(m,n)=>n+' of 3'],
   [/^Бакшиш \+(.+) € ×2$/,(m,n)=>'Tip +'+n+' € ×2'],
   [/^Бакшиш \+(\d+)( \(музика!\))?$/,(m,n,b)=>'Tip +'+n+(b?' (music!)':'')],
   [/^Похвала \+(\d+)$/,(m,n)=>'Commendation +'+n],
@@ -1609,7 +1643,7 @@ function stepMove(o,a,ix,iy,dt,others,boost){
 function findTarget(o,a){
   const cx=Math.floor(a.x), cy=Math.floor(a.y); let best=null, bs=-1e9;
   for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){
-    const t=tileAt(o,cx+dx,cy+dy); if(!t||!t.solid||t.deco) continue;
+    const t=tileAt(o,cx+dx,cy+dy); if(!t||!t.solid||(t.deco&&!EGG_WHO[t.kind])) continue; // украс није циљ, осим ликова који примају поклон
     const vx=t.x+.5-a.x, vy=t.y+.5-a.y, d=Math.hypot(vx,vy); if(d>1.25) continue;
     const dot=(vx*a.fx+vy*a.fy)/d; if(dot<.35) continue;
     const sc=dot*2-d; if(sc>bs){ bs=sc; best=t; }
@@ -1749,6 +1783,7 @@ function combine(p,A,B,t){
 }
 function simGrab(p){
   const t=p.target; if(!t||p.stun>0) return; const h=p.hold;
+  if(t.deco){ streetGift(p,t); return; }
   switch(t.kind){
     case 'counter': case 'board': {
       const it=t.item;
@@ -2506,7 +2541,7 @@ function dec(c,kind){
 function buildSnap(){
   const s={f:++Game.snapSeq,ph:Game.phase,lv:Game.li};
   if(S&&['countdown','play','pause','ending','end'].includes(Game.phase)){
-    s.rs=S.rs; s.tl=Math.round(S.timeLeft*10); s.sc=S.score; s.dl=S.delivered; s.cd=Math.round(S.countdown*10); s.go=Math.round(S.goT*10);
+    s.rs=S.rs; s.tl=Math.round(S.timeLeft*10); s.sc=S.score; s.dl=S.delivered; if(S.st&&S.st.eggs) s.eg=EGG_KEYS.map(k=>{ const e=S.st.eggs[k]; return e?[e.slot,e.ch,e.c.join(',')]:0; }); s.cd=Math.round(S.countdown*10); s.go=Math.round(S.goT*10);
     s.pl=S.players.map(p=>[p.slot,p.ch,Math.round(p.x*100),Math.round(p.y*100),Math.round(p.fx*100),Math.round(p.fy*100),enc(p.hold),wkCode(p.work),p.target?p.target.x:-1,p.target?p.target.y:-1,Math.round((p.stun||0)*10)]);
     s.np=S.npcs.map(n=>{ const a=[Math.round(n.x*100),Math.round(n.y*100),Math.round(n.fx*10),Math.round(n.fy*10),n.gone?1:n.pause>0?2:0];
       if(n.kind==='ped'||n.kind==='cust') a.push(n.kind==='cust'?2:1,n.id,Math.max(0,CTS.indexOf(n.ct)),n.state,n.carry?RKEYS.indexOf(n.carry):-1,n.act|0,n.oid|0); return a; });
@@ -2605,7 +2640,7 @@ function onSnap(s){
   if(prevPh!==s.ph) uiDirty();
   if(s.rs===undefined){ if(s.ph==='lobby'||s.ph==='intro'){ if(!V||V.li!==Game.li||V.rs!==-1) V=viewForLevel(Game.li); } return; }
   if(!V||V.rs!==s.rs||V.li!==Game.li){ V=viewForLevel(Game.li); V.rs=s.rs; V.pmap={}; me=null; FX.hx.clear(); }
-  V.timeLeft=s.tl/10; V.score=s.sc; V.delivered=s.dl|0; V.countdown=s.cd/10; V.goT=s.go/10;
+  V.timeLeft=s.tl/10; V.score=s.sc; V.delivered=s.dl|0; V.eggs=s.eg?Object.fromEntries(EGG_KEYS.map((k,i)=>[k,s.eg[i]?{slot:s.eg[i][0],ch:s.eg[i][1],c:s.eg[i][2].split(',')}:null])):null; V.countdown=s.cd/10; V.goT=s.go/10;
   const seen=new Set();
   for(const a of s.pl||[]){
     const slot=a[0]; seen.add(slot); let p=V.pmap[slot];
@@ -2760,6 +2795,7 @@ function schedStep(tn,i,t,sd){
 function musicSync(){
   const want=Game.phase==='play'&&save.music&&!!Snd.ctx;
   if(want&&!Mus.on) musicStart(LEVELS[Game.li].tune); else if(!want&&Mus.on) musicStop();
+  if(Mus.on){ const tw=TUNES[STR.fiddle>0&&V&&V.L.street?'kolo':LEVELS[Game.li].tune]||TUNES.kolo; if(Mus.tune!==tw){ Mus.tune=tw; Mus.step=0; } } // виолинисткиња свира коло за корнет
   Mus.rate=((V&&!V.L.tutorial&&V.timeLeft<=30)?1.17:1)*(SCN.boostT>0?1.07:1);
 }
 
@@ -2776,6 +2812,7 @@ function playEvent(e){
   else if(ty==='p') FX.scorePulse=1;
   else if(ty==='g') sceneEvent(e);
   else if(ty==='q') streetQuip(e[2],e[3]);
+  else if(ty==='E') streetEgg(e[2]);
 }
 const BITS={pa:'#e2392d',kr:'#5fb04f',si:'#fbf8ef',lu:'#f1e2d0',ri:'#f3d2c4',km:'#f6dd96'};
 function burst(kind,x,y){
@@ -3068,8 +3105,8 @@ function noteResult(li,st){
 }
 function finishLevel(){
   const tut=!!S.L.tutorial, st=tut?0:S.stars.filter(v=>S.score>=v).length, i=S.li;
-  const rec=!tut&&S.score>bestOf(i)&&S.score>0; if(rec) setBest(i,S.score); noteResult(i,st);
-  Game.result={sc:S.score,st,d:S.delivered,m:S.missed,tp:S.tips,li:i,thr:S.stars,n:S.n,rec:rec?1:0,x:S.stolen|0,mi:S.michelin|0};
+  const rec=!tut&&S.score>bestOf(i)&&S.score>0; if(tut&&!save.tutDone){ save.tutDone=true; persist(); } if(rec) setBest(i,S.score); noteResult(i,st);
+  Game.result={eg:S.st&&S.st.eggs?Object.keys(S.st.eggs).length:0,sc:S.score,st,d:S.delivered,m:S.missed,tp:S.tips,li:i,thr:S.stars,n:S.n,rec:rec?1:0,x:S.stolen|0,mi:S.michelin|0};
   Game.phase='end'; uiDirty(); rescanPeers();
   for(let k=0;k<st;k++) setTimeout(()=>sfx('star'),300+k*300);
 }
@@ -4124,8 +4161,8 @@ function drawChar(c,px,py,s,fx,fy,walk,st,o){
   if(st.hood){ if(back){ ell(c,px,by-s*.25,s*.17,s*.11); fs(c,st.hood,line,lw); c.strokeStyle='rgba(0,0,0,.25)'; c.lineWidth=1; c.beginPath(); c.moveTo(px,by-s*.33); c.lineTo(px,by-s*.17); c.stroke(); }
     else { ell(c,px,by-s*.27,s*.2,s*.08); c.fillStyle=st.hood; c.fill(); c.strokeStyle='rgba(0,0,0,.35)'; c.lineWidth=1; c.stroke();
       c.strokeStyle='#f2f2f2'; c.lineWidth=Math.max(1,s*.015); c.beginPath(); c.moveTo(px+fx*s*.05-s*.05,by-s*.24); c.lineTo(px+fx*s*.05-s*.06,by-s*.11); c.moveTo(px+fx*s*.05+s*.05,by-s*.24); c.lineTo(px+fx*s*.05+s*.06,by-s*.11); c.stroke(); } }
-  if(st.scarf&&!back&&!o.scarfUp){ for(let i=0;i<6;i++){ rr(c,px-s*.2+i*s*.067,by-s*.25,s*.068,s*.085,s*.012); c.fillStyle=st.scarf[i%2]; c.fill(); }
-    for(let k=0;k<4;k++){ c.fillStyle=st.scarf[k%2]; c.fillRect(px+s*.06,by-s*.18+k*s*.055,s*.075,s*.056); }
+  if(st.scarf&&!back&&!o.scarfUp){ const nc=st.scarf.length; for(let i=0;i<6;i++){ rr(c,px-s*.2+i*s*.067,by-s*.25,s*.068,s*.085,s*.012); c.fillStyle=st.scarf[i%nc]; c.fill(); }
+    for(let k=0;k<4;k++){ c.fillStyle=st.scarf[k%nc]; c.fillRect(px+s*.06,by-s*.18+k*s*.055,s*.075,s*.056); }
     c.strokeStyle=st.scarf[1]; c.lineWidth=1; c.beginPath(); for(let k=0;k<4;k++){ c.moveTo(px+s*.065+k*s*.02,by+s*.04); c.lineTo(px+s*.065+k*s*.02,by+s*.08); } c.stroke(); }
   if(st.chain&&!back){ c.strokeStyle='#e8b830'; c.lineWidth=Math.max(1.6,s*.032); c.beginPath(); c.arc(px+fx*s*.05,by-s*.22,s*.12,.35,Math.PI-.35); c.stroke();
     circ(c,px+fx*s*.05,by-s*.1,s*.03); c.fillStyle='#f6d050'; c.fill(); if(Math.sin(G_anim*2.3+px)>.92){ c.fillStyle='#fff'; c.font=`900 ${Math.round(s*.16)}px Rubik, sans-serif`; c.textAlign='center'; c.fillText('✦',px+fx*s*.05+s*.08,by-s*.14); } }
@@ -6034,7 +6071,7 @@ function streetInit(s){
   const gates=[];
   for(let y=0;y<H;y++){ if(!s.grid[y][0].solid) gates.push({x:-.8,y:y+.5,tx:0,ty:y,w:3,side:0}); if(!s.grid[y][W-1].solid&&!qrows.has(y)) gates.push({x:W+.8,y:y+.5,tx:W-1,ty:y,w:3,side:1}); }
   for(let x=0;x<W;x++){ if(!s.grid[0][x].solid) gates.push({x:x+.5,y:-.25,tx:x,ty:0,w:.6,side:2}); if(!s.grid[H-1][x].solid) gates.push({x:x+.5,y:H+.8,tx:x,ty:H-1,w:.45,side:3}); }
-  s.st={cost,gates,nid:0,next:0,poiBusy:new Set(),chatT:4+Math.random()*3,nextCust:null};
+  s.st={cost,gates,nid:0,next:0,poiBusy:new Set(),chatT:4+Math.random()*3,nextCust:null,eggs:{},clapT:0};
   for(let i=0;i<STREET_N;i++) spawnPed(s,true);
 }
 function pickGate(s,not){ const G=s.st.gates.filter(g=>!not||g.side!==not.side||Math.abs(g.tx-not.tx)+Math.abs(g.ty-not.ty)>6);
@@ -6137,9 +6174,26 @@ function streetStep(dt){
     if(!bw){ const m=k*(aw?2:1); if(sFree(s,b.x+ux*m,b.y+uy*m)){ b.x+=ux*m; b.y+=uy*m; } } }
   for(let i=s.npcs.length-1;i>=0;i--){ const n=s.npcs[i]; if(n.gone&&(n.kind==='ped'||n.kind==='cust')){ if(n.poi>=0) st.poiBusy.delete(n.poi); s.npcs.splice(i,1); } }
   if(P.filter(n=>n.kind==='ped'&&!n.gone).length<STREET_N&&s.time>=st.next){ spawnPed(s,false); st.next=s.time+.6+Math.random()*1.4; }
+  if(st.clapT>0&&(st.clapT-=dt)<=0){ const g=(s.deco||[]).find(g=>g.kind==='violin'); // пролазници аплаудирају колу
+    if(g) P.filter(n=>n.kind==='ped'&&!n.gone&&Math.hypot(n.x-g.x0-.5,n.y-g.y0-.5)<5).slice(0,3).forEach((n,i)=>sQuip(n,['Браво!','Јао, што лепо!','Ајде, још једну!'][i])); }
   if((st.chatT-=dt)<=0){ st.chatT=5+Math.random()*5; const vis=P.filter(n=>n.kind==='ped'&&!n.gone&&n.state===0&&n.x>.5&&n.x<s.cols-.5&&n.y>.3&&n.y<s.rows-.3); if(vis.length){ const n=pick(vis); sQuip(n,pick(pedLines(n,'chat'))); } }
   for(const n of P) if(n.kind==='cust'&&n.state===1&&!n.imp){ const o=s.orders.find(o=>o.id===n.oid); if(o&&o.t/o.max<.35){ n.imp=1; sQuip(n,pick(pedLines(n,'imp'))); } }
 }
+/* тајне обуке: корнет поклоњен сликару, виолинисткињи или продавцу сувенира. Празних руку свако од њих наговести шта би волео. */
+const EGG_KEYS=['painter','violin','souvenir'], EGG_WHO={painter:'painter',violin:'violin',souvenir:'vendor'}, EGG_SCARF=['#c6363c','#0c4076','#ffffff'];
+const EGG_HINT={painter:'Насликао бих вас… за један сладолед!',violin:'За корнет бих свирала и брже!',souvenir:'Сладолед за шал? Може трампа!'};
+const EGG_SAY={painter:'Седите, молим вас — сликам вас!',violin:'Хвала! Ова је за вас — ајде, коло!',souvenir:'Шал у бојама заставе — на поклон!'};
+const EGG_THX={painter:'Портрет је ваш, на поклон!',violin:'Хвала још једном!',souvenir:'Носите га с поносом!'};
+const EGG_NAME={painter:'сликар слика твој портрет!',violin:'виолинисткиња свира коло!',souvenir:'добио си шал на поклон!'};
+function streetGift(p,t){ const s=S, k=t.kind, who=EGG_WHO[k], h=p.hold; if(!who||!s.st) return;
+  if(s.st.eggs[k]){ ev('q',who,EGG_THX[k]); return; }
+  if(!h||h.k!=='p'||!h.c.length){ ev('q',who,EGG_HINT[k]); return; }
+  s.st.eggs[k]={slot:p.slot,ch:p.ch|0,c:h.c.slice()}; p.hold=null;
+  ev('E',k,p.slot); ev('q',who,EGG_SAY[k]); ev('o','Тајна '+Object.keys(s.st.eggs).length+'/3: '+EGG_NAME[k]); ev('s','ding',-1); ev('b','sparkle',t.x+.5,t.y+.4);
+  if(k==='violin') s.st.clapT=1.4;
+}
+/* поклон који је лик добио: код домаћина из симулације, код госта из снимка */
+const eggOf=k=>(V&&(V.st?V.st.eggs&&V.st.eggs[k]:V.eggs&&V.eggs[k]))||null;
 /* наруџбина: најближи пешак из гужве постаје гост; ако нико не шета улицом, гост дође с десне стране */
 function streetPickCt(){ const s=S, q=s.L.queue[0];
   const c=s.npcs.filter(n=>n.kind==='ped'&&!n.gone&&n.x>1&&n.y>.6&&n.x<s.cols-1&&n.y<s.rows-.6).map(n=>[n,Math.hypot(n.x-q[0],n.y-q[1])+Math.random()*3]).sort((a,b)=>a[1]-b[1]);
@@ -6158,7 +6212,8 @@ function streetServed(o){ const s=S, n=s.npcs.find(n=>n.kind==='cust'&&n.oid===o
   streetQueue(s); }
 
 /* ---- код свих играча: облачићи, голубови, ноте, гости у башти ---- */
-const STR={key:'',pig:[],noteT:0,lineT:6,cheer:-1,cheerT:0,coins:0,actV:null,act:null}, STB=[];
+const STR={key:'',pig:[],noteT:0,lineT:6,cheer:-1,cheerT:0,coins:0,actV:null,act:null,egg:{},fiddle:0,painted:false}, STB=[];
+function streetEgg(k){ STR.egg[k]=G_anim; if(k==='violin'){ STR.fiddle=14; STR.coins+=4; } }
 const KX=u=>ox+u*ts, KY=v=>oy+v*ts;
 function streetActors(){ if(STR.actV===V) return STR.act; const A={};
   for(const g of V.deco||[]){ if(g.kind==='painter') A.painter=[g.x0+2.3,g.y0+.55]; else if(g.kind==='violin') A.violin=[g.x0+.5,g.y0+.42]; else if(g.kind==='souvenir') A.vendor=[g.x0+1.5,g.y0+.32];
@@ -6176,11 +6231,13 @@ function drawStreetBubbles(dt){
     ctx.fillStyle='#33200f'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(b.text,x,y+h/2+.5); ctx.restore(); }
 }
 function streetAmbient(dt){
-  const key=V.li+'|'+V.rs; if(STR.key!==key){ Object.assign(STR,{key,pig:[],noteT:0,lineT:6,cheer:-1,cheerT:0,coins:3}); STB.length=0;
+  const key=V.li+'|'+V.rs; if(STR.key!==key){ Object.assign(STR,{key,pig:[],noteT:0,lineT:6,cheer:-1,cheerT:0,coins:3,egg:{},fiddle:0,painted:false}); STB.length=0;
     const fl=[]; for(let y=5;y<V.rows;y++) for(let x=1;x<V.cols-1;x++){ const t=V.grid[y][x]; if(!t.solid&&!D4.some(([dx,dy])=>{ const n=tileAt(V,x+dx,y+dy); return n&&n.solid; })) fl.push([x,y]); }
     for(let i=0;i<6&&fl.length;i++){ const [x,y]=fl.splice(Math.floor(Math.random()*fl.length),1)[0]; STR.pig.push({x:x+.3+Math.random()*.4,y:y+.3+Math.random()*.4,fx:Math.random()<.5?-1:1,h:0,fly:false,t:0,ph:Math.random()*6,free:fl}); } }
   const A=streetActors();
-  if(A.violin&&(STR.noteT-=dt)<=0){ STR.noteT=.45+Math.random()*.35; FX.parts.push({x:A.violin[0]+.22,y:A.violin[1]-.75,vx:(Math.random()-.5)*.4,vy:-.6,t:0,life:1.4,kind:'note',ch:Math.random()<.5?'♪':'♫'}); }
+  STR.fiddle=Math.max(0,STR.fiddle-dt);
+  if(!STR.painted&&STR.egg.painter!==undefined&&G_anim-STR.egg.painter>5){ STR.painted=true; streetQuip('painter','Готово! Портрет је ваш.'); }
+  if(A.violin&&(STR.noteT-=dt)<=0){ STR.noteT=(STR.fiddle>0?.1:.45)+Math.random()*(STR.fiddle>0?.1:.35); FX.parts.push({x:A.violin[0]+.22,y:A.violin[1]-.75,vx:(Math.random()-.5)*.4,vy:-.6,t:0,life:1.4,kind:'note',ch:Math.random()<.5?'♪':'♫'}); }
   STR.cheerT=Math.max(0,STR.cheerT-dt);
   // голубови прхну кад неко прође поред њих
   for(const b of STR.pig){ b.t+=dt;
@@ -6231,6 +6288,12 @@ function drawPigeon(b){ const s=ts, x=KX(b.x), gy=KY(b.y), y=gy-b.h*s, f=b.fx;
 /* ---- украси улице: у истом редоследу по y као ликови ---- */
 const TREE_BLOBS=[[-.3,.12,.36,'#3f7a32'],[.3,.1,.36,'#3f7a32'],[0,.22,.38,'#3a722e'],[-.18,-.18,.38,'#4f9440'],[.2,-.2,.36,'#4f9440'],[0,-.05,.42,'#5aa04a'],[-.12,-.28,.22,'#78bc5e'],[.14,-.12,.18,'#6db055']];
 function octagon(c,cx,cy,rx,ry){ c.beginPath(); for(let k=0;k<8;k++){ const a=k*Math.PI/4+Math.PI/8; c.lineTo(cx+Math.cos(a)*rx,cy+Math.sin(a)*ry); } c.closePath(); }
+/* портрет кувара који је сликару донео сладолед; слика настаје одоздо нагоре */
+function portraitArt(c,x,y,w,h,ch,pr){
+  c.save(); c.beginPath(); c.rect(x,y,w,h); c.clip(); c.fillStyle='#fbfaf4'; c.fillRect(x,y,w,h);
+  c.beginPath(); c.rect(x,y+h*(1-pr),w,h*pr); c.clip(); c.fillStyle='#e8c98a'; c.fillRect(x,y,w,h);
+  drawChar(c,x+w/2,y+h*1.05,h*1.25,0,1,0,CHARS[ch]||CHARS[0],{}); c.restore();
+  c.strokeStyle='#8a6a40'; c.lineWidth=Math.max(1,w*.04); c.strokeRect(x,y,w,h); }
 function kalemegdanArt(c,x,y,w,h,pr){ // слика у настајању: небо, река, парк, Победник
   c.save(); c.beginPath(); c.rect(x,y,w,h); c.clip(); c.fillStyle='#fbfaf4'; c.fillRect(x,y,w,h);
   if(pr>.05){ c.globalAlpha=Math.min(1,(pr-.05)/.2); c.fillStyle=lg(c,0,y,0,y+h*.55,'#7fb4e0','#f2d8a8'); c.fillRect(x,y,w,h*.55); }
@@ -6289,6 +6352,7 @@ const DECO={
       rr(ctx,x0+s*.03,top+s*.3,w-s*.06,s*.16,s*.04); fs(ctx,'#c8945a','#6a4520',1);
       for(let k=0;k<14;k++){ ctx.fillStyle=['#c6363c','#0c4076','#f2c230','#ffffff','#3a7a3a'][k%5]; ctx.fillRect(x0+s*.12+k*(w-s*.3)/14,top+s*.33,s*.09,s*.07); }
       for(let k=0;k<3;k++){ const hx=x0+w*(.2+k*.3), hy=top+s*.62; ctx.fillStyle='#4a4636'; ctx.beginPath(); ctx.moveTo(hx-s*.13,hy); ctx.quadraticCurveTo(hx,hy-s*.16,hx+s*.13,hy); ctx.quadraticCurveTo(hx,hy+s*.03,hx-s*.13,hy); ctx.fill(); }
+      const eg=eggOf('souvenir'); if(eg) drawItemAt(ctx,{k:'p',c:eg.c},x0+w*.88,top+s*.2,s*.4);
       for(let k=0;k<2;k++){ const ox2=x0+w*(.35+k*.3), oy2=top+s*.8; ctx.fillStyle='#8a4a22'; ell(ctx,ox2,oy2,s*.12,s*.05); ctx.fill(); ctx.strokeStyle='#3a1a08'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(ox2+s*.1,oy2-s*.03); ctx.quadraticCurveTo(ox2+s*.16,oy2-s*.1,ox2+s*.13,oy2-s*.03); ctx.stroke(); } }});
   },
   painter:(g,E)=>{ const s=ts, A=streetActors(), pr=!live()?.7:V.L.tutorial?clamp((V.delivered|0)/V.L.script.length,0,1)*.85+.15:clamp(1-V.timeLeft/V.L.time,0,1)*.85+.15;
@@ -6300,8 +6364,9 @@ const DECO={
       ctx.fillStyle='#fffdf2'; ctx.fillRect(cx+s*.12,by-s*.3,s*.16,s*.08); ctx.strokeStyle='#8a6a40'; ctx.lineWidth=1; ctx.strokeRect(cx+s*.12,by-s*.3,s*.16,s*.08); }});
     E.push({y:g.y0+.78,f:()=>{ const cx=KX(g.x0+1.45), by=KY(g.y0+.82), w=s*.62, h=s*.48;
       ctx.strokeStyle='#7a5434'; ctx.lineWidth=Math.max(1.5,s*.035); ctx.beginPath(); ctx.moveTo(cx-s*.24,by); ctx.lineTo(cx,by-s*1.12); ctx.lineTo(cx+s*.24,by); ctx.moveTo(cx,by-s*1.12); ctx.lineTo(cx+s*.06,by-s*.05); ctx.stroke();
-      ctx.fillStyle='#7a5434'; ctx.fillRect(cx-s*.36,by-s*.5,s*.72,s*.05); kalemegdanArt(ctx,cx-w/2,by-s*.5-h,w,h,pr); }});
-    E.push({y:g.y0+.55,f:()=>{ const [px,py]=A.painter, x=KX(px), y=KY(py); ctx.fillStyle='#6a4520'; ctx.fillRect(x-s*.12,y+s*.02,s*.24,s*.06); ctx.fillRect(x-s*.1,y+s*.06,s*.03,s*.18); ctx.fillRect(x+s*.07,y+s*.06,s*.03,s*.18);
+      ctx.fillStyle='#7a5434'; ctx.fillRect(cx-s*.36,by-s*.5,s*.72,s*.05); const eg=eggOf('painter');
+      if(eg) portraitArt(ctx,cx-w/2,by-s*.5-h,w,h,eg.ch,STR.egg.painter===undefined?1:clamp((G_anim-STR.egg.painter)/5,0,1)); else kalemegdanArt(ctx,cx-w/2,by-s*.5-h,w,h,pr); }});
+    E.push({y:g.y0+.55,f:()=>{ const [px,py]=A.painter, x=KX(px), y=KY(py), eg=eggOf('painter'); if(eg) drawItemAt(ctx,{k:'p',c:eg.c},x+s*.34,y+s*.12,s*.4); ctx.fillStyle='#6a4520'; ctx.fillRect(x-s*.12,y+s*.02,s*.24,s*.06); ctx.fillRect(x-s*.1,y+s*.06,s*.03,s*.18); ctx.fillRect(x+s*.07,y+s*.06,s*.03,s*.18);
       drawChar(ctx,x,y,s,-1,0,0,PAINTER,{sit:true,pose:'busy',prop:(c,i)=>{ const h=i.hands[1]||i.hands[0], h2=i.hands[0];
         if(h){ const tx=h[0]-s*.2, ty=h[1]-s*.1+Math.sin(G_anim*3)*s*.06; c.strokeStyle='#8a5a2a'; c.lineWidth=Math.max(1,s*.025); c.beginPath(); c.moveTo(h[0],h[1]); c.lineTo(tx,ty); c.stroke(); circ(c,tx,ty,s*.02); c.fillStyle='#c8202b'; c.fill(); }
         if(h2&&h2!==h){ ell(c,h2[0],h2[1],s*.09,s*.06); fs(c,'#e8d0a0','#8a6a3a',1); for(const [dx,dy,cl] of [[-.04,-.01,'#c8202b'],[0,-.03,'#2f6fb5'],[.04,-.01,'#f2c230'],[.02,.02,'#3a7a3a']]){ circ(c,h2[0]+dx*s,h2[1]+dy*s,s*.014); c.fillStyle=cl; c.fill(); } } }}); }});
@@ -6313,7 +6378,8 @@ const DECO={
       ell(c,-s*.02,0,s*.1,s*.075); fs(c,lg(c,0,-s*.08,0,s*.08,'#c87a34','#7a3a10'),'#3a1a04',1); ell(c,s*.08,0,s*.075,s*.06); fs(c,lg(c,0,-s*.06,0,s*.06,'#c87a34','#7a3a10'),'#3a1a04',1);
       c.restore(); c.strokeStyle='#e8dcc0'; c.lineWidth=Math.max(1,s*.014); c.beginPath(); c.moveTo(Rh[0]-s*.05,Rh[1]+s*.04); c.lineTo(Rh[0]+s*.32,Rh[1]-s*.1); c.stroke(); }})});
     E.push({y:g.y0+.92,f:()=>{ const y=KY(g.y0+.78); rr(ctx,cx-s*.3,y,s*.6,s*.2,s*.08); fs(ctx,'#1a1a1a','#000',1); rr(ctx,cx-s*.26,y+s*.03,s*.52,s*.14,s*.06); ctx.fillStyle='#7a1630'; ctx.fill();
-      for(let k=0;k<Math.min(STR.coins,14);k++){ circ(ctx,cx-s*.2+hash(k,3)*s*.4,y+s*.06+hash(5,k)*s*.08,s*.025); fs(ctx,'#f2c230','#9c7414',1); } }});
+      for(let k=0;k<Math.min(STR.coins,14);k++){ circ(ctx,cx-s*.2+hash(k,3)*s*.4,y+s*.06+hash(5,k)*s*.08,s*.025); fs(ctx,'#f2c230','#9c7414',1); }
+      const eg=eggOf('violin'); if(eg) drawItemAt(ctx,{k:'p',c:eg.c},cx+s*.42,y-s*.02,s*.4); }});
   },
   menu:(g,E)=>E.push({y:g.y0+.88,f:()=>{ const s=ts, cx=KX(g.x0+.5), by=KY(g.y0+.92), w=s*.78, h=s*1.0, x=cx-w/2, y=by-h;
     ctx.strokeStyle='#7a5434'; ctx.lineWidth=Math.max(1.5,s*.04); ctx.beginPath(); ctx.moveTo(x+w*.12,by); ctx.lineTo(x+w*.2,y+h*.5); ctx.moveTo(x+w*.88,by); ctx.lineTo(x+w*.8,y+h*.5); ctx.stroke();
@@ -6538,9 +6604,9 @@ function render(dt){
     const multi=Game.role==='couch'?DP.length>1:Game.role!=='solo';
     for(const e of ents){
       if(e.f){ e.f(); continue; }
-      if(e.p){ const p=e.p, s=ts, hx=p.hold;
+      if(e.p){ const p=e.p, s=ts, hx=p.hold, ge=V.L.street&&eggOf('souvenir'), cst=ge&&ge.slot===p.slot?{...chefLook(p.ch),scarf:EGG_SCARF}:chefLook(p.ch);
         if(V.L.street){ ctx.strokeStyle=(CHARS[p.ch]||CHARS[0]).tag; ctx.lineWidth=Math.max(2,s*.05); ell(ctx,ox+p.x*s,oy+p.y*s+s*.25,s*.34,s*.13); ctx.stroke(); }
-        drawChar(ctx,ox+p.x*ts,oy+p.y*ts,s*((CHARS[p.ch]||CHARS[0]).scale||1),p.fx,p.fy,p.walk,chefLook(p.ch),{pose:(CHARS[p.ch]||CHARS[0]).gun&&p.mv&&!hx&&!(p.wk===1||p.wk===2)?'gunrun':undefined,holding:!!hx,working:p.wk===1||p.wk===2,knife:p.wk===1?(FX.chopT.get('w'+p.slot)||0)/.2:undefined,
+        drawChar(ctx,ox+p.x*ts,oy+p.y*ts,s*((CHARS[p.ch]||CHARS[0]).scale||1),p.fx,p.fy,p.walk,cst,{pose:(CHARS[p.ch]||CHARS[0]).gun&&p.mv&&!hx&&!(p.wk===1||p.wk===2)?'gunrun':undefined,holding:!!hx,working:p.wk===1||p.wk===2,knife:p.wk===1?(FX.chopT.get('w'+p.slot)||0)/.2:undefined,
           drawHold:hx?((x,y)=>drawItemAt(ctx,hx,x,y,s*.52)):null,label:multi?tr(Game.role==='couch'?'Играч '+(p.slot+1):p.me?'Ти':slotName(p.slot)):null}); }
       else { const n=e.n; if(n.kind==='ped'||n.kind==='cust'){ drawStreetNpc(n); continue; } if(n.kind==='car'){ if(!n.gone) topCar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts*1.15,'#c8202b',Math.atan2(n.fy||0,n.fx||-1)); } else if(n.kind==='squad') drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk*1.4,SQUAD,{}); else if(n.kind==='zmaj') drawZmaj(ctx,[n,...DN.filter(o=>o.kind==='zmajr')].map(o=>({x:ox+o.dx*ts,y:oy+o.dy*ts,walk:o.walk})),ts); else if(n.kind==='zmajr'){} else if(n.kind==='caj') drawCajMajstor(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n); else if(n.kind==='guard') drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk,GUARD,{}); else drawChar(ctx,ox+n.dx*ts,oy+n.dy*ts,ts,n.fx,n.fy,n.walk,BAND,{trumpet:true,holding:true}); }
     }
@@ -6608,13 +6674,22 @@ function hydrateIcon(cnv){
   if(kind==='cone') coneArt(c,[]); else if(kind==='dish') dishArt(c,arg); else if(kind==='ing') drawIngIcon(c,arg); else if(kind==='pot') iPotIcon(c); else if(kind==='kotlic') iKotlicIcon(c); else if(kind==='kazan') iKazanIcon(c); else if(STICON[kind]) STICON[kind](c); else if(kind==='tray') iOvenIcon(c);
 }
 const starsHTML=n=>[0,1,2].map(i=>`<span class="${i<n?'on':''}">★</span>`).join('');
+/* бирач нивоа: наруџбенице на шини, по три на шини. Од закључаних нивоа види се име само првог; даљи су окренути наличјем. */
+const TIX_ROT=[-1.5,1,-.5,.8,0,-1,1.2,-.6,1.6];
+function nextLevel(){ for(let i=0;i<LEVELS.length&&levelOpen(i);i++) if(LEVELS[i].tutorial?!save.tutDone:!starsOf(i)) return i;
+  let k=0; while(k+1<LEVELS.length&&levelOpen(k+1)) k++; return k; }
 function levelList(noPlay){
-  return `<ol class="menu-list">${LEVELS.map((L,i)=>{ const open=levelOpen(i);
-    return `<li class="menu-item${open?'':' locked'}"><span class="n">${i}.</span><span class="title"><b>${esc(L.name)}</b><span class="dots"></span></span>
-      ${L.tutorial?'<span class="stars"></span>':`<span class="stars" aria-label="Звездице: ${starsOf(i)} од 3">${starsHTML(starsOf(i))}</span>`}
-      <span class="desc">${open?esc(L.desc):'Закључано. Освоји бар једну звездицу на претходном нивоу.'}</span>
-      <button class="btn small act" data-act="pick" data-li="${i}" ${open&&!noPlay?'':'disabled'} ${i===0&&!noPlay?'data-primary':''}>Играј</button>
-      ${bestOf(i)&&!L.tutorial?`<span class="best">Рекорд: ${fmt(bestOf(i))} дин.</span>`:''}</li>`; }).join('')}</ol>`;
+  const cur=nextLevel(), lock=LEVELS.findIndex((L,i)=>!levelOpen(i));
+  const tix=LEVELS.map((L,i)=>{ const r=`style="--r:${TIX_ROT[i%TIX_ROT.length]}deg"`, th=THEMES[L.theme];
+    const icon=`<span class="ico" style="background:${th?th.fa:'#f3dfc8'}"><canvas data-icon="dish:${L.icon||L.recipes[0]}" data-size="40"></canvas></span>`;
+    if(lock>=0&&i>lock) return `<button class="tix back" ${r} disabled aria-label="Скривен ниво ${i}"><span class="q">?</span><small>Број ${i}</small></button>`;
+    if(i===lock) return `<button class="tix locked" ${r} disabled><span class="no">Број ${i}</span>${icon}<b>${esc(L.name)}</b><small>Освоји ★ на нивоу ${i-1}</small><span class="stamp">ЗАКЉУЧАНО</span></button>`;
+    const st=starsOf(i), best=bestOf(i);
+    return `<button class="tix${i===cur?' cur':''}" ${r} data-act="pick" data-li="${i}" ${noPlay?'disabled':''}><span class="no">Број ${i}</span>${!L.tutorial&&!st?'<span class="new">НОВО</span>':''}${icon}<b>${esc(L.name)}</b>${L.tutorial
+      ?`<small class="ok">${save.tutDone?'✓ Обука':'Обука'}</small>`:`<span class="stars" aria-label="Звездице: ${st} од 3">${starsHTML(st)}</span>${best?`<span class="best">Рекорд: ${fmt(best)} дин.</span>`:''}`}</button>`; });
+  let rails=''; for(let k=0;k<tix.length;k+=3) rails+=`<div class="rail"><div class="tixs">${tix.slice(k,k+3).join('')}</div></div>`;
+  const L=LEVELS[cur];
+  return `<div class="pass">${rails}</div><div class="pick-card"><div><b><span>${cur}.</span> ${esc(L.name)}</b><p>${esc(L.desc)}</p></div><button class="btn" data-act="pick" data-li="${cur}" ${noPlay?'disabled':'data-primary'}>Играј</button></div>`;
 }
 const howto=()=>`<div class="howto"><div class="hcol"><h4><span aria-hidden="true">⌨️</span> Тастатура</h4>
   <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> или стрелице: кретање</div><div><kbd>Размак</kbd> узми или спусти</div>
@@ -6630,7 +6705,7 @@ const padHelp=()=>`<div class="hcol"><h4><span aria-hidden="true">🎮</span> Г
   <div>${faceBtn('n')}<kbd>Y</kbd><kbd>△</kbd> рецепти на екрану, где их има</div>
   <div><kbd>Start</kbd> мени игре</div>
   <p class="hnote">У менијима: крстић или палица бира дугме, A потврђује, B враћа назад, десна палица помера страну.</p></div>`;
-const toggles=(withTip)=>`<div class="row toggles"><button class="chip" data-act="toggle" data-k="sound" aria-pressed="${save.sound}">Звук</button><button class="chip" data-act="toggle" data-k="music" aria-pressed="${save.music}">Музика</button>${withTip?`<a class="chip link-chip" href="https://serbia.com/about-serbia/traditional-cuisine/" target="_blank" rel="noopener">Српска кухиња ↗</a>`:''}${withTip&&TIP_ON?`<button class="chip tip-chip" data-act="tip">${save.allOpen?'♥ Хвала на подршци':'♥ Подржи игру'}</button>`:''}</div>`;
+const toggles=(withTip)=>`<div class="row toggles"><button class="chip" data-act="toggle" data-k="sound" aria-pressed="${save.sound}">Звук</button><button class="chip" data-act="toggle" data-k="music" aria-pressed="${save.music}">Музика</button>${withTip?`<a class="chip link-chip" href="https://serbia.com/about-serbia/traditional-cuisine/" target="_blank" rel="noopener">Српска кухиња ↗</a>`:''}${withTip&&TIP_ON?`<button class="chip tip-chip" data-act="tip">${save.allOpen?'♥ Хвала на подршци':'♥ Подржи игру'}</button>`:''}${withTip?'<button class="ghost-reset" data-act="resetall" title="Брише сав напредак (за развој)">ресет</button>':''}</div>`;
 /* игра заједно: картице кувара на овом рачунару; сваки уређај бира свог кувара, мишем ‹ › и × */
 const couchSig=()=>Game.role==='couch'?JSON.stringify(Couch.players)+pad.sig:'';
 const couchEmpty=()=>Game.role==='couch'&&!Couch.players.length;
@@ -6748,7 +6823,7 @@ const BUILD={
     return `<div class="sheet narrow"><div class="cloth"></div><div class="sheet-body"><h2 class="center">${ut?'Обука је завршена!':'Смена је готова!'}</h2>
       <div class="big-stars">${ut?'':[0,1,2].map(k=>`<span class="${k<r.st?'on':''}" style="animation-delay:${.3+k*.3}s">★</span>`).join('')}</div>
       <div class="total">${fmt(r.sc)} дин.</div><p class="verdict">${(r.st>=1&&last?'Сви нивои су пређени! ':'')+verdict}</p>
-      <dl class="stats"><dt>Испоручено јела</dt><dd>${r.d}</dd>${ut?'':`<dt>Гостију отишло гладно</dt><dd>${r.m}</dd>`}<dt>${th==='kasarna'?'Похвале':'Бакшиш'}</dt><dd>${fmt(r.tp)} дин.</dd>${th==='kasarna'?`<dt>Разноврсност оброка</dt><dd>${r.x|0}</dd>`:''}${th==='fusion'?`<dt>Мишлен звездица</dt><dd>${r.mi?'★':'—'}</dd>`:''}</dl>
+      <dl class="stats"><dt>Испоручено јела</dt><dd>${r.d}</dd>${ut?`<dt>Пронађене тајне</dt><dd>${r.eg|0} од 3</dd>`:`<dt>Гостију отишло гладно</dt><dd>${r.m}</dd>`}<dt>${th==='kasarna'?'Похвале':'Бакшиш'}</dt><dd>${fmt(r.tp)} дин.</dd>${th==='kasarna'?`<dt>Разноврсност оброка</dt><dd>${r.x|0}</dd>`:''}${th==='fusion'?`<dt>Мишлен звездица</dt><dd>${r.mi?'★':'—'}</dd>`:''}</dl>
       ${th==='kasarna'?'<p class="verdict">Саопштење Министарства: Војници добијају разноврсне оброке.</p>':''}
       <p class="record">${host&&r.rec?'Нови рекорд!':''}</p>
       <div class="goals row mid">${ut?'':(r.thr||[]).map((s,k)=>`<span><b>${'★'.repeat(k+1)}</b> ${fmt(s)} дин.</span>`).join('')}</div>
@@ -6798,6 +6873,8 @@ function act(a,b){
     case 'go': beginLevel(Game.li); break;
     case 'back': toBase(); break;
     case 'resume': resumeGame(); break;
+    case 'resetall': if(confirm(tr('Обрисати сав напредак: звездице, рекорде, откључане нивое и куваре?'))){ // за развој
+      Object.assign(save,{stars:save.stars.map(()=>0),best:save.best.map(()=>0),tutStars:0,tutBest:0,tutDone:false,allOpen:false,ch:0,cch:undefined}); persist(); uiDirty(); } break;
     case 'retry': beginLevel(Game.li); break;
     case 'tobase': toBase(); break;
     case 'next': openIntro(Math.min(LEVELS.length-1,Game.li+1)); break;
