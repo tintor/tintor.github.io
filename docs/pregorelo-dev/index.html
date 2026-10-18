@@ -404,6 +404,15 @@ const FLAVORS=['iv','ic','ij','ip'], ICE_PRICE=[0,150,280,400], ICE_KEYS=[];
   if(acc.length){ const id='ice'+acc.map(k=>k[1]).join(''); ICE_KEYS.push(id); RECIPES[id]={n:'Сладолед: '+acc.map(k=>ING[k].n.toLowerCase()).join(', '), parts:acc.map(k=>k+'R'), price:ICE_PRICE[acc.length], ice:acc.length}; }
   if(acc.length<3) for(let i=from;i<FLAVORS.length;i++) add(i,[...acc,FLAVORS[i]]);
 })(0,[]);
+/* сеоско домаћинство: јаја, млеко и поврће се не узимају из гајбе, него се скупљају по дворишту */
+Object.assign(ING,{ml:{n:'Млеко'}, br:{n:'Брашно'}, cv:{n:'Чорба од поврћа'}});
+Object.assign(RECIPES,{
+  seosalata:{n:'Сеоска салата', parts:['paC','krC','luC'], price:320},
+  corbica:{n:'Чорба од поврћа', cook:'pot', in:['kmC','luC','paC'], out:'cv', parts:['cvK'], price:480},
+  seoproja:{n:'Проја са млеком', cook:'tray', in:['kuR','jaR','mlR'], out:'pj', parts:['pjK'], price:450},
+  testo:{n:'Тесто за палачинке', cook:'board', in:['mlR','jaR','brR'], out:'te', parts:[], price:0},
+  selopal:{n:'Палачинке с пекмезом', parts:['teG','dzR'], price:400, card:['mlR','jaR','brR','@board','dzR']}
+});
 const RKEYS=Object.keys(RECIPES);
 const CRATE={p:'pa',k:'kr',s:'si',l:'lu',m:'me',h:'le',j:'ka',f:'ko',y:'jo',e:'ja',c:'ku',r:'ri',a:'ap',u:'kp',i:'pi',q:'pr',t:'km'};
 const KIND={'#':'counter',W:'window',Q:'window',D:'plates',R:'trash',X:'board',G:'grill',P:'pot',K:'kotlic',O:'oven',T:'trays',N:'sink',Y:'dirtyret',B:'roaster',Z:'kazan',L:'griddle',V:'pan',J:'spit',S:'sac',H:'wok',C:'marin',M:'steam'};
@@ -484,7 +493,26 @@ const LEVELS=[
     stars:[12000,25000,40000], crates:{a:'pk',b:'pl',c:'sn',d:'sl',e:'te',f:'me',g:'kp',h:'pi',i:'ka',j:'lu',k:'lj',l:'kk',m:'rk',n:'mr',o:'zl',p:'vo',q:'tz'},
     band:[{kind:'zmaj',grp:1,path:[[3.3,4.4],[14.1,4.4],[14.55,4.6],[14.6,5.0],[14.55,5.4],[14.1,5.6],[1.9,5.6],[1.45,5.4],[1.4,5.0],[1.45,4.6],[1.9,4.4]],speed:1.2,wp:1},{kind:'zmajr',grp:1,path:[[2.4,4.4]]},{kind:'zmajr',grp:1,path:[[1.5,4.4]]},
       {kind:'caj',path:[[1.5,7.5],[7.5,7.5,2.5],[14.5,7.5,1.2],[7.5,7.5,2.5],[1.5,7.5,1.2]],speed:.85,wp:1}], runner:[1,4,15,6], uniform:true,
-    map:['#WW#abcd#efgh#D#','H..............M','H..............M','J...XX....CC...#','#..............Z','L..............Z','#...XX....##...P','#..............#','R......@.......#','##ijklmnopq#####']}
+    map:['#WW#abcd#efgh#D#','H..............M','H..............M','J...XX....CC...#','#..............Z','L..............Z','#...XX....##...P','#..............#','R......@.......#','##ijklmnopq#####']},
+  { name:'Сеоско домаћинство', theme:'selo', tune:'kolo', icon:'seoproja',
+    desc:'Слава у селу! Цела родбина долази на ручак. Јаја, млеко и поврће нису у гајбама — скупљај их по дворишту.',
+    novo:'Ново: двориште. Кокошке носе јаја, а јаја се котрљају низбрдо — ухвати их (Размак) пре него што упадну у бару! Краву помузи тако што држиш E. Поврће бери у башти кад сазри. Један кувар нека ради напољу, други у кухињи: састојке додај кроз прозор у зиду. Нема гостију за столом, али наруџбине за славску трпезу стижу.',
+    time:240, recipes:['seosalata','corbica','seoproja','selopal'], preps:['testo'], interval:22, maxOrders:4, patience:120, plates:4, trays:2, dirty:false,
+    stars:[900,2200,3600], crates:{c:'ku',b:'br',d:'dz'}, wide:true, farm:{split:17,coop:[1,1,6,6],slope:[-.3,1.1]},
+    kinds:{'=':'fence','~':'pond','I':'wall','E':'coop','^':'tree','%':'hay'}, farmKinds:{'1':'pa','2':'kr','3':'lu','4':'km','A':'cow'},
+    map:['=====^=====^=====I#WW#cbd#',
+         '=EE...=..........I.......X',
+         '=EE...=...AA..%..I.......X',
+         '=.....=..........I..##...#',
+         '=.....=..........#.......P',
+         '=.....=..........I.......P',
+         '==...==..........#..##...O',
+         '.................I.......O',
+         '.....1133..2244..I.......T',
+         '.........@...............#',
+         '~~~..1133..3344..I.......L',
+         '~~~~.............I.......L',
+         '=====^===========IRD#X####']}
 ];
 
 const CHARS=[
@@ -3756,13 +3784,14 @@ function vesselDish(kind,c,L){ L=L||S.L; const r=lvR(L).find(r=>RECIPES[r].cook=
 function buildGrid(o,L){
   const rows=L.map.length, cols=L.map[0].length, grid=[];
   o.start={x:1.5,y:1.5}; o.plateTile=o.dirtyTile=o.windowTile=o.sinkTile=null; o.plateTiles=[]; o.steam=false;
-  const CR=Object.assign({},CRATE,L.crates||{}), KD=L.kinds?Object.assign({},KIND,L.kinds):KIND;
+  const CR=Object.assign({},CRATE,L.crates||{}), KD=L.kinds?Object.assign({},KIND,L.kinds):KIND, FK=L.farmKinds||{};
   for(let y=0;y<rows;y++){ const row=[];
     for(let x=0;x<cols;x++){
       const ch=L.map[y][x], t={x,y,ch,solid:!(ch==='.'||ch==='@'),item:null,kind:'floor'};
       if(ch==='@') o.start={x:x+.5,y:y+.5};
       if(CR[ch]){ t.kind='crate'; t.ing=CR[ch]; } else if(KD[ch]) t.kind=KD[ch];
       if(L.kinds&&L.kinds[ch]) t.deco=true; // украс улице: чврст, али се не користи
+      if(FK[ch]){ if(FK[ch]==='cow') t.kind='cow'; else { t.kind='bed'; t.crop=FK[ch]; t.grow=1; } }
       if(t.kind==='pot'||t.kind==='kotlic'||t.kind==='kazan'||t.kind==='sac'||t.kind==='wok'||t.kind==='marin') t.v=mkVessel(t.kind);
       if(t.kind==='steam'){ t.st={b:[null,null,null],w:1,dry:0}; o.steam=true; }
       if(ch==='Q') t.officer=true;
@@ -3782,6 +3811,7 @@ function buildGrid(o,L){
     while(q.length){ const c=q.pop(); g.x0=Math.min(g.x0,c.x); g.y0=Math.min(g.y0,c.y); g.x1=Math.max(g.x1,c.x); g.y1=Math.max(g.y1,c.y);
       for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const n=grid[c.y+dy]&&grid[c.y+dy][c.x+dx]; if(n&&n.ch===t.ch&&!seen.has(n)){ seen.add(n); q.push(n); } } }
     o.deco.push(g); }
+  if(L.farm) farmInit(o);
 }
 function tileAt(o,x,y){ return (o&&y>=0&&y<o.rows&&x>=0&&x<o.cols)?o.grid[y][x]:null; }
 function solidAt(o,x,y){ const t=tileAt(o,x,y); return !t||t.solid; }
@@ -3968,6 +3998,7 @@ function combine(p,A,B,t){
   deny(p,t,'Нема места!'); return '';
 }
 function simGrab(p){
+  if(S.L.farm&&!p.hold&&!(p.stun>0)&&farmPickEgg(p)) return;
   const t=p.target; if(!t||p.stun>0) return; const h=p.hold;
   if(t.deco){ streetGift(p,t); return; }
   switch(t.kind){
@@ -4076,6 +4107,7 @@ function simGrab(p){
       if(h) deny(p,t,h.k==='p'?'Тај тањир је чист.':'То не иде у судоперу!');
       return;
     }
+    case 'bed': case 'cow': farmGrab(p,t); return;
     case 'dirtyret': {
       if(!h&&t.count>0){ p.hold={k:'d',n:t.count}; t.count=0; sndA(p,'pick'); return; }
       if(h&&h.k==='d'){ t.count+=h.n; p.hold=null; sndA(p,'drop'); return; }
@@ -4100,6 +4132,7 @@ function simWork(p){
     say(p,t,'Стави нешто на даску.'); return;
   }
   if(t.kind==='sink'){ if(t.dirty>0) startWash(p,t); else say(p,t,'Нема прљавих тањира.'); return; }
+  if(t.kind==='cow'){ farmMilkStart(p,t); return; }
   if(t.kind==='griddle'){ const it=t.item; if(!it){ say(p,t,'Прво сипај тесто.'); return; }
     if(it.s==='F'){ it.s='H'; it.n=0; it.fw=0; ev('s','flip',-1); ev('b','sparkle',t.x+.5,t.y+.4); return; }
     say(p,t,it.s==='R'?'Још није време за окретање.':'Већ је окренута.'); return; }
@@ -4121,6 +4154,7 @@ function updateWork(p,dt){
     it.n+=dt/(CHOP_T*(peel?(it.h>0?1:3):1)); if(it.n>=1){ it.s='C'; it.n=0; it.b=0; it.h=0; p.work=null; ev('s','done',-1); }
   } else if(w.kind==='stir'){
     const v=t.v; if(!v||v.ph!=='c'){ p.work=null; return; } v.stir=Math.min(1,(v.stir||0)+dt*1.8);
+  } else if(w.kind==='milk'){ farmMilk(p,dt);
   } else if(w.kind==='turn'){
     const it=t.item; if(!it||it.k!=='i'||SPIT_FROM[it.t]!==it.s){ p.work=null; return; } it.tu=Math.min(1,(it.tu||0)+dt*1.8);
   } else {
@@ -4175,6 +4209,7 @@ function bakeryScript(){
 }
 function pickCt(rid){ const th=S.L.theme;
   if(S.L.street) return streetPickCt();
+  if(S.L.farm) return 'g';
   if(th==='kasarna') return rid==='pasulj'?'voj':'ofi';
   if(th==='fusion'){ const intro={2:'tek',3:'kri',5:'sta',6:'inf',7:'taj'}[S.seq+1]; if(intro) return intro;
     if(!S.misDone&&(S.seq+1===4||(S.seq>8&&Math.random()<.1))){ S.misDone=true; return 'mis'; }
@@ -4200,7 +4235,7 @@ function spawnOrder(forceCt){
   const ct=forceCt||pickCt(r); if(ct==='pro'&&L.recipes.includes('burek')) r='burek';
   let max=S.patience+(RECIPES[r].cook?15:0)+(RECIPES[r].pat||0); if(ct==='bec') max=Math.round(max*.6); if(ct==='dete'||ct==='dsp') max=Math.round(max*.72); if(ct==='rol') max=Math.round(max*.82);
   if(ct==='ofi'||ct==='tek') max=Math.round(max*.85); if(ct==='taj') max=Math.round(max*.6); const seat=pickSeat(ct);
-  const tb=isQ(L.theme)||L.street||ct==='voj'?(++S.ticketNo):L.theme==='kafana'||L.theme==='fusion'?Math.floor(seat/4)+1:(seat<4?1:2);
+  const tb=isQ(L.theme)||L.street||L.farm||ct==='voj'?(++S.ticketNo):L.theme==='kafana'||L.theme==='fusion'?Math.floor(seat/4)+1:(seat<4?1:2);
   S.orders.push({id:++S.seq,r,t:max,max,tb,ct,seat}); ev('s','order',-1);
   if(L.street) streetAssign(S.orders[S.orders.length-1]);
 }
@@ -4372,7 +4407,7 @@ function simStep(dt){
   S.time+=dt; if(!S.L.tutorial) S.timeLeft-=dt; S.goT=Math.max(0,S.goT-dt);
   for(const p of S.players) if(p.stun>0) p.stun=Math.max(0,p.stun-dt);
   for(const p of S.players) updateWork(p,dt);
-  updateNpcs(dt); if(S.L.street) streetStep(dt); guardStep(dt); updateStations(dt); heatStep(dt); levelEvents(dt); updateOrders(dt); updatePending(dt);
+  updateNpcs(dt); if(S.L.street) streetStep(dt); if(S.L.farm) farmStep(dt); guardStep(dt); updateStations(dt); heatStep(dt); levelEvents(dt); updateOrders(dt); updatePending(dt);
   if(S.L.theme==='kafana'&&S.time>=S.nextTrubac){ S.nextTrubac=S.time+30+Math.random()*15;
     const tabs=[...new Set(S.orders.filter(o=>o.seat>=0).map(o=>Math.floor(o.seat/4)))]; ev('g','T',tabs.length?tabs[Math.floor(Math.random()*tabs.length)]:Math.floor(Math.random()*3));
     S.boostUntil=S.time+13; ev('o','Трубач свира — бакшиш +50%!'); }
@@ -4707,14 +4742,14 @@ function onClientInput(c,inp){
     const nx=inp.x/100, ny=inp.y/100;
     if(isFinite(nx)&&isFinite(ny)&&!hitTiles(S,nx,ny,PR*.8)){ p.x=nx; p.y=ny; }
     const fx=inp.fx/100, fy=inp.fy/100; if(isFinite(fx)&&isFinite(fy)&&(fx||fy)){ p.fx=fx; p.fy=fy; }
-    p.moving=!!inp.mv;
+    p.moving=!!inp.mv; p.wh=!!inp.wh;
     const t=tileAt(S,inp.tx|0,inp.ty|0); p.target=(t&&t.solid&&Math.hypot(t.x+.5-p.x,t.y+.5-p.y)<1.7)?t:null;
   }
   if(live){ for(let i=0;i<Math.min(dg,3);i++) simGrab(p); for(let i=0;i<Math.min(dw,3);i++) simWork(p); }
 }
 
 /* -------- снимак стања -------- */
-const wkCode=w=>!w?0:w.kind==='chop'?1:(w.kind==='stir'||w.kind==='turn')?3:2;
+const wkCode=w=>!w?0:w.kind==='chop'?1:(w.kind==='stir'||w.kind==='turn'||w.kind==='milk')?3:2;
 function enc(it){
   if(!it) return 0;
   if(it.k==='i') return it.t+it.s+(it.n>0?'%'+Math.round(it.n*99):'')+(it.b>0?'^'+Math.round(it.b*10):'')+(it.h>0?'~'+Math.max(1,Math.round(it.h*9)):'')+(it.fw>0?'!'+Math.round(it.fw*10):'')+(it.tu>0?'@'+Math.max(1,Math.round(it.tu*9)):'')+(it.st>1?'#'+it.st:'')+(it.c?'='+it.c.join(''):'');
@@ -4755,7 +4790,7 @@ function buildSnap(){
         case 'plates': case 'trays': case 'dirtyret': t.push([x.x,x.y,x.count]); break;
         case 'sink': if(x.dirty||x.prog) t.push([x.x,x.y,[x.dirty,Math.round(x.prog*99)]]); break;
       } }
-    s.t=t;
+    s.t=t; if(S.fm) s.fm=farmSnap(S);
     const cut=now()-1.6; s.e=S.events.filter(e=>e.t>cut).slice(-22).map(e=>e.e);
   }
   if(Game.phase==='end'&&Game.result) s.res=Game.result;
@@ -4864,13 +4899,14 @@ function onSnap(s){
       case 'steam': t.st={w:c[1]/99,dry:c[2]/10,b:[dec(c[3]),dec(c[4]),dec(c[5])]}; break;
       case 'plates': case 'trays': case 'dirtyret': t.count=+c||0; break;
       case 'sink': t.dirty=c[0]; t.prog=c[1]/99; break; } }
+  if(s.fm&&V.fm) farmUnsnap(V,s.fm);
   for(const e of s.e||[]){ if(e[0]>Net.lastEv){ Net.lastEv=e[0]; playEvent(e); } }
 }
 function sendInput(){
   Net.inT=0;
   if(Game.mySlot<0||!me||!V||!V.grid){ return; }
   const t=me.target;
-  const inp={t:'i',s:++Net.inSeq,x:Math.round(me.x*100),y:Math.round(me.y*100),fx:Math.round(me.fx*100),fy:Math.round(me.fy*100),mv:me.moving?1:0,tx:t?t.x:-1,ty:t?t.y:-1,g:Net.g,w:Net.w};
+  const inp={t:'i',s:++Net.inSeq,x:Math.round(me.x*100),y:Math.round(me.y*100),fx:Math.round(me.fx*100),fy:Math.round(me.fy*100),mv:me.moving?1:0,tx:t?t.x:-1,ty:t?t.y:-1,g:Net.g,w:Net.w,wh:readInput().work?1:0};
   if(Net.dcOpen&&Net.dc&&Net.dc.readyState==='open'){ try{ Net.dc.send(JSON.stringify(inp)); return; }catch(e){} }
   chanPres({in:inp});
 }
@@ -5075,8 +5111,10 @@ const keyVec=m=>{ let x=0,y=0; if(anyKey(m.up)) y-=1; if(anyKey(m.down)) y+=1; i
 const inPlay=()=>['countdown','play','ending'].includes(Game.phase)&&!Game.localMenu&&!Game.notice&&!(Game.role==='client'&&Game.mySlot<0);
 // трк држан (Shift, L, B/RB на гејмпаду, дугме „Трк“): Ник, који иначе стално трчи, тада хода
 const DASH_KEYS=['ShiftLeft','ShiftRight','KeyL'], padDash=st=>!!(st&&st.down&&(st.down[1]||st.down[5]));
-let touchDash=false;
-function readInput(){ if(!inPlay()) return {x:0,y:0}; let {x,y}=keyVec(KB_ALL); if(stick.active){ x+=stick.x; y+=stick.y; } x+=pad.x; y+=pad.y; return {x,y,slow:anyKey(DASH_KEYS)||touchDash||[...pads.values()].some(padDash)}; }
+// рад држан (E, X на гејмпаду, дугме „Ради“): мужа траје док се држи
+const WORK_KEYS=Object.keys(KEY_ACT).filter(k=>KEY_ACT[k]==='work'), padWork=st=>!!(st&&st.down&&st.down[2]);
+let touchDash=false, touchWork=false;
+function readInput(){ if(!inPlay()) return {x:0,y:0}; let {x,y}=keyVec(KB_ALL); if(stick.active){ x+=stick.x; y+=stick.y; } x+=pad.x; y+=pad.y; return {x,y,slow:anyKey(DASH_KEYS)||touchDash||[...pads.values()].some(padDash),work:anyKey(WORK_KEYS)||touchWork||[...pads.values()].some(padWork)}; }
 const localActor=()=>S?S.players.find(p=>p.slot===Game.mySlot):null;
 const localPlayers=()=>!S?[]:Game.role==='couch'?S.players:S.players.filter(p=>p.slot===Game.mySlot);
 const couchBy=dev=>Couch.players.find(c=>c.dev===dev);
@@ -5084,8 +5122,8 @@ const couchKb=()=>Couch.players.filter(c=>c.dev[0]==='k');
 function couchKbPlayer(code){ const kb=couchKb(); if(kb.length===1) return kb[0]; const d=kbHalf(code); return d?couchBy(d):null; }
 function couchInput(slot){
   const c=Couch.players.find(q=>q.slot===slot); if(!c||!inPlay()) return {x:0,y:0};
-  if(c.dev[0]==='k'){ const one=couchKb().length===1; return Object.assign(keyVec(one?KB_ALL:KB[c.dev]),{slow:anyKey(one?DASH_KEYS:KB[c.dev].dash)}); }
-  const st=pads.get(+c.dev.slice(1)); return st?{x:st.x,y:st.y,slow:padDash(st)}:{x:0,y:0};
+  if(c.dev[0]==='k'){ const one=couchKb().length===1; return Object.assign(keyVec(one?KB_ALL:KB[c.dev]),{slow:anyKey(one?DASH_KEYS:KB[c.dev].dash),work:anyKey(one?WORK_KEYS:KB[c.dev].work)}); }
+  const st=pads.get(+c.dev.slice(1)); return st?{x:st.x,y:st.y,slow:padDash(st),work:padWork(st)}:{x:0,y:0};
 }
 const inputFor=p=>Game.role==='couch'?couchInput(p.slot):readInput();
 const couchJoinable=()=>Game.role==='couch'&&['menu','intro','end'].includes(Game.phase)&&!Game.tip;
@@ -5151,8 +5189,8 @@ zone.addEventListener('pointermove',e=>{ if(!stick.active||e.pointerId!==stick.i
 const endStick=e=>{ if(e.pointerId!==stick.id) return; stick.active=false; stick.x=stick.y=0; knob.style.transform=''; };
 zone.addEventListener('pointerup',endStick); zone.addEventListener('pointercancel',endStick);
 document.querySelectorAll('.tb').forEach(b=>{
-  b.addEventListener('pointerdown',e=>{ e.preventDefault(); b.classList.add('down'); if(b.dataset.act==='dash') touchDash=true; doAction(b.dataset.act); });
-  const up=()=>{ b.classList.remove('down'); if(b.dataset.act==='dash') touchDash=false; }; b.addEventListener('pointerup',up); b.addEventListener('pointercancel',up); b.addEventListener('pointerleave',up);
+  b.addEventListener('pointerdown',e=>{ e.preventDefault(); b.classList.add('down'); if(b.dataset.act==='dash') touchDash=true; if(b.dataset.act==='work') touchWork=true; doAction(b.dataset.act); });
+  const up=()=>{ b.classList.remove('down'); if(b.dataset.act==='dash') touchDash=false; if(b.dataset.act==='work') touchWork=false; }; b.addEventListener('pointerup',up); b.addEventListener('pointercancel',up); b.addEventListener('pointerleave',up);
 });
 const TOUCH=(window.matchMedia&&matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window);
 const NOKB=!!(window.matchMedia&&matchMedia('(hover: none) and (pointer: coarse)').matches); // телефон или таблет, без тастатуре
@@ -5280,7 +5318,7 @@ function hostUpdate(dt){
     for(const p of ps) p.target=findTarget(S,p); return;
   }
   if(Game.phase==='play'){
-    for(const p of ps){ const i=p.stun>0?{x:0,y:0}:inputFor(p), pd=(p.ch|0)===PANDUR, pc=pd||(p.ch|0)===TAJKUN||!!S.L.street, sl=(pd||S.L.street)&&nearNpc(p.x,p.y)?(pd?.78:.88):1; stepMove(S,p,i.x*sl,i.y*sl,dt,othersFor(p,S.players,pc),chefSpeed(p.ch,i.slow)); shoveStep(S,p,p.slot,S.guards,dt); p.target=findTarget(S,p); }
+    for(const p of ps){ const i=p.stun>0?{x:0,y:0}:inputFor(p); p.wh=!!i.work; const pd=(p.ch|0)===PANDUR, pc=pd||(p.ch|0)===TAJKUN||!!S.L.street, sl=(pd||S.L.street)&&nearNpc(p.x,p.y)?(pd?.78:.88):1; stepMove(S,p,i.x*sl,i.y*sl,dt,othersFor(p,S.players,pc),chefSpeed(p.ch,i.slow)); shoveStep(S,p,p.slot,S.guards,dt); p.target=findTarget(S,p); }
     simStep(dt); if(Game.phase==='ending') uiDirty(); return;
   }
   if(Game.phase==='ending'){ S.endT-=dt; if(S.endT<=0) finishLevel(); }
@@ -5330,6 +5368,7 @@ const THEMES={
   ada:{fa:'#d8b483',fb:'#cba774',grout:'rgba(90,60,25,.35)',top:'#f2efe6',hi:'#ffffff',front:'#2f7fb8',grain:'rgba(40,90,140,.12)',planks:true},
   docek:{fa:'#8e939c',fb:'#80858e',grout:'rgba(40,45,60,.35)',top:'#7a4a2a',hi:'#8e5a34',front:'#4a2a14',grain:'rgba(30,15,5,.22)',snow:true},
   kasarna:{fa:'#a9ab9a',fb:'#9c9e8c',grout:'rgba(50,55,35,.3)',top:'#7a8058',hi:'#8c9268',front:'#3e4428',grain:'rgba(30,35,15,.2)',parquet:['#b8864e','#a4743f']},
+  selo:{fa:'#d9b98a',fb:'#cfae7e',grout:'rgba(80,50,20,.3)',top:'#a8774a',hi:'#bb8a5a',front:'#6a4424',grain:'rgba(50,25,8,.22)',planks:true},
   fusion:{fa:'#ece8e0',fb:'#dcd6cc',grout:'rgba(190,150,60,.45)',top:'#26262c',hi:'#3a3a42',front:'#7a1018',grain:'rgba(210,160,60,.16)'}
 };
 const bg=document.createElement('canvas'); let bgKey='';
@@ -5342,9 +5381,9 @@ function layout(){
   if(!V||!V.grid) return;
   const land=VW>VH*1.15, rightPad=land&&TOUCH?190:18, wk=L.wallK||1.05;
   ts=Math.min((VW-16)/V.cols,(VH-topH-12)/(V.rows+wk));
-  if(land&&!L.street){ const pw=clamp(VW*.32,190,620); ts=Math.min(ts,(VW-pw-rightPad-26)/V.cols); }
+  if(land&&!L.street&&!L.wide){ const pw=clamp(VW*.32,190,620); ts=Math.min(ts,(VW-pw-rightPad-26)/V.cols); }
   wallH=ts*wk;
-  ox=land&&!L.street?VW-V.cols*ts-rightPad:(VW-V.cols*ts)/2-(L.street&&land&&TOUCH?Math.min((VW-V.cols*ts)/2-8,86):0); const spare=VH-topH-12-wallH-V.rows*ts; oy=topH+wallH+(land||L.street?spare/2:Math.min(spare/2,8));
+  ox=land&&!L.street&&!L.wide?VW-V.cols*ts-rightPad:(VW-V.cols*ts)/2-(L.street&&land&&TOUCH?Math.min((VW-V.cols*ts)/2-8,86):0); const spare=VH-topH-12-wallH-V.rows*ts; oy=topH+wallH+(land||L.street?spare/2:Math.min(spare/2,8));
 }
 function resize(){ const r=cv.getBoundingClientRect(); VW=r.width||innerWidth; VH=r.height||innerHeight;
   const d=Math.min(2,window.devicePixelRatio||1); if(d!==DPR){ DPR=d; iconCache.clear(); } cv.width=Math.round(VW*DPR); cv.height=Math.round(VH*DPR); bgKey=''; }
@@ -5723,7 +5762,8 @@ function drawWall(b,theme,x,y,w,h){
       ell(b,lx,ly,h*.08,h*.1); b.fillStyle=lg(b,lx-h*.08,0,lx+h*.08,0,'#ff3a2a','#a80a10'); b.fill();
       if(k%2){ b.save(); ell(b,lx,ly,h*.08,h*.1); b.clip(); for(const [i,cl] of [[0,'#c6363c'],[1,'#0c4076'],[2,'#ffffff']]){ b.fillStyle=cl; b.fillRect(lx-h*.08,ly-h*.1+i*h*.2/3,h*.16,h*.2/3+.5); } b.fillStyle='rgba(0,0,0,.18)'; b.fillRect(lx+h*.03,ly-h*.1,h*.05,h*.2); b.restore(); }
       b.fillStyle='#d9a21b'; b.fillRect(lx-h*.05,ly-h*.11,h*.1,h*.02); b.fillRect(lx-h*.05,ly+h*.09,h*.1,h*.02); }
-  } else {
+  } else if(theme==='selo') farmWall(b,x,y,w,h);
+  else {
     for(let i=0;i*ts*.5<w;i++){ b.fillStyle=i%2?'#fbf4e4':'#efe2c6'; b.fillRect(x+i*ts*.5,y,ts*.5+1,h); }
     b.fillStyle='rgba(0,0,0,.08)'; b.fillRect(x,y+h*.86,w,h*.14);
     // тробојка заставице
@@ -5784,6 +5824,7 @@ function drawFloorBg(b,th){
   if(V.L.street) return streetShadows(b);
   for(let y=0;y<V.rows;y++) for(let x=0;x<V.cols;x++){
     const t=V.grid[y][x]; if(t.solid) continue; const px=ox+x*ts, py=oy+y*ts, j=hash(x,y);
+    if(V.L.farm&&x<V.L.farm.split){ farmGrass(b,px,py,x,y); continue; }
     if(th.planks){
       for(let k=0;k<2;k++){ const yy=py+k*ts/2; b.fillStyle=k^(y%2)?th.fa:th.fb; b.fillRect(px,yy,ts+.5,ts/2+.5);
         b.fillStyle=`rgba(255,255,255,${hash(x,y*2+k)*.08})`; b.fillRect(px,yy,ts,ts/2);
@@ -5840,6 +5881,7 @@ function drawOpanak(b,x,y,L,f){
   b.strokeStyle='#c8884a'; b.lineWidth=Math.max(1,L*.035); b.beginPath(); for(let k=0;k<5;k++){ b.moveTo(x+f*L*(.12+k*.1),y-H*.88); b.lineTo(x+f*L*(.2+k*.1),y-H*.2); b.moveTo(x+f*L*(.2+k*.1),y-H*.85); b.lineTo(x+f*L*(.12+k*.1),y-H*.2); } b.stroke(); }
 function drawTileStatic(b,t,th){
   if(V.L.street) return drawCartTile(b,t);
+  if(t.kind==='bed'||t.kind==='cow') return farmTileStatic(b,t);
   const s=ts, x=ox+t.x*s, y=oy+t.y*s, front=frontOf(t), d=front?s*.18:0, h=s-d, k=t.kind, lw=Math.max(1,s*.03);
   let top=th.top, hi=th.hi, fr=th.front, mat='wood';
   if(['plates','sink','dirtyret','trash','trays'].includes(k)){ top='#b3bcc1'; hi='#d6dde0'; fr='#69737a'; mat='steel'; }
@@ -5956,6 +5998,7 @@ function buildBg(){
   else { b.fillStyle='rgba(0,0,0,.42)'; rr(b,ox-8,oy-wallH-4,w+16,h+wallH+18,14); b.fill(); drawWall(b,V.L.theme,ox,oy-wallH,w,wallH); }
   drawFloorBg(b,th);
   for(const row of V.grid) for(const t of row) if(t.solid&&!t.deco) drawTileStatic(b,t,th);
+  if(V.L.farm) farmStatic(b);
   if(V.L.street) drawStreetGround(b);
   drawSceneStatic(b);
 }
@@ -6174,6 +6217,7 @@ let G_anim=0;
 function drawTileDyn(t){
   const s=ts, x=ox+t.x*s, y=oy+t.y*s, front=frontOf(t), h=s-(front?s*.18:0), cx=x+s/2, cy=y+h/2, lw=Math.max(1,s*.03);
   switch(t.kind){
+    case 'bed': case 'cow': farmTileDyn(t); break;
     case 'trash': { const b=FX.bins.get(t.x+','+t.y); if(b>0){ const k=1-b/.35, j=Math.sin(k*Math.PI*3)*(1-k)*s*.04;
       circ(ctx,cx+j,cy,s*.34); ctx.strokeStyle='#262b2e'; ctx.lineWidth=lw*1.2; ctx.stroke(); circ(ctx,cx,cy,s*(.3+.2*k)); ctx.strokeStyle=`rgba(255,255,255,${.55*(1-k)})`; ctx.lineWidth=Math.max(1.5,s*.04); ctx.stroke(); } break; }
     case 'counter': case 'board': if(t.kind==='board'&&!boardBusy(t)) boardKnife(ctx,x,y,s,h); if(t.item){ drawItemAt(ctx,t.item,cx,cy,s*.68); if(t.kind==='board') sliceMarks(t.item,cx,cy,s); } break;
@@ -6249,6 +6293,7 @@ function vesselStatus(v,cx,y,bx,by,bw,bh){
   if(v.ph==='d'){ if(BURN_T[v.kind]-v.burn<4) warnIcon(cx,y-ts*.12); else checkIcon(cx,y-ts*.1); }
 }
 function drawStatus(){
+  if(V.fm) farmStatus();
   for(const row of V.grid) for(const t of row){
     if(!t.solid) continue;
     const s=ts, x=ox+t.x*s, y=oy+t.y*s, cx=x+s/2, bw=s*.78, bx=x+s*.11, by=y-s*.2, bh=Math.max(6,s*.15), it=t.item;
@@ -6964,7 +7009,7 @@ function sceneLayout(){
   const key=[V.li,VW,VH,ts.toFixed(2),ox.toFixed(1),oy.toFixed(1),topH.toFixed(1)].join('|'); if(key===SCN.key) return; SCN.key=key;
   const top=topH+2, KY1=oy+V.rows*ts+18;
   const Lp={x:10,y:top,w:ox-14-22,h:VH-top-10}, Bp={x:8,y:KY1+6,w:VW-16,h:VH-KY1-14};
-  SCN.mode=V.L.street?'none':(Lp.w>=150&&Lp.h>=150)?'left':(Bp.h>=90&&Bp.w>=200?'bottom':'none');
+  SCN.mode=V.L.street||V.L.wide?'none':(Lp.w>=150&&Lp.h>=150)?'left':(Bp.h>=90&&Bp.w>=200?'bottom':'none');
   SCN.panels=SCN.mode==='left'?[Lp]:SCN.mode==='bottom'?[Bp]:[];
   Object.assign(SCN,{tables:[],seats:[],comp:[],queue:[],curb:[],ends:[],bandSpots:[],street:null,sky:null,floor:null,longT:null,shooter:null,baba:null,awning:null,club:null,vod:null,river:null,decor:null,genSpot:null});
   if(!SCN.panels.length) return;
@@ -8708,6 +8753,212 @@ function fusionTick(dt,on){
 })();
 
 /* ---- кухиња: галебови, петарде, киша, снег, пара ---- */
+/* ======================= СЕОСКО ДОМАЋИНСТВО =======================
+   Двориште је низбрдо ка бари (L.farm.slope): јаја која кокошке снесу котрљају се док их неко не ухвати или не упадну у бару.
+   Крава се музе држањем дугмета за рад, поврће у башти поново расте кад се обере. Прототип: цртежи су груби. */
+const GROW_T=18, COW_REFILL=15, MILK_T=3, HEN_LAY=[9,16], LOOSE_MAX=6, EGG_R=.13, ROLL_DRAG=.9, HEN_SPEED=1, HEN_FLEE=1.3;
+function farmInit(o){
+  const c=o.L.farm.coop, beds=[];
+  for(const row of o.grid) for(const t of row) if(t.kind==='bed') beds.push(t);
+  o.fm={beds, eid:0, loose:[], cow:{milk:1,prog:0},
+    hens:[[3.5,3.6],[4.6,4.6],[2.4,5.2]].map(([x,y],i)=>({x,y,dx:x,dy:y,tx:x,ty:y,fx:i%2?1:-1,pause:Math.random()*2,lay:4+i*3+Math.random()*3,peck:0,walk:0})),
+    area:{x0:c[0]+.5,y0:c[1]+.5,x1:c[2]-.5,y1:c[3]-.5}};
+}
+const farmOpen=(o,x,y,r)=>{ for(const [dx,dy] of [[-r,-r],[r,-r],[-r,r],[r,r]]){ const t=tileAt(o,Math.floor(x+dx),Math.floor(y+dy)); if(!t||t.solid) return t||{solid:true}; } return null; };
+function farmStep(dt){
+  const fm=S.fm, L=S.L;
+  for(const t of fm.beds) if(t.grow<1){ t.grow=Math.min(1,t.grow+dt/GROW_T); if(t.grow>=1) ev('s','pop',-1); }
+  const milking=S.players.some(p=>p.work&&p.work.kind==='milk');
+  if(!milking&&fm.cow.milk<1) fm.cow.milk=Math.min(1,fm.cow.milk+dt/COW_REFILL);
+  for(const h of fm.hens){
+    h.peck=Math.max(0,h.peck-dt);
+    const near=S.players.map(p=>({p,d:Math.hypot(h.x-p.x,h.y-p.y)})).filter(q=>q.d<HEN_FLEE).sort((a,b)=>a.d-b.d)[0];
+    let tx=h.tx, ty=h.ty, sp=HEN_SPEED;
+    if(near){ const d=near.d||.01; tx=h.x+(h.x-near.p.x)/d; ty=h.y+(h.y-near.p.y)/d; sp=HEN_SPEED*2.2; h.pause=0; }
+    else if(h.pause>0){ h.pause-=dt; if(Math.random()<dt*1.5) h.peck=.35; }
+    else if(Math.hypot(h.tx-h.x,h.ty-h.y)<.08){ const A=fm.area; for(let k=0;k<8;k++){ const x=A.x0+Math.random()*(A.x1-A.x0), y=A.y0+Math.random()*(A.y1-A.y0); if(!farmOpen(S,x,y,.2)){ h.tx=x; h.ty=y; break; } } h.pause=.6+Math.random()*2.2; }
+    if(!(h.pause>0)||near){ const dx=tx-h.x, dy=ty-h.y, d=Math.hypot(dx,dy); if(d>.02){ const st=Math.min(d,sp*dt), nx=h.x+dx/d*st, ny=h.y+dy/d*st;
+      if(Math.abs(dx)>.01) h.fx=dx>0?1:-1; if(!farmOpen(S,nx,h.y,.2)) h.x=nx; if(!farmOpen(S,h.x,ny,.2)) h.y=ny; } }
+    if((h.lay-=dt)<=0){ h.lay=HEN_LAY[0]+Math.random()*(HEN_LAY[1]-HEN_LAY[0]);
+      if(fm.loose.length<LOOSE_MAX){ const a=Math.random()*Math.PI*2, v=.5+Math.random()*.8; fm.loose.push({id:++fm.eid,x:h.x,y:h.y+.05,vx:Math.cos(a)*v,vy:Math.sin(a)*v,rot:0});
+        ev('s','pop',-1); evF(pick(['Кокодак!','Ко-ко-да!','Снела сам!']),'#ffffff',{x:h.x-.5,y:h.y-.9},-1,1); } }
+  }
+  const [gx,gy]=L.farm.slope;
+  for(let i=fm.loose.length-1;i>=0;i--){ const e=fm.loose[i];
+    if(e.x<L.farm.split){ e.vx+=gx*dt; e.vy+=gy*dt; }
+    const f=Math.exp(-ROLL_DRAG*dt); e.vx*=f; e.vy*=f;
+    for(const p of S.players){ const dx=e.x-p.x, dy=e.y-p.y, d=Math.hypot(dx,dy)||.01, min=PR+EGG_R*.5;
+      if(d<min){ const nx=dx/d, ny=dy/d; if(!farmOpen(S,p.x+nx*min,p.y+ny*min,EGG_R)){ e.x=p.x+nx*min; e.y=p.y+ny*min; }
+        if(p.moving){ const k=1.7-(e.vx*nx+e.vy*ny); if(k>0){ e.vx+=nx*k; e.vy+=ny*k; } } } }
+    let gone=false;
+    for(const ax of ['x','y']){ const v=ax==='x'?e.vx:e.vy, n=ax==='x'?e.x+v*dt:e.y+v*dt, hit=ax==='x'?farmOpen(S,n,e.y,EGG_R):farmOpen(S,e.x,n,EGG_R);
+      if(hit&&hit.kind==='pond'){ gone=true; break; }
+      if(hit){ if(ax==='x') e.vx*=-.35; else e.vy*=-.35; } else { if(ax==='x') e.x=n; else e.y=n; } }
+    e.rot+=Math.hypot(e.vx,e.vy)*dt/EGG_R;
+    if(gone){ fm.loose.splice(i,1); ev('s','splash',-1); ev('b','splash',e.x,e.y); evF('Пљус! Јаје у бари.','#9fd3ff',{x:e.x-.5,y:e.y-.6},-1,1); }
+  }
+}
+/* јаје на земљи испред кувара (или тик уз њега) */
+function farmEggFor(o,p){ if(!o.fm) return null; const qx=p.x+(p.fx||0)*.4, qy=p.y+(p.fy||0)*.4; let best=null, bd=1e9;
+  for(const e of o.fm.loose){ const d=Math.min(Math.hypot(e.x-qx,e.y-qy)/.55,Math.hypot(e.x-p.x,e.y-p.y)/.45); if(d<1&&d<bd){ bd=d; best=e; } } return best; }
+function farmPickEgg(p){ const e=farmEggFor(S,p); if(!e) return false; S.fm.loose.splice(S.fm.loose.indexOf(e),1); p.hold=mkIng('ja'); sndA(p,'pick'); return true; }
+function farmGrab(p,t){
+  if(t.kind==='cow'){ deny(p,t,p.hold?'Прво спусти то што држиш!':'Држи E да помузеш краву!'); return; }
+  if(p.hold){ deny(p,t,'Руке су пуне!'); return; }
+  if(t.grow<1){ say(p,t,'Још расте…'); return; }
+  p.hold=mkIng(t.crop); t.grow=0; sndA(p,'pick');
+}
+function farmMilkStart(p,t){ const c=S.fm.cow;
+  if(p.hold){ deny(p,t,'Прво спусти то што држиш!'); return; }
+  if(c.milk<1){ say(p,t,'Крава пасе, још нема млека.'); return; }
+  p.work={tile:t,kind:'milk'}; }
+function farmMilk(p,dt){ const c=S.fm.cow, t=p.work.tile;
+  if(!p.wh||c.milk<1){ p.work=null; return; } // мужа траје само док се држи E
+  c.prog+=dt/MILK_T; if(Math.random()<dt*4) ev('s','splash',p.slot);
+  if(c.prog>=1){ c.prog=0; c.milk=0; p.work=null; p.hold=mkIng('ml'); ev('s','done',-1); evF('Муу!','#ffffff',t,-1,1); }
+}
+function farmSnap(o){ const fm=o.fm, r=Math.round;
+  return {h:fm.hens.map(h=>[r(h.x*100),r(h.y*100),h.fx>0?1:0,h.peck>0?1:0]), e:fm.loose.map(e=>[e.id,r(e.x*100),r(e.y*100),r(e.rot*10)]), c:[r(fm.cow.milk*99),r(fm.cow.prog*99)], b:fm.beds.map(t=>r(t.grow*99))}; }
+function farmUnsnap(o,f){ const fm=o.fm;
+  (f.h||[]).forEach((a,i)=>{ const h=fm.hens[i]; if(!h) return; h.x=a[0]/100; h.y=a[1]/100; h.fx=a[2]?1:-1; h.peck=a[3]?.3:0; });
+  const by=new Map(fm.loose.map(e=>[e.id,e]));
+  fm.loose=(f.e||[]).map(a=>{ const e=by.get(a[0])||{id:a[0],dx:a[1]/100,dy:a[2]/100}; e.x=a[1]/100; e.y=a[2]/100; e.rot=a[3]/10; return e; });
+  if(f.c){ fm.cow.milk=f.c[0]/99; fm.cow.prog=f.c[1]/99; }
+  (f.b||[]).forEach((g,i)=>{ if(fm.beds[i]) fm.beds[i].grow=g/99; });
+}
+
+/* -------- цртање дворишта -------- */
+function farmWall(b,x,y,w,h){
+  const kx=ox+V.L.farm.split*ts;
+  b.fillStyle=lg(b,x,y,x,y+h,'#8ec6ea','#d8eef6'); b.fillRect(x,y,kx-x,h);
+  b.fillStyle='#7fb062'; b.beginPath(); b.moveTo(x,y+h); for(let i=0;i<=24;i++){ const px=x+(kx-x)*i/24; b.lineTo(px,y+h*(.45+.18*Math.sin(i*.9)+.08*Math.sin(i*2.3))); } b.lineTo(kx,y+h); b.fill();
+  b.fillStyle='#5f9448'; b.beginPath(); b.moveTo(x,y+h); for(let i=0;i<=24;i++){ const px=x+(kx-x)*i/24; b.lineTo(px,y+h*(.68+.1*Math.sin(i*1.4+1))); } b.lineTo(kx,y+h); b.fill();
+  circ(b,x+(kx-x)*.82,y+h*.28,h*.16); b.fillStyle='#ffe27a'; b.fill();
+  // кућа: бели зид, дрвене греде, црвени цреп
+  b.fillStyle='#f4efe2'; b.fillRect(kx,y,x+w-kx,h); b.fillStyle='#b4502e'; b.fillRect(kx,y,x+w-kx,h*.22);
+  b.strokeStyle='rgba(90,30,10,.5)'; b.lineWidth=1; for(let px=kx;px<x+w;px+=ts*.3){ b.beginPath(); b.moveTo(px,y); b.lineTo(px,y+h*.22); b.stroke(); }
+  b.fillStyle='#6a4424'; for(let px=kx;px<x+w;px+=ts*2.2) b.fillRect(px,y+h*.22,Math.max(3,ts*.12),h*.78); b.fillRect(kx,y+h*.86,x+w-kx,h*.14);
+  for(let k=0;k<3;k++){ const px=kx+ts*(1.2+k*1.1); b.fillStyle='#b5121b'; for(let q=0;q<4;q++){ ell(b,px,y+h*(.34+q*.13),h*.05,h*.07); b.fill(); } } // венац паприка
+}
+function farmGrass(b,px,py,x,y){
+  const j=hash(x,y), g=Math.round(150-y*2.5);
+  b.fillStyle=`rgb(${96+j*14|0},${g+j*12|0},${70+j*10|0})`; b.fillRect(px,py,ts+.5,ts+.5);
+  b.strokeStyle='rgba(40,90,30,.45)'; b.lineWidth=1; b.beginPath();
+  for(let k=0;k<5;k++){ const gx=px+hash(x*5+k,y)*ts, gy=py+hash(y*5+k,x)*ts; b.moveTo(gx,gy); b.lineTo(gx-ts*.03,gy-ts*.1); b.moveTo(gx,gy); b.lineTo(gx+ts*.04,gy-ts*.09); } b.stroke();
+  if(hash(x*3,y*11)<.12){ circ(b,px+hash(x,y*3)*ts,py+hash(y,x*3)*ts,ts*.04); b.fillStyle=hash(x,y*7)<.5?'#fff6a0':'#ffffff'; b.fill(); }
+}
+function farmTileStatic(b,t){
+  const s=ts, x=ox+t.x*s, y=oy+t.y*s; farmGrass(b,x,y,t.x,t.y);
+  if(t.kind==='bed'){ rr(b,x+s*.04,y+s*.08,s*.92,s*.84,s*.12); b.fillStyle='#6a4428'; b.fill(); b.strokeStyle='#4a2c18'; b.lineWidth=Math.max(1,s*.03); b.stroke();
+    b.strokeStyle='rgba(30,15,5,.35)'; b.beginPath(); for(let k=1;k<4;k++){ b.moveTo(x+s*.1,y+s*(.08+k*.21)); b.lineTo(x+s*.9,y+s*(.08+k*.21)); } b.stroke(); }
+  else { ell(b,x+s*.5,y+s*.62,s*.5,s*.3); b.fillStyle='rgba(110,80,40,.5)'; b.fill(); }
+}
+function farmStatic(b){
+  const s=ts;
+  for(const row of V.grid) for(const t of row){ if(!t.deco) continue; const x=ox+t.x*s, y=oy+t.y*s, k=t.kind, nb=(dx,dy)=>{ const q=tileAt(V,t.x+dx,t.y+dy); return q&&q.kind===k; };
+    if(k==='wall'){ b.fillStyle='#e9e2d0'; b.fillRect(x,y,s+.5,s+.5); b.fillStyle='#6a4424'; b.fillRect(x+s*.4,y,s*.2,s); b.fillStyle='rgba(0,0,0,.12)'; b.fillRect(x,y+s*.85,s,s*.15); continue; }
+    farmGrass(b,x,y,t.x,t.y);
+    if(k==='pond'){ b.fillStyle='#4f8fc0'; b.fillRect(x-(nb(-1,0)?1:-s*.06),y+(nb(0,-1)?0:s*.12),s+(nb(1,0)?1:-s*.06)+(nb(-1,0)?0:-s*.06),s-(nb(0,-1)?0:s*.12)+.5);
+      b.strokeStyle='rgba(255,255,255,.45)'; b.lineWidth=1.2; b.beginPath(); b.ellipse(x+s*(.3+hash(t.x,t.y)*.4),y+s*.55,s*.16,s*.05,0,0,Math.PI*2); b.stroke();
+      if(!nb(0,-1)){ b.strokeStyle='#3c6a2a'; b.lineWidth=Math.max(1,s*.035); b.beginPath(); for(let q=0;q<3;q++){ const rx=x+s*(.2+q*.3); b.moveTo(rx,y+s*.2); b.lineTo(rx+s*.05,y-s*.15); } b.stroke(); } }
+    else if(k==='fence'){ b.strokeStyle='#7a5228'; b.lineWidth=Math.max(2,s*.08); b.lineCap='round'; b.beginPath();
+      const cx=x+s/2, cy=y+s/2; for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]) if(nb(dx,dy)){ b.moveTo(cx,cy-s*.12); b.lineTo(cx+dx*s*.5,cy-s*.12+dy*s*.5); b.moveTo(cx,cy+s*.12); b.lineTo(cx+dx*s*.5,cy+s*.12+dy*s*.5); } b.stroke();
+      rr(b,cx-s*.07,cy-s*.32,s*.14,s*.5,s*.03); b.fillStyle='#8a5e30'; b.fill(); b.strokeStyle='#4a3014'; b.lineWidth=1; b.stroke(); }
+    else if(k==='tree'){ b.fillStyle='#6a4424'; b.fillRect(x+s*.42,y+s*.3,s*.16,s*.6); circ(b,x+s*.5,y+s*.25,s*.48); b.fillStyle='#3e7a34'; b.fill(); circ(b,x+s*.38,y+s*.12,s*.22); b.fillStyle='#4f9442'; b.fill();
+      for(let q=0;q<4;q++){ circ(b,x+s*(.25+hash(q,t.x)*.5),y+s*(.05+hash(t.y,q)*.4),s*.05); b.fillStyle='#c8202b'; b.fill(); } }
+    else if(k==='hay'){ b.beginPath(); b.moveTo(x+s*.05,y+s*.9); b.quadraticCurveTo(x+s*.5,y-s*.3,x+s*.95,y+s*.9); b.closePath(); b.fillStyle='#e0b850'; b.fill(); b.strokeStyle='#a07a20'; b.lineWidth=1; b.stroke();
+      b.beginPath(); for(let q=0;q<6;q++){ const hx=x+s*(.2+q*.12); b.moveTo(hx,y+s*.85); b.lineTo(hx+s*.05,y+s*.35); } b.stroke(); }
+  }
+  for(const g of V.deco) if(g.kind==='coop'){ const x=ox+g.x0*s, y=oy+g.y0*s, w=(g.x1-g.x0+1)*s, h=(g.y1-g.y0+1)*s;
+    b.fillStyle='#9a6a3a'; b.fillRect(x+w*.08,y+h*.3,w*.84,h*.66); b.strokeStyle='rgba(60,30,10,.5)'; b.lineWidth=1; for(let q=1;q<6;q++){ b.beginPath(); b.moveTo(x+w*.08,y+h*(.3+q*.11)); b.lineTo(x+w*.92,y+h*(.3+q*.11)); b.stroke(); }
+    b.beginPath(); b.moveTo(x,y+h*.34); b.lineTo(x+w/2,y); b.lineTo(x+w,y+h*.34); b.closePath(); b.fillStyle='#b4502e'; b.fill(); b.strokeStyle='#6a2a14'; b.stroke();
+    rr(b,x+w*.4,y+h*.62,w*.2,h*.34,w*.08); b.fillStyle='#2a1a0e'; b.fill(); b.strokeStyle='#c8a060'; b.lineWidth=Math.max(1,s*.04); b.beginPath(); b.moveTo(x+w*.5,y+h*.96); b.lineTo(x+w*.62,y+h*1.25); b.stroke(); }
+}
+function farmTileDyn(t){
+  const s=ts, x=ox+t.x*s, y=oy+t.y*s;
+  if(t.kind==='bed'){ const g=t.grow, cx=x+s/2, by=y+s*.62;
+    for(const dx of [-.22,.22]){ const px=cx+dx*s; b2stem(px,by,s*(.12+.3*g)); }
+    if(g>=1){ const bob=Math.sin(G_anim*3+t.x)*s*.02; drawKeyAt(ctx,t.crop+'R',cx,by-s*.22+bob,s*.5); } return; }
+  // крава заузима два поља; црта се из левог
+  const L=tileAt(V,t.x-1,t.y); if(L&&L.kind==='cow') return;
+  const cow=V.fm.cow, w=s*2, cx=x+w/2, cy=y+s*.5, milking=DP.some(p=>p.wk===3&&tileAt(V,p.tx,p.ty)&&tileAt(V,p.tx,p.ty).kind==='cow');
+  ctx.save(); ctx.lineWidth=Math.max(1.5,s*.04); ctx.strokeStyle='#2a1a10';
+  for(const lx of [-.6,-.3,.35,.62]){ ctx.fillStyle='#e8e2d6'; ctx.fillRect(cx+lx*s-s*.06,cy,s*.12,s*.42); ctx.strokeRect(cx+lx*s-s*.06,cy,s*.12,s*.42); ctx.fillStyle='#2a1a10'; ctx.fillRect(cx+lx*s-s*.06,cy+s*.36,s*.12,s*.06); }
+  const ud=s*(.08+.1*cow.milk); ell(ctx,cx-s*.15,cy+s*.22,ud*1.3,ud); ctx.fillStyle='#f2a0a8'; ctx.fill(); ctx.stroke();
+  ell(ctx,cx-s*.1,cy-s*.05,s*.82,s*.36); ctx.fillStyle='#f6f2ea'; ctx.fill(); ctx.stroke();
+  ctx.save(); ell(ctx,cx-s*.1,cy-s*.05,s*.82,s*.36); ctx.clip(); ctx.fillStyle='#2a1a10'; for(const [px,py,r] of [[-.5,-.15,.2],[.05,.1,.17],[.35,-.22,.14],[-.15,-.3,.12]]){ ell(ctx,cx+px*s,cy+py*s,r*s*1.2,r*s); ctx.fill(); } ctx.restore();
+  const sw=Math.sin(G_anim*2.4)*.35; ctx.beginPath(); ctx.moveTo(cx-s*.88,cy-s*.15); ctx.quadraticCurveTo(cx-s*1.05,cy+s*.1,cx-s*1.0+sw*s*.3,cy+s*.35); ctx.stroke(); circ(ctx,cx-s*1.0+sw*s*.3,cy+s*.38,s*.05); ctx.fillStyle='#2a1a10'; ctx.fill();
+  const hb=Math.sin(G_anim*1.3)*s*.03, hx=cx+s*.78, hy=cy-s*.18+hb;
+  ell(ctx,hx,hy,s*.24,s*.22); ctx.fillStyle='#f6f2ea'; ctx.fill(); ctx.stroke(); ell(ctx,hx+s*.12,hy+s*.1,s*.14,s*.1); ctx.fillStyle='#f2b0b0'; ctx.fill(); ctx.stroke();
+  circ(ctx,hx+s*.02,hy-s*.06,s*.035); ctx.fillStyle='#1a1008'; ctx.fill(); ctx.beginPath(); ctx.moveTo(hx-s*.12,hy-s*.18); ctx.lineTo(hx-s*.2,hy-s*.34); ctx.moveTo(hx+s*.08,hy-s*.2); ctx.lineTo(hx+s*.12,hy-s*.36); ctx.stroke();
+  circ(ctx,hx-s*.02,hy+s*.22,s*.05); ctx.fillStyle='#e0b020'; ctx.fill(); ctx.stroke(); // звонце
+  if(milking){ ctx.strokeStyle='rgba(255,255,255,.95)'; ctx.lineWidth=Math.max(1.5,s*.035); ctx.beginPath(); const k=(G_anim*6)%1; ctx.moveTo(cx-s*.15,cy+s*.3); ctx.lineTo(cx-s*.15,cy+s*(.3+.25*k)); ctx.stroke(); }
+  ctx.restore();
+}
+function b2stem(px,by,hgt){ ctx.strokeStyle='#3e8a34'; ctx.lineWidth=Math.max(1.5,ts*.04); ctx.beginPath(); ctx.moveTo(px,by); ctx.lineTo(px,by-hgt); ctx.stroke();
+  ctx.fillStyle='#4fa042'; for(const sd of [-1,1]){ ell(ctx,px+sd*hgt*.3,by-hgt*.6,hgt*.3,hgt*.13,sd*.5); ctx.fill(); } }
+function drawHen(x,y,s,fx,walk,peck){
+  ctx.save(); ctx.translate(x,y); ctx.scale(fx,1); ctx.lineWidth=Math.max(1,s*.025); ctx.strokeStyle='#3a2a1a';
+  ell(ctx,0,s*.02,s*.2,s*.06); ctx.fillStyle='rgba(0,0,0,.18)'; ctx.fill();
+  const st=Math.sin(walk)*s*.04; ctx.strokeStyle='#e0a020'; ctx.beginPath(); ctx.moveTo(-s*.04,-s*.08); ctx.lineTo(-s*.04+st,0); ctx.moveTo(s*.04,-s*.08); ctx.lineTo(s*.04-st,0); ctx.stroke(); ctx.strokeStyle='#3a2a1a';
+  ell(ctx,0,-s*.17,s*.17,s*.12); ctx.fillStyle='#f4ece0'; ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-s*.14,-s*.2); ctx.lineTo(-s*.24,-s*.32); ctx.lineTo(-s*.1,-s*.26); ctx.closePath(); ctx.fillStyle='#e8ddd0'; ctx.fill(); ctx.stroke();
+  const hy=peck>0?-s*.16:-s*.32, hx=peck>0?s*.2:s*.13; circ(ctx,hx,hy,s*.08); ctx.fillStyle='#f4ece0'; ctx.fill(); ctx.stroke();
+  ctx.fillStyle='#d8202a'; ell(ctx,hx,hy-s*.08,s*.05,s*.035); ctx.fill(); ell(ctx,hx+s*.04,hy+s*.06,s*.025,s*.035); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(hx+s*.07,hy-s*.01); ctx.lineTo(hx+s*.14,hy+s*.01); ctx.lineTo(hx+s*.07,hy+s*.03); ctx.closePath(); ctx.fillStyle='#e8a020'; ctx.fill();
+  circ(ctx,hx+s*.02,hy-s*.015,s*.015); ctx.fillStyle='#1a1008'; ctx.fill();
+  ctx.restore();
+}
+function drawEgg(x,y,s,rot){ ell(ctx,x,y+s*.08,s*.1,s*.035); ctx.fillStyle='rgba(0,0,0,.22)'; ctx.fill();
+  ctx.save(); ctx.translate(x,y); ctx.rotate(rot); ell(ctx,0,0,s*.085,s*.11); ctx.fillStyle='#fbf2e0'; ctx.fill(); ctx.strokeStyle='#8a6a40'; ctx.lineWidth=Math.max(1,s*.022); ctx.stroke();
+  circ(ctx,s*.03,-s*.04,s*.02); ctx.fillStyle='#d8c0a0'; ctx.fill(); ctx.restore(); }
+let farmT=0;
+/* јаја на земљи (испод ликова) и обележје јајета које би кувар сад узео */
+function farmGround(live,mine){
+  const fm=V.fm, dt=Math.min(.1,Math.max(0,G_anim-farmT)), k=Math.min(1,dt*14); farmT=G_anim;
+  for(const o of [...fm.loose,...fm.hens]){ if(o.dx===undefined||Math.hypot(o.x-o.dx,o.y-o.dy)>2){ o.dx=o.x; o.dy=o.y; } const px=o.dx; o.dx+=(o.x-o.dx)*k; o.dy+=(o.y-o.dy)*k; o.walk=(o.walk||0)+Math.abs(o.dx-px)*40; }
+  for(const e of fm.loose) drawEgg(ox+e.dx*ts,oy+e.dy*ts,ts*1.7,e.rot||0);
+  if(live&&Game.phase==='play') for(const m of mine){ if(m.hold) continue; const e=farmEggFor(V,m); if(!e) continue;
+    const a=.55+.3*Math.sin(G_anim*7); circ(ctx,ox+e.dx*ts,oy+e.dy*ts,ts*.28); ctx.strokeStyle=`rgba(255,255,255,${a})`; ctx.lineWidth=Math.max(2,ts*.05); ctx.stroke(); }
+}
+function farmEnts(ents){ for(const h of V.fm.hens) ents.push({y:h.dy,f:()=>drawHen(ox+h.dx*ts,oy+h.dy*ts,ts*1.5,h.fx,h.walk||0,h.peck)}); }
+function farmStatus(){
+  for(const t of V.fm.beds) if(t.grow<1) bar(ox+t.x*ts+ts*.18,oy+t.y*ts-ts*.08,ts*.64,Math.max(4,ts*.09),t.grow,'#6cc04a');
+  const c=V.fm.cow, ct=V.grid.flat().find(t=>t.kind==='cow'); if(!ct) return;
+  const x=ox+ct.x*ts+ts*.4, y=oy+ct.y*ts-ts*.25, w=ts*1.2, h=Math.max(6,ts*.14);
+  if(c.prog>0) bar(x,y,w,h,c.prog,'#f6f2ea'); else if(c.milk<1) bar(x,y,w,h*.75,c.milk,'#f2a0a8'); else if(Game.phase==='play') drawKeyAt(ctx,'mlR',x+w/2,y-ts*.05,ts*.42);
+}
+
+/* -------- иконе -------- */
+function iMilk(c){ c.beginPath(); c.moveTo(-28,-26); c.lineTo(28,-26); c.lineTo(22,36); c.lineTo(-22,36); c.closePath(); fs(c,lg(c,-28,0,28,0,'#d6dde0','#8a959a'),'#4a5458',2.5);
+  ell(c,0,-26,28,8); fs(c,'#ffffff','#4a5458',2.5); c.strokeStyle='#4a5458'; c.lineWidth=3; c.beginPath(); c.arc(0,-26,34,Math.PI*1.1,Math.PI*1.9); c.stroke();
+  c.strokeStyle='rgba(60,70,75,.5)'; c.lineWidth=2; for(const yy of [-6,16]){ c.beginPath(); c.moveTo(-25,yy); c.lineTo(25,yy); c.stroke(); } }
+function iFlour(c){ c.beginPath(); c.moveTo(-26,-30); c.quadraticCurveTo(0,-40,26,-30); c.lineTo(34,30); c.quadraticCurveTo(0,42,-34,30); c.closePath(); fs(c,lg(c,-30,0,30,0,'#f6efe0','#d8cbb0'),'#8a7a5a',2.5);
+  c.strokeStyle='#8a5a2a'; c.lineWidth=3; c.beginPath(); c.moveTo(-22,-26); c.lineTo(22,-26); c.stroke(); c.fillStyle='#8a6a3a'; c.font='800 15px Rubik, system-ui, sans-serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillText(tr('БРАШНО'),0,6); }
+function iVegSoup(c){ ell(c,0,6,40,28); fs(c,lg(c,0,-20,0,34,'#f4f0e8','#c8c0b0'),'#6a5a48',2.5); ell(c,0,-4,34,16); fs(c,rg(c,-6,-8,34,'#f0b050','#c8701e'),'#8a4a10',1.5);
+  for(const [x,y,col] of [[-14,-6,'#e04a2a'],[8,-8,'#f6e6b0'],[16,0,'#4fa042'],[-4,2,'#e8c050'],[-20,2,'#4fa042']]){ circ(c,x,y,4.5); c.fillStyle=col; c.fill(); } }
+(function(){
+  const _ing=drawIngIcon; drawIngIcon=function(c,key){ const t=key.slice(0,2), s=key[2];
+    if(s!=='B'){ if(t==='ml') return iMilk(c); if(t==='br') return iFlour(c); if(t==='cv') return iVegSoup(c); }
+    return _ing(c,key); };
+  const _dish=dishArt; dishArt=function(c,id){
+    switch(id){
+      case 'seosalata': plateBase(c,false); sub(c,-12,6,.55,iCucumberCh); sub(c,10,4,.55,iTomatoCh); sub(c,0,-12,.5,iOnionCh); return;
+      case 'corbica': return iVegSoup(c);
+      case 'seoproja': plateBase(c,false); sub(c,-6,4,.66,iProjaPiece); sub(c,22,-16,.3,iMilk); return;
+      case 'selopal': return _dish(c,'paldzem');
+    }
+    return _dish(c,id); };
+})();
+Object.assign(EN,{
+  'Сеоско домаћинство':'The Village Homestead',
+  'Слава у селу! Цела родбина долази на ручак. Јаја, млеко и поврће нису у гајбама — скупљај их по дворишту.':'A slava in the village! The whole family is coming to lunch. Eggs, milk and vegetables don\'t come in crates: gather them around the yard.',
+  'Ново: двориште. Кокошке носе јаја, а јаја се котрљају низбрдо — ухвати их (Размак) пре него што упадну у бару! Краву помузи тако што држиш E. Поврће бери у башти кад сазри. Један кувар нека ради напољу, други у кухињи: састојке додај кроз прозор у зиду. Нема гостију за столом, али наруџбине за славску трпезу стижу.':'New: the yard. Hens lay eggs, and the eggs roll downhill: catch them (Space) before they fall into the pond! Milk the cow by holding E. Pick vegetables in the garden when they are ripe. Let one cook work outside and the other in the kitchen: pass ingredients through the hatch in the wall. No guests at the tables, but orders for the slava feast keep coming.',
+  'Млеко':'Milk', 'Брашно':'Flour', 'БРАШНО':'FLOUR', 'Чорба од поврћа':'Vegetable soup', 'Сеоска салата':'Village salad', 'Проја са млеком':'Cornbread with milk (Proja)',
+  'Тесто за палачинке':'Crêpe batter', 'Палачинке с пекмезом':'Crêpes with jam',
+  'Кокодак!':'Cluck!', 'Ко-ко-да!':'Bok-bok!', 'Снела сам!':'Laid one!', 'Пљус! Јаје у бари.':'Splash! Egg in the pond.', 'Још расте…':'Still growing…',
+  'Држи E да помузеш краву!':'Hold E to milk the cow!', 'Крава пасе, још нема млека.':'The cow is grazing, no milk yet.', 'Муу!':'Moo!'
+});
 function drawKitchenFx(){
   if(!V||!V.L||!V.grid) return; const th=V.L.theme; if(!isQ(th)||th==='pekara') return;
   const s=ts;
@@ -9236,7 +9487,7 @@ function drawTicket(o,x,y,w,h){
   const n=row.length, iu=Math.min(h*.3,(w-8)/n), iy=y+h-iu/2-5;
   const du=Math.min(h-bh-iu-18,w*.7); drawFnAt(ctx,'dish:'+o.r,cc=>dishArt(cc,o.r),sx+w/2,y+bh+7+du/2,du);
   const fsz=Math.max(9,Math.round(h*.105)); ctx.font=`700 ${fsz}px Rubik, system-ui, sans-serif`; ctx.fillStyle='#8a6d52'; ctx.textAlign='left'; ctx.textBaseline='top';
-  ctx.fillText(tr(isQ(V.L.theme)||V.L.street||o.ct==='voj'?'Број ':'Сто ')+o.tb,sx+6,y+bh+8);
+  ctx.fillText(tr(isQ(V.L.theme)||V.L.street||V.L.farm||o.ct==='voj'?'Број ':'Сто ')+o.tb,sx+6,y+bh+8);
   if(o.ct==='ofi'){ const R=Math.max(7,h*.085), cx=sx+w-R-6, cy=y+bh+8+R; circ(ctx,cx,cy,R); ctx.fillStyle='#d9a21b'; ctx.fill(); ctx.strokeStyle='#7a5608'; ctx.lineWidth=1.2; ctx.stroke();
     ctx.fillStyle='#7a1018'; ctx.font=`900 ${Math.round(R*1.3)}px Rubik, system-ui, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('★',cx,cy+.5); }
   if(o.ct==='bec'){ const R=Math.max(7,h*.085), cx=sx+w-R-6, cy=y+bh+8+R; circ(ctx,cx,cy,R); ctx.fillStyle='#f2c230'; ctx.fill(); ctx.strokeStyle='#9c7414'; ctx.lineWidth=1.2; ctx.stroke();
@@ -9338,9 +9589,11 @@ function render(dt){
   drawScene();
   for(const row of V.grid) for(const t of row) if(t.solid) drawTileDyn(t);
   if(live) for(const m of mine) drawTarget(tileAt(V,m.tx,m.ty));
+  if(V.fm) farmGround(live,mine);
   {
     const ents=live?[...DP.map(p=>({p,y:p.y})),...DN.map(n=>({n,y:n.y}))]:[];
     if(V.L.street) streetEnts(ents,live);
+    if(V.fm) farmEnts(ents);
     ents.sort((a,b)=>a.y-b.y);
     const multi=Game.role==='couch'?DP.length>1:Game.role!=='solo';
     for(const e of ents){
@@ -9656,7 +9909,7 @@ V=viewForLevel(0); resize(); applyLang();
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ bgKey=''; iconCache.clear(); });
 netInit();
 requestAnimationFrame(frame);
-window.__kb={tr,setLang,FX,SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,Couch,padNav,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,simStep,enc,dec,buildSnap,onHostPeers,setMyChef,onSnap,shoveStep,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
+window.__kb={tr,setLang,FX,SCN,lookFor,HANG,ST:STAND,CTS,sv:()=>save,geo:()=>[ox,oy,ts],deliverId:id=>{ const i=S.orders.findIndex(o=>o.id===id); if(i>=0){ deliver(i,S.windowTile); S.pending.push(RETURN_T); } },ev,spawnOrder,doAction,TURN,loadTurn,parseIce,routeFromStats,Game,Net,Couch,padNav,get S(){return S;},get V(){return V;},get me(){return me;},beginLevel,simGrab,simWork,simStep,enc,dec,farmSnap,farmUnsnap,viewForLevel,buildSnap,onHostPeers,setMyChef,onSnap,shoveStep,act,openIntro,localActor,hostGame,joinGame,leaveGame,uiDirty};
 })();
 </script>
 </body>
